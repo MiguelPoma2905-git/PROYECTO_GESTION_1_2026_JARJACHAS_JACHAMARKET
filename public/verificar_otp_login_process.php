@@ -24,31 +24,27 @@ if (!$result['success']) {
     exit;
 }
 
-// Código verificado correctamente - iniciar sesión
+// Iniciar sesión
 $_SESSION['usuario'] = [
     'id' => $temp['id'],
     'nombre' => $temp['nombre'],
-    'email' => $temp['email'],
-    'rol' => $temp['rol']
+    'email' => $temp['email']
 ];
+
+// Guardar roles disponibles
+$roles_array = explode(',', $temp['roles']);
+$total_roles = count($roles_array);
 
 unset($_SESSION['login_temp']);
 
-// ==============================================
-// REDIRECCIÓN SEGÚN EL ROL
-// ==============================================
-if ($temp['rol'] === 'Emprendedor') {
-    // Vendedor → Dashboard del vendedor
-    header('Location: dashboard_vendedor.php');
-} elseif ($temp['rol'] === 'Repartidor') {
-    // Repartidor → Dashboard del repartidor
-    header('Location: dashboard_repartidor.php');
-} elseif ($temp['rol'] === 'Administrador') {
-    // Admin → Panel de administración
-    header('Location: admin/dashboard.php');
+if ($total_roles > 1) {
+    // Múltiples roles → selector de rol
+    header('Location: selector_rol.php');
 } else {
-    // Cliente normal → Index (marketplace)
-    header('Location: index.php');
+    // Un solo rol → asignar directamente
+    $rol_unico = trim($roles_array[0]);
+    $_SESSION['rol_activo'] = $rol_unico;
+    header('Location: dashboard_principal.php');
 }
 exit;
 ?>

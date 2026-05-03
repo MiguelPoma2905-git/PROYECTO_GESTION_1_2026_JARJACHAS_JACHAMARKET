@@ -11,7 +11,6 @@ if (!isset($_SESSION['registro_temp'])) {
 $temp = $_SESSION['registro_temp'];
 $email = $temp['email'];
 
-// Generar nuevo código
 $otp = new OTP();
 $result = $otp->generarCodigo($email);
 
@@ -20,10 +19,8 @@ if (!$result['success']) {
     exit;
 }
 
-// Actualizar el código en la sesión
 $_SESSION['registro_temp']['codigo_otp'] = $result['codigo'];
 
-// Enviar nuevo correo
 $mailer = new Mailer();
 $enviado = $mailer->enviarCodigoOTP($email, $result['codigo'], $temp['nombres']);
 

@@ -19,11 +19,14 @@ if (empty($email) || empty($password)) {
 
 $db = getDB();
 
+// Obtener usuario con sus roles
 $stmt = $db->prepare("
-    SELECT u.*, r.nombre_rol 
-    FROM usuarios u 
-    JOIN roles r ON u.id_rol = r.id_rol 
+    SELECT u.*, GROUP_CONCAT(DISTINCT r.nombre_rol) as roles_todos
+    FROM usuarios u
+    LEFT JOIN usuario_roles ur ON u.id_usuario = ur.id_usuario
+    LEFT JOIN roles r ON ur.id_rol = r.id_rol
     WHERE u.email = ? AND u.estado = 'Activo'
+    GROUP BY u.id_usuario
 ");
 $stmt->execute([$email]);
 $usuario = $stmt->fetch();
@@ -33,7 +36,7 @@ if (!$usuario || !password_verify($password, $usuario['password_hash'])) {
     exit;
 }
 
-// Generar OTP para este inicio de sesión
+// Generar OTP
 $otp = new OTP();
 $result = $otp->generarCodigo($email);
 
@@ -46,7 +49,7 @@ $_SESSION['login_temp'] = [
     'id' => $usuario['id_usuario'],
     'nombre' => $usuario['nombres'] . ' ' . $usuario['apellidos'],
     'email' => $usuario['email'],
-    'rol' => $usuario['nombre_rol'],
+    'roles' => $usuario['roles_todos'] ?? '',
     'codigo_otp' => $result['codigo']
 ];
 

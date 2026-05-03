@@ -15,359 +15,142 @@ $error = $_GET['error'] ?? '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Iniciar Sesión - Jacha Marketplace</title>
+    
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'DM Sans', system-ui, sans-serif;
             background: #0a0a0a;
-            color: #ffffff;
+            color: #ebebeb;
             min-height: 100vh;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .login-container {
             display: flex;
-            min-height: 100vh;
-            width: 100%;
-            animation: fadeIn 0.6s ease-out;
-        }
-        
-        .hero-section {
-            flex: 1;
+            align-items: center;
+            justify-content: center;
             position: relative;
-            background-image: url('assets/images/fondo_1.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 48px;
+            overflow-x: hidden;
         }
-        
-        .hero-section::before {
+        /* NUEVO FONDO: fondo_login_3.png */
+        body::before {
             content: '';
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(26, 65, 71, 0.85), rgba(250, 113, 54, 0.75));
+            background-image: url('assets/images/fondo_login_3.png');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.25;
+            pointer-events: none;
         }
-        
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            color: white;
-            max-width: 400px;
-            animation: fadeInUp 0.8s ease-out;
+        .light-1 { position: fixed; top: -20%; left: -10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%); border-radius: 50%; filter: blur(60px); pointer-events: none; z-index: 0; }
+        .light-2 { position: fixed; bottom: -20%; right: -10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%); border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
+        .login-container {
+            position: relative; z-index: 1; width: 100%; max-width: 1120px; margin: 40px 24px;
+            display: flex; background: rgba(8,8,8,0.65); backdrop-filter: blur(15px);
+            border-radius: 32px; border: 1px solid rgba(255,255,255,0.08);
+            overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            animation: fadeInUp 0.6s ease-out both;
         }
-        
-        .hero-logo {
-            margin-bottom: 80px;
-        }
-        
-        .hero-logo img {
-            width: 100%;
-            max-width: 320px;
-            height: auto;
-            display: block;
-        }
-        
-        .hero-quote {
-            margin-top: auto;
-            position: relative;
-            z-index: 1;
-            animation: fadeInUp 0.8s ease-out 0.2s both;
-        }
-        
-        .hero-quote h2 {
-            font-size: 28px;
-            font-weight: 500;
-            margin-bottom: 16px;
-            line-height: 1.3;
-        }
-        
-        .hero-quote p {
-            font-size: 14px;
-            opacity: 0.8;
-            line-height: 1.6;
-        }
-        
-        .hero-footer {
-            position: relative;
-            z-index: 1;
-            font-size: 12px;
-            opacity: 0.6;
-            animation: fadeInUp 0.8s ease-out 0.4s both;
-        }
-        
-        .form-section {
-            width: 480px;
-            background: #1a1a1a;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 48px 56px;
-            box-shadow: -4px 0 20px rgba(0,0,0,0.05);
-            animation: fadeInUp 0.6s ease-out 0.1s both;
-        }
-        
-        .mobile-logo {
-            display: none;
-            margin-bottom: 40px;
-            padding: 0 16px;
-        }
-        
-        .mobile-logo img {
-            width: 100%;
-            max-width: 200px;
-            height: auto;
-        }
-        
-        .form-header {
-            margin-bottom: 40px;
-        }
-        
-        .form-header h1 {
-            font-size: 32px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: #ffffff;
-        }
-        
-        .form-header p {
-            color: #a0a0a0;
-            font-size: 14px;
-        }
-        
-        .error-message {
-            background: rgba(250,113,54,0.1);
-            border-left: 3px solid #fa7136;
-            padding: 14px 16px;
-            margin-bottom: 28px;
-            font-size: 13px;
-            color: #fa7136;
-        }
-        
-        .form-group {
-            margin-bottom: 24px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            color: #a0a0a0;
-            letter-spacing: 0.3px;
-        }
-        
-        .form-group input {
-            width: 100%;
-            padding: 14px 16px;
-            background: #252525;
-            border: 1px solid #333333;
-            border-radius: 4px;
-            font-size: 15px;
-            color: #ffffff;
-            transition: all 0.3s ease;
-        }
-        
-        .form-group input:focus {
-            outline: none;
-            border-color: #fa7136;
-            box-shadow: 0 0 0 2px rgba(250,113,54,0.1);
-        }
-        
-        .form-group input::placeholder {
-            color: #a0a0a0;
-            opacity: 0.5;
-        }
-        
-        .btn-login {
-            width: 100%;
-            padding: 14px;
-            background: #fa7136;
-            border: none;
-            border-radius: 4px;
-            font-size: 15px;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 8px;
-        }
-        
-        .btn-login:hover {
-            background: #e05a2a;
-            transform: translateY(-1px);
-        }
-        
-        .register-link {
-            text-align: center;
-            margin-top: 32px;
-            padding-top: 24px;
-            border-top: 1px solid #2a2a2a;
-        }
-        
-        .register-link p {
-            font-size: 13px;
-            color: #a0a0a0;
-        }
-        
-        .register-link a {
-            color: #fa7136;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        
-        .register-link a:hover {
-            text-decoration: underline;
-        }
-        
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .brand-side { flex: 1.2; padding: 48px; background: linear-gradient(135deg, rgba(8,8,8,0.5), rgba(16,16,16,0.3)); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+        .brand-side::before { content: ''; position: absolute; top: -30%; right: -20%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+        .logo-wrapper { display: flex; align-items: center; gap: 12px; margin-bottom: 60px; }
+        .logo-img { height: 52px; width: auto; filter: brightness(0) invert(1); }
+        .logo-text { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 500; color: #ffffff; }
+        .logo-text span { font-weight: 300; color: #888; font-size: 24px; }
+        .brand-message h2 { font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 400; line-height: 1.2; margin-bottom: 20px; color: #ffffff; }
+        .brand-message p { font-size: 14px; color: #999; line-height: 1.7; max-width: 320px; }
+        .brand-footer { font-size: 11px; color: #666; margin-top: 60px; }
+        .form-side { flex: 1; padding: 48px 56px; background: rgba(20,20,20,0.4); backdrop-filter: blur(10px); border-left: 1px solid rgba(255,255,255,0.05); }
+        .form-header { margin-bottom: 40px; }
+        .form-header h1 { font-size: 34px; font-weight: 600; margin-bottom: 12px; background: linear-gradient(135deg, #ffffff, #cccccc); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .form-header p { font-size: 14px; color: #888; }
+        .error-message { background: rgba(255,255,255,0.08); border-left: 3px solid #ffffff; padding: 14px 18px; margin-bottom: 28px; font-size: 13px; color: #ffffff; border-radius: 10px; }
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 500; color: #aaa; letter-spacing: 0.3px; }
+        .form-group input { width: 100%; padding: 15px 18px; background: #141414; border: 1px solid #2a2a2a; border-radius: 14px; font-size: 15px; color: #ffffff; transition: all 0.3s ease; }
+        .form-group input:focus { outline: none; border-color: #ffffff; box-shadow: 0 0 0 3px rgba(255,255,255,0.1); }
+        .form-group input::placeholder { color: #555; }
+        .btn-login { width: 100%; padding: 15px; background: #ffffff; border: none; border-radius: 14px; font-size: 15px; font-weight: 600; color: #0a0a0a; cursor: pointer; transition: all 0.3s ease; margin-top: 8px; }
+        .btn-login:hover { background: #e8e8e8; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,255,255,0.15); }
+        .register-link { text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid #2a2a2a; }
+        .register-link p { font-size: 13px; color: #888; }
+        .register-link a { color: #ffffff; text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        .register-link a:hover { color: #cccccc; }
         @media (max-width: 900px) {
-            .hero-section {
-                display: none;
-            }
-            
-            .form-section {
-                width: 100%;
-                min-height: 100vh;
-                justify-content: center;
-                padding: 80px 32px 40px;
-                box-shadow: none;
-            }
-            
-            .mobile-logo {
-                display: block;
-                position: fixed;
-                top: 20px;
-                left: 20px;
-                right: 20px;
-                z-index: 20;
-                margin-bottom: 0;
-                padding: 0;
-            }
-            
-            .mobile-logo img {
-                max-width: 160px;
-            }
-            
-            .form-wrapper {
-                width: 100%;
-                max-width: 400px;
-                margin: 0 auto;
-            }
-            
-            .form-section {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            
-            .form-header {
-                text-align: center;
-            }
+            .login-container { flex-direction: column; margin: 24px; }
+            .brand-side { padding: 32px; text-align: center; }
+            .logo-wrapper { justify-content: center; }
+            .brand-message p { max-width: 100%; }
+            .form-side { padding: 40px 32px; border-left: none; border-top: 1px solid rgba(255,255,255,0.05); }
+            .brand-footer { margin-top: 32px; }
         }
-        
         @media (max-width: 480px) {
-            .form-section {
-                padding: 70px 24px 32px;
-            }
-            
-            .mobile-logo img {
-                max-width: 140px;
-            }
-            
-            .form-header h1 {
-                font-size: 26px;
-            }
-        }
-        
-        @media (min-width: 901px) {
-            .mobile-logo {
-                display: none;
-            }
+            .brand-side { padding: 24px; }
+            .form-side { padding: 32px 24px; }
+            .brand-message h2 { font-size: 28px; }
+            .form-header h1 { font-size: 28px; }
+            .logo-img { height: 40px; }
+            .logo-text { font-size: 24px; }
+            .logo-text span { font-size: 18px; }
         }
     </style>
 </head>
 <body>
+    <div class="light-1"></div>
+    <div class="light-2"></div>
+
     <div class="login-container">
-        <div class="hero-section">
-            <div class="hero-content">
-                <div class="hero-logo">
-                    <img src="assets/images/logo_2.png" alt="Jacha Logo">
+        <div class="brand-side">
+            <div class="logo-area">
+                <div class="logo-wrapper">
+                    <img src="assets/images/logo_jacha_sinfondo.png" alt="Jacha" class="logo-img">
+                    <div class="logo-text">JACHA<span>market</span></div>
                 </div>
             </div>
-            
-            <div class="hero-quote">
-                <h2>Potencia tu emprendimiento</h2>
-                <p>La plataforma que conecta el talento boliviano con el mundo digital. Gestiona tu negocio, vende online y llega a más clientes.</p>
+            <div class="brand-message">
+                <h2>Potencia tu<br>emprendimiento</h2>
+                <p>La plataforma que conecta el talento boliviano con el mundo digital.</p>
             </div>
-            
-            <div class="hero-footer">
+            <div class="brand-footer">
                 <p>© 2026 Jacha Marketplace</p>
             </div>
         </div>
-        
-        <div class="form-section">
-            <div class="mobile-logo">
-                <img src="assets/images/logo_2.png" alt="Jacha Logo">
+
+        <div class="form-side">
+            <div class="form-header">
+                <h1>Iniciar sesión</h1>
+                <p>Ingresa tus credenciales para acceder a tu cuenta</p>
             </div>
             
-            <div class="form-wrapper">
-                <div class="form-header">
-                    <h1>Iniciar sesión</h1>
-                    <p>Ingresa tus credenciales para acceder a tu cuenta</p>
+            <?php if ($error): ?>
+            <div class="error-message"><?php echo htmlspecialchars($error); ?></div>
+            <?php endif; ?>
+            
+            <form method="POST" action="login_process.php">
+                <div class="form-group">
+                    <label>Correo electrónico</label>
+                    <input type="email" name="email" required placeholder="tu@email.com">
                 </div>
                 
-                <?php if ($error): ?>
-                <div class="error-message">
-                    <?php echo htmlspecialchars($error); ?>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" name="password" required placeholder="Ingresa tu contraseña">
                 </div>
-                <?php endif; ?>
                 
-                <form method="POST" action="login_process.php">
-                    <div class="form-group">
-                        <label>Correo electrónico</label>
-                        <input type="email" name="email" required placeholder="tu@email.com">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Contraseña</label>
-                        <input type="password" name="password" required placeholder="Ingresa tu contraseña">
-                    </div>
-                    
-                    <button type="submit" class="btn-login">
-                        Acceder
-                    </button>
-                </form>
-                
-                <div class="register-link">
-                    <p>¿No tienes una cuenta? <a href="registro.php">Crear cuenta</a></p>
-                </div>
+                <button type="submit" class="btn-login">Acceder</button>
+            </form>
+            
+            <div class="register-link">
+                <p>¿No tienes una cuenta? <a href="registro.php">Crear cuenta</a></p>
             </div>
         </div>
     </div>

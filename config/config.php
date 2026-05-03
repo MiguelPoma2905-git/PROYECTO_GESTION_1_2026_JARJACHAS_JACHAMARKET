@@ -9,7 +9,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // URLs base - Cambia 'Mercado_Jacha' por el nombre de TU carpeta
-define('BASE_URL', 'http://localhost/Mercado_Jacha/');
+define('BASE_URL', 'http://localhost/Mercado_Jacha/PROYECTO_GESTION_1_2026_JARJACHAS_JACHAMARKET');
 define('BASE_PATH', dirname(__DIR__) . '/');
 
 // NUEVOS COLORES DEL SISTEMA
