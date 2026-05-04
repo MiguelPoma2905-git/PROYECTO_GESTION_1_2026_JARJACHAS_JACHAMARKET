@@ -1,15 +1,15 @@
 RewriteEngine On
 
-# Redirigir a public por defecto
-RewriteRule ^$ public/ [L]
+# Si es un archivo o directorio real, no redirigir
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
 
-# Si el archivo o directorio no existe, redirigir a public
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
+# Redirigir a public
 RewriteRule ^(.*)$ public/$1 [L]
 
 # Proteger archivos sensibles
-<FilesMatch "\.(env|sql|log)$">
+<FilesMatch "\.(env|sql|log|ini)$">
     Order allow,deny
     Deny from all
 </FilesMatch>

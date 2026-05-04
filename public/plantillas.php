@@ -1,9 +1,11 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/database.php';
 
-// Verificar que sea vendedor
-if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'Emprendedor') {
+if (!isset($_SESSION['usuario'])) {
     header('Location: login.php');
     exit;
 }
@@ -11,27 +13,47 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'Emprendedor
 $usuario = $_SESSION['usuario'];
 $db = getDB();
 
-// Obtener emprendimiento del usuario
+// Verificar que sea emprendedor
 $stmt = $db->prepare("
-    SELECT * FROM emprendimientos WHERE id_propietario = ?
+    SELECT r.id_rol 
+    FROM usuario_roles ur 
+    JOIN roles r ON ur.id_rol = r.id_rol 
+    WHERE ur.id_usuario = ? AND r.nombre_rol = 'Emprendedor'
 ");
 $stmt->execute([$usuario['id']]);
-$emprendimiento = $stmt->fetch();
-
-if (!$emprendimiento) {
-    // Redirigir a crear emprendimiento
-    header('Location: crear_emprendimiento.php');
+if (!$stmt->fetch()) {
+    header('Location: dashboard_principal.php?error=No tienes permisos');
     exit;
 }
 
-// Obtener personalización actual o crear una
+$id_emprendimiento = $_GET['id_emprendimiento'] ?? 0;
+
+if (!$id_emprendimiento) {
+    header('Location: dashboard_principal.php');
+    exit;
+}
+
+// Verificar que el emprendimiento pertenece al usuario
+$stmt = $db->prepare("
+    SELECT * FROM emprendimientos 
+    WHERE id_emprendimiento = ? AND id_propietario = ?
+");
+$stmt->execute([$id_emprendimiento, $usuario['id']]);
+$emprendimiento = $stmt->fetch();
+
+if (!$emprendimiento) {
+    header('Location: dashboard_principal.php');
+    exit;
+}
+
+// Obtener personalización actual
 $stmt = $db->prepare("
     SELECT p.*, pe.* 
     FROM personalizacion_emprendimiento pe
     JOIN plantillas p ON pe.id_plantilla = p.id_plantilla
     WHERE pe.id_emprendimiento = ?
 ");
-$stmt->execute([$emprendimiento['id_emprendimiento']]);
+$stmt->execute([$id_emprendimiento]);
 $personalizacion = $stmt->fetch();
 
 if (!$personalizacion) {
@@ -39,8 +61,8 @@ if (!$personalizacion) {
         INSERT INTO personalizacion_emprendimiento (id_emprendimiento, id_plantilla)
         SELECT ?, id_plantilla FROM plantillas LIMIT 1
     ");
-    $stmt->execute([$emprendimiento['id_emprendimiento']]);
-    header('Location: plantillas.php');
+    $stmt->execute([$id_emprendimiento]);
+    header('Location: plantillas.php?id_emprendimiento=' . $id_emprendimiento);
     exit;
 }
 
@@ -55,175 +77,125 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $color_primario = $_POST['color_primario'] ?? null;
     $color_secundario = $_POST['color_secundario'] ?? null;
     $color_fondo = $_POST['color_fondo'] ?? null;
-    $color_texto = $_POST['color_texto'] ?? null;
     $modo_oscuro = isset($_POST['modo_oscuro']) ? 1 : 0;
     
     $stmt = $db->prepare("
         UPDATE personalizacion_emprendimiento 
         SET id_plantilla = ?, color_primario = ?, color_secundario = ?, 
-            color_fondo = ?, color_texto = ?, modo_oscuro = ?
+            color_fondo = ?, modo_oscuro = ?
         WHERE id_emprendimiento = ?
     ");
     $stmt->execute([$id_plantilla, $color_primario, $color_secundario, 
-                    $color_fondo, $color_texto, $modo_oscuro, 
-                    $emprendimiento['id_emprendimiento']]);
+                    $color_fondo, $modo_oscuro, $id_emprendimiento]);
     
-    header('Location: plantillas.php?success=1');
+    header('Location: plantillas.php?id_emprendimiento=' . $id_emprendimiento . '&success=1');
     exit;
 }
-
-// Marca de agua: se mostrará en todas las páginas de la tienda del vendedor
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Personalizar Mi Tienda - Jacha</title>
-    <link rel="stylesheet" href="assets/css/plantilla_base.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        .editor-container {
-            display: grid;
-            gap: 30px;
-            padding: 20px;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #e8e8e8;
+            min-height: 100vh;
         }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('assets/images/fondo_1.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 40px 32px; }
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; }
+        .logo { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: #fff; text-decoration: none; }
+        .logo span { color: #888; font-weight: 300; }
+        .back-btn { color: #888; text-decoration: none; font-size: 14px; }
+        .back-btn:hover { color: #fff; }
+        h1 { font-family: Georgia, serif; font-size: 32px; font-weight: 400; margin-bottom: 12px; }
+        .subtitle { color: #888; margin-bottom: 40px; }
         
-        .preview-area {
-            background: var(--preview-bg, #FDFBF7);
-            border-radius: 20px;
-            padding: 20px;
-            transition: all 0.3s;
-        }
+        .editor-container { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .preview-area { background: #121212; border-radius: 24px; padding: 24px; border: 1px solid #2a2a2a; }
+        .preview-card { background: var(--preview-bg, #fff); border-radius: 20px; overflow: hidden; }
+        .preview-header { background: var(--preview-primary, #fa7136); padding: 24px; color: white; }
+        .preview-header h3 { font-size: 20px; font-weight: 500; }
+        .preview-content { padding: 24px; }
+        .product-preview { display: flex; gap: 16px; margin-bottom: 20px; }
+        .product-img { width: 80px; height: 80px; background: #e0e0e0; border-radius: 12px; }
+        .preview-btn { background: var(--preview-secondary, #1a4147); color: white; padding: 10px 20px; border: none; border-radius: 30px; cursor: pointer; }
         
-        .preview-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+        .controls-area { background: #121212; border-radius: 24px; padding: 24px; border: 1px solid #2a2a2a; }
+        .plantilla-selector { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-bottom: 32px; }
+        .plantilla-option { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 16px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .plantilla-option:hover { transform: translateY(-2px); border-color: #fff; }
+        .plantilla-option.selected { border-color: #fff; background: rgba(255,255,255,0.05); }
+        .plantilla-option h4 { font-size: 14px; margin-bottom: 8px; }
+        .color-preview { display: flex; gap: 6px; justify-content: center; margin-top: 8px; }
+        .color-dot { width: 20px; height: 20px; border-radius: 50%; }
         
-        .preview-header {
-            background: var(--preview-primary, #fa7136);
-            padding: 20px;
-            color: white;
-        }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 13px; color: #aaa; margin-bottom: 8px; }
+        input[type="color"] { width: 60px; height: 40px; border: 1px solid #2a2a2a; border-radius: 8px; background: #1a1a1a; cursor: pointer; }
         
-        .preview-btn {
-            background: var(--preview-secondary, #1a4147);
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-        }
+        .btn-save { background: #fff; color: #0a0a0a; padding: 14px 28px; border: none; border-radius: 30px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 20px; transition: all 0.2s; }
+        .btn-save:hover { background: #e0e0e0; transform: translateY(-2px); }
         
-        .controls-area {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
+        .success-message { background: rgba(255,255,255,0.05); border-left: 3px solid #fff; padding: 14px; border-radius: 10px; margin-bottom: 20px; font-size: 13px; color: #fff; }
         
-        .plantilla-selector {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 16px;
-            margin-bottom: 30px;
-        }
-        
-        .plantilla-option {
-            padding: 20px;
-            border: 2px solid #eee;
-            border-radius: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .plantilla-option.selected {
-            border-color: #fa7136;
-            background: rgba(250, 113, 54, 0.05);
-        }
-        
-        /* Editor completo solo en desktop */
-        .full-editor {
-            display: none;
-        }
-        
-        @media (min-width: 769px) {
-            .editor-container {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            .full-editor {
-                display: block;
-            }
-        }
-        
-        .mobile-editor {
-            display: block;
-        }
-        
-        @media (min-width: 769px) {
-            .mobile-editor {
-                display: none;
-            }
-        }
-        
-        .color-input {
-            width: 60px;
-            height: 40px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            cursor: pointer;
-        }
+        @media (max-width: 900px) { .editor-container { grid-template-columns: 1fr; } .container { padding: 24px 20px; } h1 { font-size: 28px; } }
     </style>
 </head>
 <body>
-    <div class="brand-watermark" style="text-align: center; padding: 8px; background: rgba(0,0,0,0.05);">
-        JACHA Marketplace - Personalización de Tienda | 
-        <span style="color:#fa7136">🟠</span> <span style="color:#1a4147">💚</span>
-    </div>
-    
     <div class="container">
-        <h1>🎨 Personaliza tu Tienda</h1>
-        <p>Elige una plantilla y ajusta los colores para reflejar la identidad de tu negocio</p>
+        <div class="header">
+            <a href="index.php" class="logo">JACHA<span>market</span></a>
+            <a href="dashboard_principal.php" class="back-btn">← Volver al panel</a>
+        </div>
+        
+        <h1>Personaliza tu tienda</h1>
+        <p class="subtitle">Elige una plantilla y ajusta los colores para <?php echo htmlspecialchars($emprendimiento['nombre_comercial']); ?></p>
         
         <?php if (isset($_GET['success'])): ?>
-        <div style="background: #4CAF50; color: white; padding: 12px; border-radius: 8px; margin: 16px 0;">
-            ✓ Cambios guardados correctamente
-        </div>
+        <div class="success-message">✓ Cambios guardados correctamente</div>
         <?php endif; ?>
         
         <div class="editor-container">
-            <!-- Vista previa en vivo -->
             <div class="preview-area" id="previewArea" 
                  style="--preview-primary: <?php echo $personalizacion['color_primario'] ?? '#fa7136'; ?>; 
                         --preview-secondary: <?php echo $personalizacion['color_secundario'] ?? '#1a4147'; ?>;
-                        --preview-bg: <?php echo $personalizacion['color_fondo'] ?? '#FDFBF7'; ?>">
+                        --preview-bg: <?php echo $personalizacion['color_fondo'] ?? '#ffffff'; ?>">
                 <div class="preview-card">
                     <div class="preview-header">
                         <h3><?php echo htmlspecialchars($emprendimiento['nombre_comercial']); ?></h3>
                         <p>Vista previa de tu tienda</p>
                     </div>
-                    <div style="padding: 20px;">
-                        <div style="display: flex; gap: 12px; margin-bottom: 16px;">
-                            <div style="width: 80px; height: 80px; background: #e0e0e0; border-radius: 12px;"></div>
-                            <div>
-                                <h4>Producto Ejemplo</h4>
-                                <p>Precio: Bs. 150.00</p>
-                            </div>
+                    <div class="preview-content">
+                        <div class="product-preview">
+                            <div class="product-img"></div>
+                            <div><h4>Producto ejemplo</h4><p>Precio: Bs. 150.00</p></div>
                         </div>
-                        <button class="preview-btn">Agregar al Carrito 🛒</button>
+                        <button class="preview-btn">Agregar al carrito</button>
                     </div>
                 </div>
-                <p style="font-size: 12px; margin-top: 12px; text-align: center; opacity: 0.7;">
-                    Vista previa en tiempo real
-                </p>
             </div>
             
-            <!-- Controles -->
             <div class="controls-area">
-                <h3>📋 Selecciona una Plantilla</h3>
+                <h3 style="margin-bottom: 16px;">Selecciona una plantilla</h3>
                 <div class="plantilla-selector">
                     <?php foreach ($plantillas as $plantilla): ?>
                     <div class="plantilla-option <?php echo $personalizacion['id_plantilla'] == $plantilla['id_plantilla'] ? 'selected' : ''; ?>" 
@@ -231,135 +203,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                          data-primary="<?php echo $plantilla['color_primario']; ?>"
                          data-secondary="<?php echo $plantilla['color_secundario']; ?>">
                         <h4><?php echo htmlspecialchars($plantilla['nombre']); ?></h4>
-                        <p style="font-size: 12px;"><?php echo htmlspecialchars($plantilla['descripcion']); ?></p>
-                        <div style="display: flex; gap: 4px; justify-content: center; margin-top: 8px;">
-                            <span style="display: inline-block; width: 20px; height: 20px; background: <?php echo $plantilla['color_primario']; ?>; border-radius: 4px;"></span>
-                            <span style="display: inline-block; width: 20px; height: 20px; background: <?php echo $plantilla['color_secundario']; ?>; border-radius: 4px;"></span>
+                        <div class="color-preview">
+                            <div class="color-dot" style="background: <?php echo $plantilla['color_primario']; ?>;"></div>
+                            <div class="color-dot" style="background: <?php echo $plantilla['color_secundario']; ?>;"></div>
                         </div>
                     </div>
                     <?php endforeach; ?>
                 </div>
                 
-                <form method="POST" id="personalizacionForm">
+                <form method="POST">
                     <input type="hidden" name="id_plantilla" id="id_plantilla" value="<?php echo $personalizacion['id_plantilla']; ?>">
-                    
-                    <!-- Editor completo (desktop) -->
-                    <div class="full-editor">
-                        <h3>🎨 Personalización Avanzada</h3>
-                        <div class="form-group">
-                            <label>Color Principal</label>
-                            <input type="color" name="color_primario" id="color_primario" 
-                                   value="<?php echo $personalizacion['color_primario'] ?? '#fa7136'; ?>"
-                                   class="color-input">
-                        </div>
-                        <div class="form-group">
-                            <label>Color Secundario</label>
-                            <input type="color" name="color_secundario" id="color_secundario" 
-                                   value="<?php echo $personalizacion['color_secundario'] ?? '#1a4147'; ?>"
-                                   class="color-input">
-                        </div>
-                        <div class="form-group">
-                            <label>Color de Fondo</label>
-                            <input type="color" name="color_fondo" id="color_fondo" 
-                                   value="<?php echo $personalizacion['color_fondo'] ?? '#FDFBF7'; ?>"
-                                   class="color-input">
-                        </div>
-                        <div class="form-group">
-                            <label>Modo Oscuro</label>
-                            <label class="switch">
-                                <input type="checkbox" name="modo_oscuro" id="modo_oscuro" 
-                                       <?php echo $personalizacion['modo_oscuro'] ? 'checked' : ''; ?>>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
+                    <div class="form-group">
+                        <label>Color principal</label>
+                        <input type="color" name="color_primario" id="color_primario" value="<?php echo $personalizacion['color_primario'] ?? '#fa7136'; ?>">
                     </div>
-                    
-                    <!-- Editor minimalista (móvil) -->
-                    <div class="mobile-editor">
-                        <h3>📱 Opciones Rápidas (Móvil)</h3>
-                        <div class="opcion-rapida">
-                            <label>🎨 Color Principal</label>
-                            <input type="color" name="color_primario_mobile" id="color_primario_mobile" 
-                                   value="<?php echo $personalizacion['color_primario'] ?? '#fa7136'; ?>"
-                                   onchange="document.getElementById('color_primario').value = this.value; actualizarPreview();">
-                        </div>
-                        <div class="opcion-rapida">
-                            <label>🌈 Color Secundario</label>
-                            <input type="color" name="color_secundario_mobile" id="color_secundario_mobile" 
-                                   value="<?php echo $personalizacion['color_secundario'] ?? '#1a4147'; ?>"
-                                   onchange="document.getElementById('color_secundario').value = this.value; actualizarPreview();">
-                        </div>
-                        <p style="font-size: 12px; color: #666; margin-top: 12px;">
-                            💡 Para personalización completa, usa una computadora
-                        </p>
+                    <div class="form-group">
+                        <label>Color secundario</label>
+                        <input type="color" name="color_secundario" id="color_secundario" value="<?php echo $personalizacion['color_secundario'] ?? '#1a4147'; ?>">
                     </div>
-                    
-                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
-                        💾 Guardar Cambios
-                    </button>
+                    <div class="form-group">
+                        <label>Color de fondo</label>
+                        <input type="color" name="color_fondo" id="color_fondo" value="<?php echo $personalizacion['color_fondo'] ?? '#ffffff'; ?>">
+                    </div>
+                    <button type="submit" class="btn-save">Guardar cambios</button>
                 </form>
             </div>
-        </div>
-        
-        <div style="margin-top: 40px; padding: 20px; background: rgba(250,113,54,0.1); border-radius: 12px;">
-            <h3>🔗 Tu tienda estará disponible en:</h3>
-            <code style="background: white; padding: 8px 12px; border-radius: 6px; display: block; margin-top: 8px;">
-                <?php echo BASE_URL; ?>tienda/<?php echo $emprendimiento['id_emprendimiento']; ?>
-            </code>
-            <p style="margin-top: 12px; font-size: 14px;">
-                Comparte este enlace con tus clientes para que vean tu tienda personalizada
-            </p>
         </div>
     </div>
     
     <script>
-        // Actualizar vista previa en tiempo real
         function actualizarPreview() {
             const primary = document.getElementById('color_primario').value;
             const secondary = document.getElementById('color_secundario').value;
-            const bg = document.getElementById('color_fondo')?.value || '#FDFBF7';
-            
+            const bg = document.getElementById('color_fondo').value;
             const previewArea = document.getElementById('previewArea');
             previewArea.style.setProperty('--preview-primary', primary);
             previewArea.style.setProperty('--preview-secondary', secondary);
             previewArea.style.setProperty('--preview-bg', bg);
         }
         
-        // Selección de plantilla
         document.querySelectorAll('.plantilla-option').forEach(opt => {
             opt.addEventListener('click', () => {
-                // Remover selección anterior
                 document.querySelectorAll('.plantilla-option').forEach(o => o.classList.remove('selected'));
                 opt.classList.add('selected');
-                
-                const id = opt.dataset.id;
-                const primary = opt.dataset.primary;
-                const secondary = opt.dataset.secondary;
-                
-                document.getElementById('id_plantilla').value = id;
-                document.getElementById('color_primario').value = primary;
-                document.getElementById('color_secundario').value = secondary;
-                
-                // Actualizar selects móviles
-                if (document.getElementById('color_primario_mobile')) {
-                    document.getElementById('color_primario_mobile').value = primary;
-                    document.getElementById('color_secundario_mobile').value = secondary;
-                }
-                
+                document.getElementById('id_plantilla').value = opt.dataset.id;
+                document.getElementById('color_primario').value = opt.dataset.primary;
+                document.getElementById('color_secundario').value = opt.dataset.secondary;
                 actualizarPreview();
             });
         });
         
-        // Event listeners para cambios de color
-        const colorInputs = ['color_primario', 'color_secundario', 'color_fondo'];
-        colorInputs.forEach(id => {
-            const input = document.getElementById(id);
-            if (input) {
-                input.addEventListener('change', actualizarPreview);
-            }
-        });
-        
-        // Inicializar vista previa
+        document.getElementById('color_primario').addEventListener('change', actualizarPreview);
+        document.getElementById('color_secundario').addEventListener('change', actualizarPreview);
+        document.getElementById('color_fondo').addEventListener('change', actualizarPreview);
         actualizarPreview();
     </script>
 </body>
