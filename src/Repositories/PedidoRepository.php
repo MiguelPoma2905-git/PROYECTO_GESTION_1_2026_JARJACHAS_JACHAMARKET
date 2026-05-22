@@ -16,15 +16,17 @@ class PedidoRepository
         try {
             $codigo = 'JACHA-' . strtoupper(substr(uniqid(), -8));
 
+            $fecha = $datos['fecha_creacion'] ?? date('Y-m-d');
+
             $stmt = $this->conn->prepare("
                 INSERT INTO pedidos (id_cliente, id_sucursal_origen, codigo_seguimiento, 
-                                    subtotal, costo_envio, total, metodo_pago, direccion_entrega)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                                    subtotal, costo_envio, total, metodo_pago, direccion_entrega, fecha_creacion)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
             $stmt->execute([
                 $datos['id_cliente'], $datos['id_sucursal'], $codigo,
                 $datos['subtotal'], $datos['costo_envio'], $datos['total'],
-                $datos['metodo_pago'], $datos['direccion']
+                $datos['metodo_pago'], $datos['direccion'], $fecha
             ]);
 
             $id_pedido = (int)$this->conn->lastInsertId();

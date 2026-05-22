@@ -16,6 +16,8 @@ use App\Controllers\PlantillaController;
 use App\Controllers\HomeController;
 use App\Controllers\PedidoController;
 use App\Controllers\RepartidorController;
+use App\Controllers\AdminController;
+use App\Controllers\PerfilController;
 
 $router = new Router();
 
@@ -23,6 +25,7 @@ $router = new Router();
 
 // Home
 $router->get('/', [HomeController::class, 'index']);
+$router->get('/explorar', [HomeController::class, 'explorar']);
 
 // Auth
 $router->get('/login', [AuthController::class, 'showLoginForm']);
@@ -55,11 +58,28 @@ $router->get('/plantillas-disponibles', [PlantillaController::class, 'disponible
 
 // Pedidos (JSON endpoints)
 $router->post('/pedido/crear', [PedidoController::class, 'crear']);
+$router->post('/pedido/comprar-rapido', [PedidoController::class, 'comprarRapido']);
 
 // Repartidor (JSON endpoints)
 $router->get('/repartidor/pedidos-pendientes', [RepartidorController::class, 'pedidosPendientes']);
 $router->post('/repartidor/asignar', [RepartidorController::class, 'asignar']);
 $router->post('/repartidor/entregar', [RepartidorController::class, 'entregar']);
+
+// Perfil
+$router->get('/perfil', [PerfilController::class, 'index']);
+$router->post('/perfil/actualizar', [PerfilController::class, 'actualizar']);
+$router->post('/perfil/quitar-repartidor', [PerfilController::class, 'quitarRepartidor']);
+$router->post('/perfil/eliminar-negocio', [PerfilController::class, 'eliminarNegocio']);
+
+// Admin
+$router->get('/admin', [AdminController::class, 'panel']);
+$router->post('/admin/eliminar-usuario', [AdminController::class, 'eliminarUsuario']);
+$router->post('/admin/eliminar-negocio', [AdminController::class, 'eliminarNegocio']);
+$router->post('/admin/reiniciar-bd', [AdminController::class, 'resetDb']);
+$router->get('/admin/editar-usuario', [AdminController::class, 'editarUsuario']);
+$router->post('/admin/editar-usuario/guardar', [AdminController::class, 'editarUsuarioGuardar']);
+$router->get('/admin/ventas', [AdminController::class, 'ventas']);
+$router->post('/admin/seed-demo', [AdminController::class, 'seedDemo']);
 
 // DB Demo
 $router->get('/db-demo', [HomeController::class, 'dbDemo']);
@@ -99,8 +119,8 @@ $uri = $_SERVER['REQUEST_URI'];
 // Remove query string from URI for routing
 $uri = strtok($uri, '?');
 
-// Remove base path
-$basePath = dirname($_SERVER['SCRIPT_NAME']);
+// Remove base path (project root, not including /public)
+$basePath = dirname(dirname($_SERVER['SCRIPT_NAME']));
 if ($basePath !== '/' && $basePath !== '\\') {
     $uri = substr($uri, strlen($basePath));
 }

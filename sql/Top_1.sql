@@ -278,7 +278,8 @@ INSERT INTO plantillas (nombre, descripcion, color_primario, color_secundario, a
 ('Elegante', 'Para negocios de moda', '#2C3E50', '#C0392B', 1),
 ('Rústico', 'Para artesanías', '#8B4513', '#D2691E', 1),
 ('Tecnológico', 'Para electrónica', '#3498DB', '#2C3E50', 1),
-('Gastronómico', 'Para restaurantes', '#E67E22', '#C0392B', 1);
+('Gastronómico', 'Para restaurantes', '#E67E22', '#C0392B', 1),
+('Electrodomésticos', 'Diseño moderno y profesional para tiendas de electrodomésticos y tecnología del hogar', '#1A3A5C', '#2C6FBB', 1);
 
 INSERT INTO categorias (nombre, slug) VALUES
 ('Moda', 'moda'),
@@ -288,75 +289,24 @@ INSERT INTO categorias (nombre, slug) VALUES
 ('Hogar', 'hogar');
 
 -- ==============================
--- 9. USUARIOS DE PRUEBA
+-- 9. SUPER ADMINISTRADOR
 -- ==============================
 INSERT INTO usuarios (nombres, apellidos, email, password_hash, telefono, estado) VALUES
-('Carlos', 'Mendoza', 'carlos.mendoza@test.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi', '71234567', 'Activo'),
-('Laura', 'Fernandez', 'laura.fernandez@test.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi', '79876543', 'Activo');
+('Miguel Angel', 'Poma Ramos', 'mikypramos2905@gmail.com', '$2y$10$okmF5BfryvYouyDxkc.P7uLVGs/AhqMZDdeuJrT/UrxTU4xOtLXWi', '71234567', 'Activo');
 
-SET @id_rol_emprendedor = (SELECT id_rol FROM roles WHERE nombre_rol = 'Emprendedor');
 INSERT INTO usuario_roles (id_usuario, id_rol)
-SELECT id_usuario, @id_rol_emprendedor
-FROM usuarios 
-WHERE email IN ('carlos.mendoza@test.com', 'laura.fernandez@test.com');
+SELECT u.id_usuario, r.id_rol
+FROM usuarios u, roles r
+WHERE u.email = 'mikypramos2905@gmail.com'
+AND r.nombre_rol IN ('Administrador', 'Emprendedor', 'Cliente');
 
 -- ==============================
--- 10. EMPRENDIMIENTOS
+-- 10. ÍNDICE
 -- ==============================
-INSERT INTO emprendimientos (id_propietario, nombre_comercial, nit, descripcion, estado)
-SELECT id_usuario, 'TecnoStore Bolivia', '1020304050', 'Venta de productos tecnológicos.', 'Aprobado'
-FROM usuarios WHERE email = 'carlos.mendoza@test.com';
-
-INSERT INTO emprendimientos (id_propietario, nombre_comercial, nit, descripcion, estado)
-SELECT id_usuario, 'Artesanías Los Andes', '2030405060', 'Artesanía boliviana hecha a mano.', 'Aprobado'
-FROM usuarios WHERE email = 'laura.fernandez@test.com';
-
-SET @id_tecnostore = (SELECT id_emprendimiento FROM emprendimientos WHERE nombre_comercial = 'TecnoStore Bolivia');
-SET @id_artesanias = (SELECT id_emprendimiento FROM emprendimientos WHERE nombre_comercial = 'Artesanías Los Andes');
-
-INSERT INTO personalizacion_emprendimiento (id_emprendimiento, id_plantilla, color_primario, color_secundario, color_fondo) VALUES
-(@id_tecnostore, 4, '#3498db', '#2c3e50', '#0a0a0a'),
-(@id_artesanias, 1, '#e67e22', '#d35400', '#1a1a1a');
-
--- ==============================
--- 11. 5000 PRODUCTOS
--- ==============================
-INSERT INTO productos (id_emprendimiento, nombre, precio_base, descripcion_larga, estado, stock)
-WITH RECURSIVE numeros AS (SELECT 1 AS n UNION ALL SELECT n + 1 FROM numeros WHERE n < 2500)
-SELECT @id_tecnostore, CONCAT('Producto Tecnológico ', n), ROUND(50 + RAND() * 2000, 2), CONCAT('Descripción número ', n), 'Publicado', FLOOR(10 + RAND() * 100) FROM numeros;
-
-INSERT INTO productos (id_emprendimiento, nombre, precio_base, descripcion_larga, estado, stock)
-WITH RECURSIVE numeros AS (SELECT 1 AS n UNION ALL SELECT n + 1 FROM numeros WHERE n < 2500)
-SELECT @id_artesanias, CONCAT('Producto Artesanal ', n), ROUND(10 + RAND() * 500, 2), CONCAT('Artesanía número ', n), 'Publicado', FLOOR(5 + RAND() * 50) FROM numeros;
-
--- ==============================
--- 12. PEDIDOS DE PRUEBA
--- ==============================
-INSERT INTO pedidos (id_cliente, id_sucursal_origen, codigo_seguimiento, subtotal, costo_envio, total, metodo_pago, direccion_entrega, fecha_creacion)
-SELECT (SELECT id_usuario FROM usuarios WHERE email = 'carlos.mendoza@test.com' LIMIT 1), 1, CONCAT('SEG-', LPAD(n, 8, '0')), ROUND(100 + RAND() * 500, 2), 20, ROUND(120 + RAND() * 500, 2), 'QR', 'Calle Comercio #123, La Paz', DATE_ADD('2025-01-01', INTERVAL FLOOR(RAND() * 365) DAY)
-FROM (WITH RECURSIVE nums AS (SELECT 1 AS n UNION ALL SELECT n + 1 FROM nums WHERE n < 1000) SELECT n FROM nums) AS numeros;
-
-INSERT INTO pedidos (id_cliente, id_sucursal_origen, codigo_seguimiento, subtotal, costo_envio, total, metodo_pago, direccion_entrega, fecha_creacion)
-SELECT (SELECT id_usuario FROM usuarios WHERE email = 'laura.fernandez@test.com' LIMIT 1), 2, CONCAT('ART-', LPAD(n, 8, '0')), ROUND(50 + RAND() * 300, 2), 15, ROUND(65 + RAND() * 300, 2), 'Tarjeta', 'Calle Artesanal #456, Cochabamba', DATE_ADD('2025-01-01', INTERVAL FLOOR(RAND() * 365) DAY)
-FROM (WITH RECURSIVE nums AS (SELECT 1 AS n UNION ALL SELECT n + 1 FROM nums WHERE n < 1000) SELECT n FROM nums) AS numeros;
-
--- ==============================
--- 13. ÍNDICE Y MEDICIÓN
--- ==============================
-SET @start = NOW(6);
-SELECT COUNT(*) FROM productos WHERE id_emprendimiento = @id_tecnostore AND precio_base > 500;
-SET @end = NOW(6);
-SELECT TIMEDIFF(@end, @start) AS tiempo_sin_indice;
-
 CREATE INDEX idx_productos_emprendimiento_precio ON productos(id_emprendimiento, precio_base);
 
-SET @start = NOW(6);
-SELECT COUNT(*) FROM productos WHERE id_emprendimiento = @id_tecnostore AND precio_base > 500;
-SET @end = NOW(6);
-SELECT TIMEDIFF(@end, @start) AS tiempo_con_indice;
-
 -- ==============================
--- 14. FUNCIÓN
+-- 11. FUNCIÓN
 -- ==============================
 DELIMITER //
 CREATE FUNCTION fn_calcular_ganancia_neta(p_precio_venta DECIMAL(10,2), p_costo DECIMAL(10,2), p_impuesto_porcentaje DECIMAL(5,2))

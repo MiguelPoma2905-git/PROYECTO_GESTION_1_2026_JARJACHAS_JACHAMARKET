@@ -1,256 +1,24 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Demostración BD - Jacha Marketplace</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=5">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #0a0a0a;
-            color: #e8e8e8;
-            line-height: 1.5;
-        }
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url('<?= BASE_URL ?>/assets/images/fondo_1.jpg');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.06;
-            pointer-events: none;
-        }
-        
-        .header {
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            padding: 20px 32px;
-            background: rgba(10,10,10,0.8);
-            backdrop-filter: blur(16px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo { font-family: 'Cormorant Garamond', serif; font-size: 26px; color: #fff; text-decoration: none; }
-        .logo span { color: #888; font-weight: 300; }
-        .back-btn { color: #aaa; text-decoration: none; font-size: 14px; transition: color 0.2s; }
-        .back-btn:hover { color: #fff; }
-        .robot-icon {
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
+        .header { border-bottom: 1px solid rgba(255,255,255,0.08); padding: 20px 32px; background: rgba(10,10,10,0.8); backdrop-filter: blur(16px); position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .robot-icon { background: none; border: none; font-size: 28px; cursor: pointer; transition: transform 0.2s; }
         .robot-icon:hover { transform: scale(1.1); }
-        
-        .hero {
-            text-align: center;
-            padding: 60px 24px 40px;
-            background: linear-gradient(135deg, rgba(26,65,71,0.3), rgba(250,113,54,0.1));
-        }
-        .hero h1 { font-family: Georgia, serif; font-size: 42px; font-weight: 400; margin-bottom: 16px; color: #fff; }
-        .hero p { color: #888; font-size: 16px; max-width: 700px; margin: 0 auto; }
-        
-        .container { max-width: 1400px; margin: 0 auto; padding: 48px 32px; }
-        
-        .card {
-            background: #121212;
-            border: 1px solid #2a2a2a;
-            border-radius: 24px;
-            margin-bottom: 32px;
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-        .card:hover { border-color: #3a3a3a; }
-        .card-header {
-            padding: 24px 28px;
-            border-bottom: 1px solid #2a2a2a;
-            background: #161616;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        .card-header h2 { font-family: Georgia, serif; font-size: 22px; font-weight: 400; color: #fff; }
-        .card-header p { font-size: 13px; color: #888; margin-top: 6px; }
-        .card-body { padding: 28px; }
-        
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 20px; }
-        .stat-card {
-            background: #1a1a1a;
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            border: 1px solid #2a2a2a;
-        }
-        .stat-card .number { font-size: 36px; font-weight: 600; color: #fa7136; font-family: Georgia, serif; }
-        .stat-card .label { font-size: 12px; color: #888; margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; }
-        
-        .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-        .comparison-box {
-            background: #1a1a1a;
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center;
-            border: 1px solid #2a2a2a;
-        }
-        .comparison-box .title { font-size: 13px; color: #888; margin-bottom: 12px; text-transform: uppercase; }
-        .comparison-box .time { font-size: 42px; font-weight: 600; color: #fff; font-family: monospace; }
-        .comparison-box .unit { font-size: 12px; color: #666; }
-        .improvement-badge {
-            background: rgba(76,175,80,0.12);
-            border: 1px solid rgba(76,175,80,0.3);
-            border-radius: 40px;
-            padding: 12px 24px;
-            text-align: center;
-            margin-top: 20px;
-        }
-        .improvement-badge .percent { font-size: 24px; font-weight: 700; color: #4caf50; }
-        .improvement-badge .text { font-size: 13px; color: #aaa; }
-        
-        .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 500; }
-        .status-success { background: rgba(76,175,80,0.15); color: #4caf50; }
-        .status-info { background: rgba(33,150,243,0.15); color: #2196f3; }
-        
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 12px; font-size: 12px; font-weight: 600; color: #888; border-bottom: 1px solid #2a2a2a; }
-        td { padding: 12px; font-size: 13px; border-bottom: 1px solid #2a2a2a; }
-        
-        .code-block {
-            background: #0d0d0d;
-            border-radius: 12px;
-            padding: 16px;
-            font-family: monospace;
-            font-size: 12px;
-            color: #4caf50;
-            overflow-x: auto;
-            border: 1px solid #2a2a2a;
-        }
-        
-        .search-bar {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-        }
-        .search-input {
-            flex: 2;
-            padding: 12px 16px;
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 14px;
-        }
-        .search-input:focus { outline: none; border-color: #fa7136; }
-        .filter-select {
-            flex: 1;
-            padding: 12px 16px;
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
-            border-radius: 12px;
-            color: #fff;
-            cursor: pointer;
-        }
-        .btn-search {
-            padding: 12px 28px;
-            background: #fa7136;
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-search:hover { background: #e05a2a; transform: translateY(-1px); }
-        
-        .pagination {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 24px;
-            flex-wrap: wrap;
-        }
-        .pagination a, .pagination span {
-            padding: 8px 14px;
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
-            border-radius: 8px;
-            color: #aaa;
-            text-decoration: none;
-            font-size: 13px;
-            transition: all 0.2s;
-        }
-        .pagination a:hover { background: #333; color: #fff; }
-        .pagination .active { background: #fa7136; color: #fff; border-color: #fa7136; }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal.active { display: flex; }
-        .modal-content {
-            background: #1a1a1a;
-            border-radius: 28px;
-            max-width: 700px;
-            width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
-            border: 1px solid #3a3a3a;
-        }
-        .modal-header {
-            padding: 24px 28px;
-            border-bottom: 1px solid #2a2a2a;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .modal-header h3 { font-size: 24px; font-weight: 400; font-family: Georgia, serif; }
-        .close-modal {
-            background: none;
-            border: none;
-            color: #888;
-            font-size: 28px;
-            cursor: pointer;
-        }
-        .close-modal:hover { color: #fff; }
-        .modal-body { padding: 28px; }
-        .question-card {
-            background: #121212;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #2a2a2a;
-        }
-        .question-card h4 { font-size: 18px; font-weight: 500; margin-bottom: 12px; color: #fa7136; }
+        .hero { text-align: center; padding: 60px 24px 40px; background: linear-gradient(135deg, rgba(26,65,71,0.3), rgba(0,0,0,0.05)); }
+        .stat-card .number { font-size: 36px; font-weight: 600; color: var(--text); font-family: Georgia, serif; }
+        .search-input:focus { outline: none; border-color: var(--border-hi); }
+        .btn-search { padding: 12px 28px; background: var(--text); border: none; border-radius: 12px; color: var(--bg); font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .pagination .active { background: var(--text); color: var(--bg); border-color: var(--text); }
+        .question-card h4 { font-size: 18px; font-weight: 500; margin-bottom: 12px; color: var(--text); }
         .question-card p { color: #aaa; font-size: 14px; line-height: 1.6; margin-bottom: 12px; }
         .question-card .answer { color: #4caf50; font-size: 14px; border-top: 1px solid #2a2a2a; padding-top: 12px; margin-top: 8px; }
-        
-        .watermark { position: fixed; bottom: 12px; right: 12px; font-size: 9px; color: rgba(255,255,255,0.04); pointer-events: none; font-family: monospace; }
-        
         @media (max-width: 1024px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .comparison { grid-template-columns: 1fr; } }
         @media (max-width: 768px) { .container { padding: 32px 20px; } .hero h1 { font-size: 32px; } .stats-grid { grid-template-columns: 1fr; } .search-bar { flex-direction: column; } }
     </style>
@@ -258,9 +26,10 @@
 <body>
     <div class="header">
         <div class="header-content">
-            <a href="<?= BASE_URL ?>/" class="logo">JACHA<span>market</span></a>
+            <a href="<?= BASE_URL ?>/"><img src="<?= BASE_URL ?>/assets/images/logo_empresa.png" alt="Jacha" style="height:28px;width:auto"></a>
             <div style="display: flex; align-items: center; gap: 20px;">
                 <button class="robot-icon" id="robotBtn">🤖</button>
+                <button class="theme-toggle" id="themeToggle" title="Cambiar tema" style="margin-left:12px;flex-shrink:0">&#9790;</button>
                 <a href="<?= BASE_URL ?>/" class="back-btn">← Volver</a>
             </div>
         </div>
@@ -293,7 +62,7 @@
         <div class="card">
             <div class="card-header">
                 <h2>Población masiva de datos + Explorador</h2>
-                <span class="status-badge <?= $cumple_5000 ? 'status-success' : 'status-info' ?>"><?= $cumple_5000 ? '✓ 15% cumplido' : '⚠ 15% pendiente' ?></span>
+                <span class="status-badge <?= $cumple_5000 ? 'status-success' : 'status-info' ?>"><?= $cumple_5000 ? '15% cumplido' : '15% pendiente' ?></span>
             </div>
             <div class="card-body">
                 <div class="stats-grid">
@@ -444,7 +213,7 @@
     <div class="modal" id="preguntasModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>🤖 Preguntas teóricas para el grupo</h3>
+                <h3>Preguntas teóricas para el grupo</h3>
                 <button class="close-modal" id="closeModalBtn">&times;</button>
             </div>
             <div class="modal-body">
@@ -472,8 +241,30 @@
         </div>
     </div>
     
-    <div class="watermark">JACHA DATABASE DEMO</div>
-    
+    <span class="watermark"><img src="<?= BASE_URL ?>/assets/images/logo1.jpg" alt=""></span>
+
+    <script>
+(function() {
+    var theme = localStorage.getItem('jacha_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<script>
+(function() {
+    var themeToggle = document.getElementById('themeToggle');
+    var currentTheme = localStorage.getItem('jacha_theme') || 'dark';
+    if (themeToggle) {
+        themeToggle.innerHTML = currentTheme === 'dark' ? '\u2600' : '\u263E';
+        themeToggle.addEventListener('click', function() {
+            var theme = document.documentElement.getAttribute('data-theme');
+            var newTheme = theme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('jacha_theme', newTheme);
+            themeToggle.innerHTML = newTheme === 'dark' ? '\u2600' : '\u263E';
+        });
+    }
+})();
+</script>
     <script>
         const modal = document.getElementById('preguntasModal');
         const robotBtn = document.getElementById('robotBtn');

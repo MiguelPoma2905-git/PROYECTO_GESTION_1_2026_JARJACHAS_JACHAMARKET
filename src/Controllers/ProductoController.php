@@ -28,15 +28,29 @@ class ProductoController extends Controller
         }
 
         $emprendimiento = $this->emprendimientoRepo->findById($idEmprendimiento);
+        $esPropietario = false;
+
+        if (!$emprendimiento && isset($_SESSION['usuario'])) {
+            $emprendimiento = $this->emprendimientoRepo->findByIdAndPropietario($idEmprendimiento, $_SESSION['usuario']['id']);
+            if ($emprendimiento) {
+                $esPropietario = true;
+            }
+        }
+
         if (!$emprendimiento) {
             $this->redirect(BASE_URL . '/');
+        }
+
+        if (isset($_SESSION['usuario']) && (int)$emprendimiento['id_propietario'] === (int)$_SESSION['usuario']['id']) {
+            $esPropietario = true;
         }
 
         $productos = $this->productoRepo->findPublishedByEmprendimiento($idEmprendimiento);
 
         $this->view('shop/tienda', [
             'emprendimiento' => $emprendimiento,
-            'productos' => $productos
+            'productos' => $productos,
+            'es_propietario' => $esPropietario
         ]);
     }
 
@@ -82,10 +96,13 @@ class ProductoController extends Controller
             $stock = (int)($_POST['stock'] ?? 0);
 
             $atributos = [];
-            foreach ($_POST as $key => $value) {
-                if (strpos($key, 'attr_') === 0 && !empty($value)) {
-                    $attrName = substr($key, 5);
-                    $atributos[$attrName] = trim($value);
+            $attrNames = $_POST['attr_nombre'] ?? [];
+            $attrValues = $_POST['attr_valor'] ?? [];
+            foreach ($attrNames as $i => $name) {
+                $name = is_string($name) ? trim($name) : '';
+                $value = isset($attrValues[$i]) && is_string($attrValues[$i]) ? trim($attrValues[$i]) : '';
+                if ($name !== '' && $value !== '') {
+                    $atributos[$name] = $value;
                 }
             }
             $atributosJson = !empty($atributos) ? json_encode($atributos, JSON_UNESCAPED_UNICODE) : null;

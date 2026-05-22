@@ -1,11 +1,13 @@
 RewriteEngine On
 
-# Si es un archivo o directorio real, no redirigir
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
+# Si la URL es la raíz exacta, ir directo al front controller
+RewriteRule ^$ public/index.php [L]
+
+# Si es un archivo real (no directorio), servirlo directamente
+RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [L]
 
-# Redirigir a public
+# Todo lo demás redirigir a public
 RewriteRule ^(.*)$ public/$1 [L]
 
 # Proteger archivos sensibles

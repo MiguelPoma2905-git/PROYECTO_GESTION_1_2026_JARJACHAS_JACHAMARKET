@@ -5,3 +5,8 @@ node_modules/
 Thumbs.db
 *.log
 public/uploads/
+public/assets/uploads/
+php_err.txt
+test_db.php
+db_check.php
+*.tmp

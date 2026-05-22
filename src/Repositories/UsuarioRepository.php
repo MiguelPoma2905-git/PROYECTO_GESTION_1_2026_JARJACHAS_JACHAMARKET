@@ -38,7 +38,7 @@ class UsuarioRepository
         $stmt = $this->conn->prepare("SELECT avatar FROM usuarios WHERE id_usuario = ?");
         $stmt->execute([$id]);
         $avatar = $stmt->fetchColumn();
-        return $avatar ?: 'assets/avatars/default/avatar_1.png';
+        return $avatar ?: 'assets/avatars/default/avatar_1.jpg';
     }
 
     public function getRoles(int $id): array

@@ -168,7 +168,7 @@ class AuthController extends Controller
 
         $avataresDefault = [];
         for ($i = 1; $i <= 8; $i++) {
-            $avataresDefault[] = "assets/avatars/default/avatar_{$i}.png";
+            $avataresDefault[] = "assets/avatars/default/avatar_{$i}.jpg";
         }
 
         $this->view('auth/choose-roles', [
@@ -237,7 +237,7 @@ class AuthController extends Controller
                 }
             }
 
-            $avatarFinal = $temp['avatar'] ?? 'assets/avatars/default/avatar_1.png';
+            $avatarFinal = $temp['avatar'] ?? 'assets/avatars/default/avatar_1.jpg';
 
             if (strpos($avatarFinal, 'uploads/temp_avatars/') === 0) {
                 $tempPath = BASE_PATH . 'public/' . $avatarFinal;
@@ -263,15 +263,17 @@ class AuthController extends Controller
 
             $db->commit();
 
+            $rolesInfo = $this->usuarioRepo->getUserRolesInfo($idUsuario);
+            $rolesStr = $rolesInfo ? ($rolesInfo['roles'] ?? '') : '';
+            $totalRoles = $rolesInfo ? (int)$rolesInfo['total'] : 0;
+            $rolesArray = $rolesInfo ? explode(',', $rolesStr) : [];
+
             $_SESSION['usuario'] = [
                 'id' => $idUsuario,
                 'nombre' => $temp['nombres'] . ' ' . $temp['apellidos'],
-                'email' => $temp['email']
+                'email' => $temp['email'],
+                'roles_todos' => $rolesStr
             ];
-
-            $rolesInfo = $this->usuarioRepo->getUserRolesInfo($idUsuario);
-            $totalRoles = $rolesInfo ? (int)$rolesInfo['total'] : 0;
-            $rolesArray = $rolesInfo ? explode(',', $rolesInfo['roles']) : [];
 
             unset($_SESSION['registro_temp']);
 
@@ -311,10 +313,11 @@ class AuthController extends Controller
         $_SESSION['usuario'] = [
             'id' => $temp['id'],
             'nombre' => $temp['nombre'],
-            'email' => $temp['email']
+            'email' => $temp['email'],
+            'roles_todos' => $temp['roles'] ?? ''
         ];
 
-        $rolesArray = explode(',', $temp['roles']);
+        $rolesArray = explode(',', $temp['roles'] ?? '');
         $totalRoles = count($rolesArray);
 
         unset($_SESSION['login_temp']);
@@ -480,26 +483,64 @@ class AuthController extends Controller
 
             if (!in_array($mimeType, $allowedTypes)) {
                 $this->json(['success' => false, 'error' => 'Tipo de archivo no válido. Solo imágenes JPG, PNG, GIF, WEBP.']);
+                return;
             }
 
             if ($file['size'] > 5 * 1024 * 1024) {
                 $this->json(['success' => false, 'error' => 'La imagen es demasiado grande. Máximo 5MB.']);
+                return;
             }
 
-            $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
             $sessionId = session_id();
-            $nombreArchivo = 'temp_' . $sessionId . '_' . time() . '.' . $extension;
+            $nombreArchivo = 'temp_' . $sessionId . '_' . time() . '.jpg';
             $rutaTemporal = $tempDir . $nombreArchivo;
             $rutaDb = 'uploads/temp_avatars/' . $nombreArchivo;
 
-            if (move_uploaded_file($file['tmp_name'], $rutaTemporal)) {
+            $img = null;
+            switch ($mimeType) {
+                case 'image/jpeg':
+                case 'image/jpg':
+                    $img = imagecreatefromjpeg($file['tmp_name']);
+                    break;
+                case 'image/png':
+                    $img = imagecreatefrompng($file['tmp_name']);
+                    break;
+                case 'image/gif':
+                    $img = imagecreatefromgif($file['tmp_name']);
+                    break;
+                case 'image/webp':
+                    $img = imagecreatefromwebp($file['tmp_name']);
+                    break;
+            }
+
+            if (!$img) {
+                $this->json(['success' => false, 'error' => 'Error al procesar la imagen.']);
+                return;
+            }
+
+            $width = imagesx($img);
+            $height = imagesy($img);
+            $maxSize = 400;
+            if ($width > $maxSize || $height > $maxSize) {
+                $ratio = min($maxSize / $width, $maxSize / $height);
+                $newWidth = (int)round($width * $ratio);
+                $newHeight = (int)round($height * $ratio);
+                $resized = imagecreatetruecolor($newWidth, $newHeight);
+                imagecopyresampled($resized, $img, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+                imagedestroy($img);
+                $img = $resized;
+            }
+
+            if (imagejpeg($img, $rutaTemporal, 90)) {
+                imagedestroy($img);
                 $this->json([
                     'success' => true,
                     'temp_url' => $rutaDb,
                     'temp_path' => $rutaTemporal
                 ]);
             } else {
-                $this->json(['success' => false, 'error' => 'Error al guardar el archivo en el servidor']);
+                imagedestroy($img);
+                $this->json(['success' => false, 'error' => 'Error al guardar la imagen en el servidor.']);
             }
         }
 

@@ -3,7 +3,7 @@ if (isset($_SESSION['usuario'])) { header('Location: ' . BASE_URL . '/'); exit; 
 $error = $_GET['error'] ?? '';
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -13,83 +13,133 @@ $error = $_GET['error'] ?? '';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=5">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'DM Sans', system-ui, sans-serif; background: #0a0a0a; color: #ebebeb; min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow-x: hidden; }
-        body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-image: url('<?= BASE_URL ?>/assets/images/fondo_login_3.png'); background-size: cover; background-position: center; opacity: 0.25; pointer-events: none; }
-        .light-1 { position: fixed; top: -20%; left: -10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%); border-radius: 50%; filter: blur(60px); pointer-events: none; z-index: 0; }
-        .light-2 { position: fixed; bottom: -20%; right: -10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%); border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
-        .login-container { position: relative; z-index: 1; width: 100%; max-width: 1120px; margin: 40px 24px; display: flex; background: rgba(8,8,8,0.65); backdrop-filter: blur(15px); border-radius: 32px; border: 1px solid rgba(255,255,255,0.08); overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); animation: fadeInUp 0.6s ease-out both; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .brand-side { flex: 1.2; padding: 48px; background: linear-gradient(135deg, rgba(8,8,8,0.5), rgba(16,16,16,0.3)); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
-        .brand-side::before { content: ''; position: absolute; top: -30%; right: -20%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
-        .logo-wrapper { display: flex; align-items: center; gap: 12px; margin-bottom: 60px; }
-        .logo-img { height: 52px; width: auto; filter: brightness(0) invert(1); }
-        .logo-text { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 500; color: #ffffff; }
-        .logo-text span { font-weight: 300; color: #888; font-size: 24px; }
-        .brand-message h2 { font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 400; line-height: 1.2; margin-bottom: 20px; color: #ffffff; }
-        .brand-message p { font-size: 14px; color: #999; line-height: 1.7; max-width: 320px; }
-        .brand-footer { font-size: 11px; color: #666; margin-top: 60px; }
-        .form-side { flex: 1; padding: 48px 56px; background: rgba(20,20,20,0.4); backdrop-filter: blur(10px); border-left: 1px solid rgba(255,255,255,0.05); }
-        .form-header { margin-bottom: 40px; }
-        .form-header h1 { font-size: 34px; font-weight: 600; margin-bottom: 12px; background: linear-gradient(135deg, #ffffff, #cccccc); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .form-header p { font-size: 14px; color: #888; }
-        .error-message { background: rgba(255,255,255,0.08); border-left: 3px solid #ffffff; padding: 14px 18px; margin-bottom: 28px; font-size: 13px; color: #ffffff; border-radius: 10px; }
-        .form-group { margin-bottom: 24px; }
-        .form-group label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 500; color: #aaa; letter-spacing: 0.3px; }
-        .form-group input { width: 100%; padding: 15px 18px; background: #141414; border: 1px solid #2a2a2a; border-radius: 14px; font-size: 15px; color: #ffffff; transition: all 0.3s ease; }
-        .form-group input:focus { outline: none; border-color: #ffffff; box-shadow: 0 0 0 3px rgba(255,255,255,0.1); }
-        .form-group input::placeholder { color: #555; }
-        .btn-login { width: 100%; padding: 15px; background: #ffffff; border: none; border-radius: 14px; font-size: 15px; font-weight: 600; color: #0a0a0a; cursor: pointer; transition: all 0.3s ease; margin-top: 8px; }
-        .btn-login:hover { background: #e8e8e8; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,255,255,0.15); }
-        .register-link { text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid #2a2a2a; }
-        .register-link p { font-size: 13px; color: #888; }
-        .register-link a { color: #ffffff; text-decoration: none; font-weight: 500; transition: color 0.2s; }
-        .register-link a:hover { color: #cccccc; }
-        @media (max-width: 900px) { .login-container { flex-direction: column; margin: 24px; } .brand-side { padding: 32px; text-align: center; } .logo-wrapper { justify-content: center; } .brand-message p { max-width: 100%; } .form-side { padding: 40px 32px; border-left: none; border-top: 1px solid rgba(255,255,255,0.05); } .brand-footer { margin-top: 32px; } }
-        @media (max-width: 480px) { .brand-side { padding: 24px; } .form-side { padding: 32px 24px; } .brand-message h2 { font-size: 28px; } .form-header h1 { font-size: 28px; } .logo-img { height: 40px; } .logo-text { font-size: 24px; } .logo-text span { font-size: 18px; } }
+        body { min-height:100vh;display:flex;align-items:center;justify-content:center;margin:0;padding:0 }
+        .auth-container { margin:32px auto }
+        .carousel-slide-1 { background-image: url('<?= BASE_URL ?>/assets/images/auth/fondo_login_variante_clara.jpg'); }
+        .carousel-slide-2 { background-image: url('<?= BASE_URL ?>/assets/images/auth/fondo_variante_oscura.jpg'); }
+        .carousel-slide-3 { background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 30%, #2a2a2a 60%, #333333 100%); }
+        .carousel-slide-4 { background: linear-gradient(135deg, #111111 0%, #1a1a1a 30%, #2a2a2a 60%, #333333 100%); }
+        .carousel-slide-5 { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 30%, #2a2a2a 60%, #444444 100%); }
+        .auth-theme-btn {
+            position:fixed; top:20px; right:20px; z-index:100;
+            width:40px; height:40px; border-radius:50%;
+            background:var(--card-bg); border:1px solid var(--border);
+            color:var(--text-muted); font-size:16px; cursor:pointer;
+            display:flex; align-items:center; justify-content:center;
+            transition:all .2s; backdrop-filter:blur(8px);
+        }
+        .auth-theme-btn:hover { border-color:var(--border-hi); color:var(--text); }
     </style>
 </head>
 <body>
-    <div class="light-1"></div>
-    <div class="light-2"></div>
-    <div class="login-container">
-        <div class="brand-side">
-            <div class="logo-area">
+    <button class="auth-theme-btn" id="themeToggle" title="Cambiar tema">&#9790;</button>
+    <div class="bg-carousel" id="bgCarousel">
+        <div class="carousel-slide carousel-slide-1 active"></div>
+        <div class="carousel-slide carousel-slide-2"></div>
+        <div class="carousel-slide carousel-slide-3"></div>
+        <div class="carousel-slide carousel-slide-4"></div>
+        <div class="carousel-slide carousel-slide-5"></div>
+    </div>
+    <div class="bg-carousel-overlay"></div>
+    <div class="bg-carousel-gradient-overlay"></div>
+    <div class="carousel-particles" id="particles"></div>
+
+    <div class="light light-tl"></div>
+    <div class="light light-br"></div>
+    <div class="auth-container">
+        <div class="auth-brand">
+            <div class="auth-brand-content">
                 <div class="logo-wrapper">
-                    <img src="<?= BASE_URL ?>/assets/images/logo_jacha_sinfondo.png" alt="Jacha" class="logo-img">
-                    <div class="logo-text">JACHA<span>market</span></div>
+                    <img src="<?= BASE_URL ?>/assets/images/logo_empresa.png" alt="Jacha" class="logo-img-lg">
                 </div>
             </div>
-            <div class="brand-message">
+            <div class="auth-brand-message">
                 <h2>Potencia tu<br>emprendimiento</h2>
                 <p>La plataforma que conecta el talento boliviano con el mundo digital.</p>
             </div>
-            <div class="brand-footer"><p>&copy; 2026 Jacha Marketplace</p></div>
+            <div class="auth-brand-footer">&copy; 2026 Jacha Marketplace</div>
         </div>
-        <div class="form-side">
-            <div class="form-header">
-                <h1>Iniciar sesión</h1>
+        <div class="auth-form-side">
+            <div class="auth-form-header">
+                <h1>Iniciar sesion</h1>
                 <p>Ingresa tus credenciales para acceder a tu cuenta</p>
             </div>
             <?php if ($error): ?>
-            <div class="error-message"><?= htmlspecialchars($error) ?></div>
+            <div class="error-msg"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
-            <form method="POST" action="<?= BASE_URL ?>/login">
+            <form class="auth-form" method="POST" action="<?= BASE_URL ?>/login">
                 <div class="form-group">
-                    <label>Correo electrónico</label>
+                    <label>Correo electronico</label>
                     <input type="email" name="email" required placeholder="tu@email.com">
                 </div>
                 <div class="form-group">
-                    <label>Contraseña</label>
-                    <input type="password" name="password" required placeholder="Ingresa tu contraseña">
+                    <label>Contrasena</label>
+                    <input type="password" name="password" required placeholder="Ingresa tu contrasena">
                 </div>
-                <button type="submit" class="btn-login">Acceder</button>
+                <button type="submit" class="btn-auth">Acceder</button>
             </form>
-            <div class="register-link">
-                <p>&iquest;No tienes una cuenta? <a href="<?= BASE_URL ?>/registro">Crear cuenta</a></p>
+            <div class="auth-link">
+                <p>¿No tienes una cuenta? <a href="<?= BASE_URL ?>/registro">Crear cuenta</a></p>
             </div>
         </div>
     </div>
+    <span class="watermark"><img src="<?= BASE_URL ?>/assets/images/logo1.jpg" alt=""></span>
+    <script>
+    (function() {
+        var theme = localStorage.getItem('jacha_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+        var toggle = document.getElementById('themeToggle');
+        if (toggle) {
+            toggle.innerHTML = theme === 'dark' ? '\u2600' : '\u263E';
+            toggle.addEventListener('click', function() {
+                var current = document.documentElement.getAttribute('data-theme');
+                var next = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('jacha_theme', next);
+                toggle.innerHTML = next === 'dark' ? '\u2600' : '\u263E';
+            });
+        }
+    })();
+    </script>
+    <script>
+    (function() {
+        var slides = document.querySelectorAll('#bgCarousel .carousel-slide');
+        var current = 0;
+        var total = slides.length;
+        var interval = 7000;
+
+        function createParticles() {
+            var container = document.getElementById('particles');
+            for (var i = 0; i < 15; i++) {
+                var p = document.createElement('div');
+                p.className = 'carousel-particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.width = (2 + Math.random() * 4) + 'px';
+                p.style.height = p.style.width;
+                p.style.animationDuration = (10 + Math.random() * 20) + 's';
+                p.style.animationDelay = (Math.random() * 20) + 's';
+                p.style.opacity = 0.1 + Math.random() * 0.3;
+                container.appendChild(p);
+            }
+        }
+
+        function nextSlide() {
+            slides[current].classList.remove('active');
+            slides[current].classList.add('prev');
+            current = (current + 1) % total;
+            slides[current].classList.add('active');
+            setTimeout(function() {
+                slides.forEach(function(s) { s.classList.remove('prev'); });
+            }, 1500);
+        }
+
+        createParticles();
+        setInterval(nextSlide, interval);
+    })();
+    </script>
+
 </body>
 </html>

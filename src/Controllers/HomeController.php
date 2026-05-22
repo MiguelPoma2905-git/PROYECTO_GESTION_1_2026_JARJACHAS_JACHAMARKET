@@ -29,6 +29,12 @@ class HomeController extends Controller
         $escaparates = $this->emprendimientoRepo->findFeatured();
         $ambientes = $this->plantillaRepo->findAllActive();
 
+        $db = $this->getDB();
+        $totalNegocios = (int)$db->query("SELECT COUNT(*) FROM emprendimientos WHERE estado = 'Aprobado'")->fetchColumn();
+        $totalProductos = (int)$db->query("SELECT COUNT(*) FROM productos WHERE estado = 'Publicado'")->fetchColumn();
+        $totalUsuarios = (int)$db->query("SELECT COUNT(*) FROM usuarios")->fetchColumn();
+        $totalPedidos = (int)$db->query("SELECT COUNT(*) FROM pedidos")->fetchColumn();
+
         $this->view('pages/home', [
             'usuario' => $usuario,
             'is_logged_in' => $isLoggedIn,
@@ -37,7 +43,25 @@ class HomeController extends Controller
             'is_repartidor' => $isRepartidor,
             'rol_activo' => $rolActivo,
             'escaparates' => $escaparates,
-            'ambientes' => $ambientes
+            'ambientes' => $ambientes,
+            'total_negocios' => $totalNegocios,
+            'total_productos' => $totalProductos,
+            'total_usuarios' => $totalUsuarios,
+            'total_pedidos' => $totalPedidos
+        ]);
+    }
+
+    public function explorar(): void
+    {
+        $usuario = $_SESSION['usuario'] ?? null;
+        $isLoggedIn = $usuario !== null;
+
+        $negocios = $this->emprendimientoRepo->findAprobadosExcept(0);
+
+        $this->view('pages/explorar', [
+            'usuario' => $usuario,
+            'is_logged_in' => $isLoggedIn,
+            'negocios' => $negocios
         ]);
     }
 

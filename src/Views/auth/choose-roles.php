@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -8,189 +8,111 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=5">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'DM Sans', system-ui, sans-serif;
-            background: #0a0a0a;
-            color: #ebebeb;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow-x: hidden;
+        body { min-height:100vh;display:flex;align-items:center;justify-content:center;margin:0;padding:0 }
+        .auth-theme-btn {
+            position:fixed; top:20px; right:20px; z-index:100;
+            width:40px; height:40px; border-radius:50%;
+            background:var(--card-bg); border:1px solid var(--border);
+            color:var(--text-muted); font-size:16px; cursor:pointer;
+            display:flex; align-items:center; justify-content:center;
+            transition:all .2s; backdrop-filter:blur(8px);
         }
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url('<?= BASE_URL ?>/assets/images/fondo_1.jpg');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.12;
-            pointer-events: none;
+        .auth-theme-btn:hover { border-color:var(--border-hi); color:var(--text); }
+        .roles-container { position:relative;z-index:10;width:100%;max-width:960px;margin:32px auto;background:var(--auth-bg);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);border-radius:24px;border:1px solid var(--border);padding:36px 32px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);animation:fadeInUp 0.6s var(--ease) both }
+        .carousel-slide-1 { background-image: url('<?= BASE_URL ?>/assets/images/auth/fondo_login_variante_clara.jpg'); }
+        .carousel-slide-2 { background-image: url('<?= BASE_URL ?>/assets/images/auth/fondo_variante_oscura.jpg'); }
+        .carousel-slide-3 { background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 30%, #2a2a2a 60%, #333333 100%); }
+        .carousel-slide-4 { background: linear-gradient(135deg, #111111 0%, #1a1a1a 30%, #2a2a2a 60%, #333333 100%); }
+        .carousel-slide-5 { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 30%, #2a2a2a 60%, #444444 100%); }
+        .two-columns { display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:32px;align-items:start }
+        .roles-section h3, .avatar-section h3 { font-size:15px;font-weight:600;margin-bottom:16px;color:var(--text);text-transform:uppercase;letter-spacing:.5px }
+        .roles-grid { display:flex;flex-direction:column;gap:12px }
+        .rol-card { background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 16px;text-align:left;cursor:pointer;transition:all 0.3s var(--ease);display:flex;align-items:center;gap:14px }
+        .rol-card:hover { transform:translateX(4px);border-color:var(--border-hi);background:var(--hover-surface) }
+        .rol-card.selected { border-color:var(--text);background:var(--surface3);box-shadow:0 0 20px var(--accent-shadow) }
+        .rol-image { width:48px;height:48px;border-radius:12px;overflow:hidden;flex-shrink:0;background:var(--surface2) }
+        .rol-image img { width:100%;height:100%;object-fit:cover;display:block }
+        .rol-info h4 { font-size:15px;font-weight:600;color:var(--text);margin-bottom:2px }
+        .rol-info p { font-size:12px;color:var(--text-muted);line-height:1.4;margin:0 }
+        .avatar-preview { width:100px;height:100px;border-radius:50%;overflow:hidden;margin:0 auto 16px;border:2px solid var(--border);background:var(--surface2) }
+        .avatar-preview img { width:100%;height:100%;object-fit:cover;display:block }
+        .avatar-grid { display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px }
+        .avatar-option { width:100%;aspect-ratio:1;border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all .2s;background:var(--surface2) }
+        .avatar-option:hover { border-color:var(--border-hi) }
+        .avatar-option.selected { border-color:var(--border-hi);box-shadow:0 0 0 2px var(--accent-glow) }
+        .avatar-option img { width:100%;height:100%;object-fit:cover;display:block }
+        .upload-btn { width:100%;padding:10px;border:1px dashed var(--border);border-radius:10px;background:transparent;color:var(--text-muted);font-size:13px;cursor:pointer;transition:all .2s;text-align:center }
+        .upload-btn:hover { border-color:var(--border-hi);color:var(--text) }
+        .btn-continuar { width:100%;padding:14px;background:var(--text);color:var(--card-bg);border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;transition:all .3s }
+        .btn-continuar:hover:not(:disabled) { transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3) }
+        .btn-continuar:disabled { opacity:.35;cursor:not-allowed }
+        .heading-gradient { font-size:28px !important;font-weight:600 !important;margin-bottom:8px !important }
+        .error-msg { background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:12px 16px;font-size:13px;color:#ef4444;margin-bottom:20px;text-align:center }
+        @media (max-width:850px) {
+            .two-columns { grid-template-columns:1fr;gap:24px }
+            .roles-container { padding:28px 20px;margin:24px 12px }
+            .avatar-grid { grid-template-columns:repeat(5,1fr) }
         }
-        .light-1 { position: fixed; top: -20%; left: -10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(250,113,54,0.2) 0%, transparent 70%); border-radius: 50%; filter: blur(60px); pointer-events: none; z-index: 0; }
-        .light-2 { position: fixed; bottom: -20%; right: -10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(26,65,71,0.15) 0%, transparent 70%); border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
-        .roles-container {
-            position: relative; z-index: 1; width: 100%; max-width: 1200px; margin: 40px 24px;
-            background: rgba(8,8,8,0.65); backdrop-filter: blur(15px); border-radius: 32px;
-            border: 1px solid rgba(255,255,255,0.1); padding: 48px 40px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-            animation: fadeInUp 0.6s ease-out both;
-        }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .logo-wrapper { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 32px; }
-        .logo-img { height: 48px; width: auto; filter: brightness(0) invert(1); }
-        .logo-text { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 500; color: #ffffff; }
-        .logo-text span { font-weight: 300; color: #888; font-size: 22px; }
-        .form-header { text-align: center; margin-bottom: 40px; }
-        .form-header h1 { font-size: 32px; font-weight: 600; margin-bottom: 12px; background: linear-gradient(135deg, #ffffff, #ccc); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .form-header p { font-size: 14px; color: #888; max-width: 400px; margin: 0 auto; }
-        
-        .two-columns {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-        
-        .roles-section h3, .avatar-section h3 {
-            font-size: 18px;
-            font-weight: 500;
-            margin-bottom: 20px;
-            color: #fff;
-        }
-        .roles-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .rol-card {
-            background: #141414; border: 1px solid #2a2a2a; border-radius: 20px; padding: 20px;
-            text-align: left; cursor: pointer; transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        .rol-card:hover { transform: translateX(4px); border-color: #fa7136; background: rgba(250,113,54,0.05); }
-        .rol-card.selected { border-color: #fa7136; background: rgba(250,113,54,0.1); box-shadow: 0 0 20px rgba(250,113,54,0.1); }
-        .rol-image { width: 60px; height: 60px; }
-        .rol-img { width: 100%; height: 100%; object-fit: contain; filter: brightness(0) invert(1); }
-        .rol-info h4 { font-size: 18px; font-weight: 600; margin-bottom: 4px; color: #fff; }
-        .rol-info p { font-size: 12px; color: #888; }
-        
-        .avatar-section {
-            text-align: center;
-        }
-        .avatar-preview {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 20px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 3px solid #fff;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-        .avatar-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .avatar-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin: 20px 0;
-        }
-        .avatar-option {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto;
-            border-radius: 50%;
-            overflow: hidden;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-        }
-        .avatar-option img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .avatar-option:hover { transform: scale(1.05); }
-        .avatar-option.selected { border-color: #fa7136; box-shadow: 0 0 0 2px rgba(250,113,54,0.3); }
-        
-        .upload-btn {
-            background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 10px 20px;
-            border-radius: 30px; cursor: pointer; font-size: 13px; margin-top: 16px;
-            transition: all 0.2s;
-        }
-        .upload-btn:hover { background: #333; border-color: #555; }
-        
-        .error-message { background: rgba(250,113,54,0.12); border-left: 3px solid #fa7136; padding: 14px; margin-bottom: 24px; font-size: 13px; color: #fa7136; border-radius: 10px; text-align: center; }
-        .btn-continuar { width: 100%; padding: 15px; background: #fff; border: none; border-radius: 14px; font-size: 15px; font-weight: 600; color: #0a0a0a; cursor: pointer; transition: all 0.3s; }
-        .btn-continuar:hover { background: #e8e8e8; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,255,255,0.15); }
-        .btn-continuar:disabled { background: #444; color: #888; cursor: not-allowed; transform: none; }
-        
-        @media (max-width: 850px) {
-            .two-columns { grid-template-columns: 1fr; gap: 30px; }
-            .roles-container { padding: 32px 24px; }
-            .avatar-grid { grid-template-columns: repeat(4, 1fr); }
-        }
-        @media (max-width: 480px) {
-            .form-header h1 { font-size: 28px; }
-            .logo-img { height: 40px; }
-            .logo-text { font-size: 24px; }
-            .logo-text span { font-size: 18px; }
-            .avatar-grid { grid-template-columns: repeat(3, 1fr); }
+        @media (max-width:480px) {
+            .avatar-grid { grid-template-columns:repeat(4,1fr) }
+            .roles-container { padding:20px 16px }
+            .rol-card { padding:12px 14px }
+            .rol-image { width:40px;height:40px }
         }
     </style>
 </head>
 <body>
-    <div class="light-1"></div>
-    <div class="light-2"></div>
+    <button class="auth-theme-btn" id="themeToggle" title="Cambiar tema">&#9790;</button>
+    <div class="bg-carousel" id="bgCarousel">
+        <div class="carousel-slide carousel-slide-1 active"></div>
+        <div class="carousel-slide carousel-slide-2"></div>
+        <div class="carousel-slide carousel-slide-3"></div>
+        <div class="carousel-slide carousel-slide-4"></div>
+        <div class="carousel-slide carousel-slide-5"></div>
+    </div>
+    <div class="bg-carousel-overlay"></div>
+    <div class="bg-carousel-gradient-overlay"></div>
+    <div class="carousel-particles" id="particles"></div>
+    <div class="light light-tl"></div>
+    <div class="light light-br"></div>
 
     <div class="roles-container">
-        <div class="logo-wrapper">
-            <img src="<?= BASE_URL ?>/assets/images/logo_jacha_sinfondo.png" alt="Jacha" class="logo-img">
-            <div class="logo-text">JACHA<span>market</span></div>
+        <div class="logo-auth">
+            <img src="<?= BASE_URL ?>/assets/images/logo_empresa.png" alt="Jacha" class="logo-img-lg">
         </div>
         
-        <div class="form-header">
-            <h1>Personaliza tu cuenta</h1>
-            <p>Selecciona tus roles y elige un avatar</p>
+        <div class="text-center mb-xl">
+            <h1 class="heading-gradient">Personaliza tu cuenta</h1>
+            <p style="font-size:14px;color:var(--text-muted);max-width:400px;margin:0 auto">Selecciona tus roles y elige un avatar</p>
         </div>
         
         <?php if ($error): ?>
-        <div class="error-message"><?= htmlspecialchars($error) ?></div>
+        <div class="error-msg"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
         
-        <form method="POST" id="registroRolesForm" action="<?= BASE_URL ?>/choose-roles">
+        <form method="POST" id="registroRolesForm" action="<?= BASE_URL ?>/elegir-roles">
             <div class="two-columns">
                 <div class="roles-section">
                     <h3>¿Qué quieres hacer en Jacha?</h3>
                     <div class="roles-grid">
                         <div class="rol-card" data-rol="Cliente">
-                            <div class="rol-image"><img src="<?= BASE_URL ?>/assets/images/rol_1.png" alt="Cliente" class="rol-img"></div>
+                            <div class="rol-image"><img src="<?= BASE_URL ?>/assets/images/roles/cliente_compra.jpg" alt="Cliente" class="rol-img"></div>
                             <div class="rol-info">
                                 <h4>Cliente</h4>
                                 <p>Explora productos, compra y sigue tus tiendas favoritas</p>
                             </div>
                         </div>
                         <div class="rol-card" data-rol="Emprendedor">
-                            <div class="rol-image"><img src="<?= BASE_URL ?>/assets/images/rol_2.png" alt="Emprendedor" class="rol-img"></div>
+                            <div class="rol-image"><img src="<?= BASE_URL ?>/assets/images/roles/emprendedor_venta.jpg" alt="Emprendedor" class="rol-img"></div>
                             <div class="rol-info">
                                 <h4>Emprendedor</h4>
                                 <p>Crea tu tienda online, vende y gestiona tu negocio</p>
                             </div>
                         </div>
                         <div class="rol-card" data-rol="Repartidor">
-                            <div class="rol-image"><img src="<?= BASE_URL ?>/assets/images/rol_3.png" alt="Repartidor" class="rol-img"></div>
+                            <div class="rol-image"><img src="<?= BASE_URL ?>/assets/images/roles/repartidor_entrega.jpg" alt="Repartidor" class="rol-img"></div>
                             <div class="rol-info">
                                 <h4>Repartidor</h4>
                                 <p>Gestiona entregas y gana por cada pedido</p>
@@ -203,7 +125,7 @@
                 <div class="avatar-section">
                     <h3>Tu avatar</h3>
                     <div class="avatar-preview" id="avatarPreview">
-                        <img src="<?= BASE_URL ?>/assets/avatars/default/avatar_1.png" alt="Avatar">
+                        <img src="<?= BASE_URL ?>/assets/avatars/default/avatar_1.jpg" alt="Avatar">
                     </div>
                     
                     <div class="avatar-grid" id="avatarGrid">
@@ -214,9 +136,9 @@
                         <?php endforeach; ?>
                     </div>
                     
-                    <button type="button" class="upload-btn" id="uploadAvatarBtn">📁 Subir mi propia foto</button>
+                    <button type="button" class="upload-btn" id="uploadAvatarBtn">✎ Subir foto</button>
                     <input type="file" id="fileInput" accept="image/*" style="display: none;">
-                    <input type="hidden" name="avatar" id="avatarInput" value="assets/avatars/default/avatar_1.png">
+                    <input type="hidden" name="avatar" id="avatarInput" value="assets/avatars/default/avatar_1.jpg">
                 </div>
             </div>
             
@@ -224,6 +146,23 @@
         </form>
     </div>
 
+    <script>
+(function() {
+    var theme = localStorage.getItem('jacha_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', theme);
+    var toggle = document.getElementById('themeToggle');
+    if (toggle) {
+        toggle.innerHTML = theme === 'dark' ? '\u2600' : '\u263E';
+        toggle.addEventListener('click', function() {
+            var current = document.documentElement.getAttribute('data-theme');
+            var next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('jacha_theme', next);
+            toggle.innerHTML = next === 'dark' ? '\u2600' : '\u263E';
+        });
+    }
+})();
+</script>
     <script>
         const cards = document.querySelectorAll('.rol-card');
         const rolesInput = document.getElementById('rolesInput');
@@ -320,5 +259,42 @@
             }
         });
     </script>
+    <script>
+    (function() {
+        var slides = document.querySelectorAll('#bgCarousel .carousel-slide');
+        var current = 0;
+        var total = slides.length;
+        var interval = 7000;
+
+        function createParticles() {
+            var container = document.getElementById('particles');
+            for (var i = 0; i < 15; i++) {
+                var p = document.createElement('div');
+                p.className = 'carousel-particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.width = (2 + Math.random() * 4) + 'px';
+                p.style.height = p.style.width;
+                p.style.animationDuration = (10 + Math.random() * 20) + 's';
+                p.style.animationDelay = (Math.random() * 20) + 's';
+                p.style.opacity = 0.1 + Math.random() * 0.3;
+                container.appendChild(p);
+            }
+        }
+
+        function nextSlide() {
+            slides[current].classList.remove('active');
+            slides[current].classList.add('prev');
+            current = (current + 1) % total;
+            slides[current].classList.add('active');
+            setTimeout(function() {
+                slides.forEach(function(s) { s.classList.remove('prev'); });
+            }, 1500);
+        }
+
+        createParticles();
+        setInterval(nextSlide, interval);
+    })();
+    </script>
+    <span class="watermark"><img src="<?= BASE_URL ?>/assets/images/logo1.jpg" alt=""></span>
 </body>
 </html>

@@ -212,7 +212,8 @@ INSERT INTO plantillas (nombre, descripcion, color_primario, color_secundario) V
 ('Elegante', 'Para negocios de moda y accesorios', '#2C3E50', '#C0392B'),
 ('Rústico', 'Para artesanías y productos naturales', '#8B4513', '#D2691E'),
 ('Tecnológico', 'Para electrónica y gadgets', '#3498DB', '#2C3E50'),
-('Gastronómico', 'Para restaurantes y delivery de comida', '#E67E22', '#C0392B');
+('Gastronómico', 'Para restaurantes y delivery de comida', '#E67E22', '#C0392B'),
+('Electrodomésticos', 'Diseño moderno y profesional para tiendas de electrodomésticos y tecnología del hogar', '#1A3A5C', '#2C6FBB');
 
 -- Tabla para personalización específica de cada emprendimiento (NUEVA)
 CREATE TABLE personalizacion_emprendimiento (

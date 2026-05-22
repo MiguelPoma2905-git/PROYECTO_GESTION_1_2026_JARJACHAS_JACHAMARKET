@@ -17,9 +17,9 @@ $basePath = rtrim($basePath, '/');
 define('BASE_URL', $protocol . '://' . $host . $basePath);
 define('BASE_PATH', dirname(__DIR__) . '/');
 
-// NUEVOS COLORES DEL SISTEMA
-define('COLOR_PRIMARY', '#fa7136');    // Naranja intenso
-define('COLOR_SECONDARY', '#1a4147');  // Verde azulado oscuro
-define('COLOR_BACKGROUND', '#FDFBF7'); // Blanco hueso
-define('COLOR_TEXT', '#2D2D2D');       // Negro
+// COLORES NEUTROS DEL SISTEMA (escala de grises)
+define('COLOR_PRIMARY', '#1a1a1a');    // Negro suave
+define('COLOR_SECONDARY', '#555555');  // Gris medio
+define('COLOR_BACKGROUND', '#ffffff'); // Blanco puro
+define('COLOR_TEXT', '#2D2D2D');       // Casi negro
 ?>
