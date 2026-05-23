@@ -46,11 +46,13 @@ class ProductoController extends Controller
         }
 
         $productos = $this->productoRepo->findPublishedByEmprendimiento($idEmprendimiento);
+        $sucursal = $this->emprendimientoRepo->findSucursalByEmprendimiento($idEmprendimiento);
 
         $this->view('shop/tienda', [
             'emprendimiento' => $emprendimiento,
             'productos' => $productos,
-            'es_propietario' => $esPropietario
+            'es_propietario' => $esPropietario,
+            'sucursal' => $sucursal
         ]);
     }
 

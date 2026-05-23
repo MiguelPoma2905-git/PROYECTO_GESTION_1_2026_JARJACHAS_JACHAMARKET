@@ -63,6 +63,11 @@
         .pv-price small { font-size: 8px; font-weight: 400; color: var(--preview-text, rgba(255,255,255,0.3)); opacity: 0.5; }
         .pv-addbtn { padding: 4px 10px; background: var(--preview-secondary, #2C6FBB); color: #fff; border: none; border-radius: 4px; font-size: 8px; font-weight: 600; cursor: default; }
         .pv-foot { text-align: center; padding: 12px; position: relative; z-index: 1; font-size: 8px; color: var(--preview-text, rgba(255,255,255,0.15)); opacity: 0.3; border-top: 1px solid rgba(255,255,255,0.06); }
+        .pv-faq { padding: 12px 20px; position: relative; z-index: 1; }
+        .pv-faq-hdr { font-size: 10px; font-weight: 600; color: var(--preview-text, #E8EDF5); text-align: center; margin-bottom: 8px; opacity: 0.7; }
+        .pv-faq-items { display: flex; flex-direction: column; gap: 4px; }
+        .pv-faq-item { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 6px; padding: 6px 10px; font-size: 7px; color: var(--preview-text, rgba(255,255,255,0.3)); opacity: 0.6; }
+        .pv-faq-arrow { font-size: 5px; opacity: 0.3; }
 
         /* Controls */
         .controls-panel { background: var(--editor-card); border-radius: 24px; padding: 28px; border: 1px solid var(--editor-border); }
@@ -121,6 +126,21 @@
         .success-banner { background: rgba(255,255,255,0.05); border-left: 3px solid #4caf50; padding: 14px 18px; border-radius: 10px; margin-bottom: 24px; font-size: 13px; color: #4caf50; display: flex; align-items: center; gap: 10px; }
         .watermark { position: fixed; bottom: 12px; right: 16px; opacity: 0.15; pointer-events: none; z-index: 9999; }
         .watermark img { height: 16px; width: auto; }
+
+        /* FAQ Editor */
+        .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+        .section-header span { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--editor-muted); }
+        .btn-faq-add { background:rgba(255,255,255,0.06); border:1px solid var(--editor-border); color:var(--editor-text); border-radius:8px; padding:6px 14px; font-size:11px; font-weight:600; cursor:pointer; transition:all .2s; }
+        .btn-faq-add:hover { background:rgba(255,255,255,0.1); }
+        .faq-empty { font-size:12px; color:var(--editor-muted); padding:10px; text-align:center; }
+        .faq-item { background:rgba(255,255,255,0.02); border:1px solid var(--editor-border); border-radius:10px; padding:14px; margin-bottom:10px; position:relative; }
+        .faq-item input[type="text"] { width:100%; background:rgba(255,255,255,0.04); border:1px solid var(--editor-border); border-radius:6px; padding:8px 10px; color:var(--editor-text); font-size:12px; margin-bottom:8px; }
+        .faq-item input[type="text"]:focus { outline:none; border-color:rgba(255,255,255,0.2); }
+        .faq-item textarea { width:100%; background:rgba(255,255,255,0.04); border:1px solid var(--editor-border); border-radius:6px; padding:8px 10px; color:var(--editor-text); font-size:11px; resize:vertical; min-height:50px; font-family:inherit; }
+        .faq-item textarea:focus { outline:none; border-color:rgba(255,255,255,0.2); }
+        .faq-item .faq-del { position:absolute; top:10px; right:10px; background:none; border:none; color:var(--editor-muted); font-size:16px; cursor:pointer; opacity:0.4; transition:all .2s; }
+        .faq-item .faq-del:hover { opacity:1; color:#ef4444; }
+        .faq-item label { display:block; font-size:9px; color:var(--editor-muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px; }
     </style>
 </head>
 <body>
@@ -145,93 +165,24 @@
         <input type="hidden" name="eliminar_logo" id="eliminar_logo" value="0">
         <input type="hidden" name="eliminar_banner" id="eliminar_banner" value="0">
 
-        <!-- ===== PREVIEW (Electrodomésticos style) ===== -->
+        <!-- ===== PREVIEW (dinámico según plantilla) ===== -->
         <div class="preview-panel">
             <div class="preview-frame">
-                <div class="preview-device" id="previewDevice"
-                     style="--preview-primary: <?= $personalizacion['color_primario'] ?? '#1A3A5C' ?>;
-                            --preview-secondary: <?= $personalizacion['color_secundario'] ?? '#2C6FBB' ?>;
-                            --preview-bg: <?= $personalizacion['color_fondo'] ?? '#0F1A2E' ?>;
-                            --preview-text: <?= $personalizacion['color_texto'] ?? '#E8EDF5' ?>;
-                            --preview-glow: rgba(44,111,187,0.08);
-                            --preview-glow2: rgba(26,58,92,0.12);
-                            --preview-font: '<?= $personalizacion['tipografia'] ?? 'Inter' ?>', sans-serif;
-                            background: <?= $personalizacion['color_fondo'] ?? '#0F1A2E' ?>">
-                    <div class="pv-hdr" style="background:<?= $personalizacion['color_fondo'] ?? '#0F1A2E' ?>e6">
-                        <div class="pv-hdr-l">
-                            <div class="pv-logo" id="previewLogoWrap">
-                                <?php if (!empty($personalizacion['logo_personalizado'])): ?>
-                                <img src="<?= BASE_URL ?>/<?= $personalizacion['logo_personalizado'] ?>" alt="Logo" id="previewLogoImg">
-                                <?php else: ?>
-                                <div class="pv-logo-ph" id="previewLogoPlaceholder">🏪</div>
-                                <?php endif; ?>
-                            </div>
-                            <h3><?= htmlspecialchars($emprendimiento['nombre_comercial']) ?></h3>
-                        </div>
-                        <div class="pv-hdr-r">
-                            <div class="pv-search"></div>
-                            <div class="pv-cart"><span class="pv-cart-dot"></span></div>
-                        </div>
-                    </div>
-                    <div class="pv-hero">
-                        <div class="pv-badge">✦ ElectroHogar</div>
-                        <h2><?= htmlspecialchars($emprendimiento['nombre_comercial']) ?></h2>
-                        <p><?= htmlspecialchars($emprendimiento['descripcion'] ?? 'Productos de calidad para tu hogar') ?></p>
-                    </div>
-                    <div class="pv-banners">
-                        <div class="pv-banner-item"><div class="pv-banner-icon"></div><h4>Envío rápido</h4><p>24-72 hrs</p></div>
-                        <div class="pv-banner-item"><div class="pv-banner-icon"></div><h4>Garantía</h4><p>Incluida</p></div>
-                        <div class="pv-banner-item"><div class="pv-banner-icon"></div><h4>Pago seguro</h4><p>QR y más</p></div>
-                    </div>
-                    <div class="pv-bar">
-                        <div class="pv-cats">
-                            <span class="pv-cat active">Todos</span>
-                            <span class="pv-cat">Refri</span>
-                            <span class="pv-cat">Lavado</span>
-                            <span class="pv-cat">Cocina</span>
-                        </div>
-                        <div class="pv-sort"></div>
-                    </div>
-                    <div class="pv-grid">
-                        <div class="pv-card">
-                            <div class="pv-card-img">
-                                <span class="pv-card-tag">SAMSUNG</span>
-                                <span class="pv-card-stock">12 ud.</span>
-                            </div>
-                            <div class="pv-card-body">
-                                <h4>Refrigerador</h4>
-                                <div class="pv-specs">
-                                    <span class="pv-spec">300W</span>
-                                    <span class="pv-spec">Inox</span>
-                                    <span class="pv-spec">A++</span>
-                                </div>
-                                <div class="pv-card-bot">
-                                    <div class="pv-price"><small>Bs.</small> 3,299</div>
-                                    <div class="pv-addbtn">Añadir</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pv-card">
-                            <div class="pv-card-img">
-                                <span class="pv-card-tag">LG</span>
-                                <span class="pv-card-stock">8 ud.</span>
-                            </div>
-                            <div class="pv-card-body">
-                                <h4>Lavadora</h4>
-                                <div class="pv-specs">
-                                    <span class="pv-spec">500W</span>
-                                    <span class="pv-spec">Blanco</span>
-                                    <span class="pv-spec">A+</span>
-                                </div>
-                                <div class="pv-card-bot">
-                                    <div class="pv-price"><small>Bs.</small> 2,499</div>
-                                    <div class="pv-addbtn">Añadir</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="pv-foot">&copy; 2026 <?= htmlspecialchars($emprendimiento['nombre_comercial']) ?></div>
-                </div>
+                <?php
+                $previewId = (int)($personalizacion['id_plantilla'] ?? 0);
+                $previewFile = match($previewId) {
+                    6 => 'electrodomesticos.php',
+                    4 => 'tecnologico.php',
+                    7 => 'modaviva.php',
+                    8 => 'sabores.php',
+                    9 => 'artesano.php',
+                    10 => 'glowup.php',
+                    11 => 'fullfit.php',
+                    12 => 'hogardulce.php',
+                    default => 'default.php',
+                };
+                include "previews/{$previewFile}";
+                ?>
             </div>
         </div>
 
@@ -372,6 +323,28 @@
                 </div>
             </div>
 
+            <!-- FAQ -->
+            <div class="controls-section" id="faqSection">
+                <div class="section-header">
+                    <span>❓ Preguntas Frecuentes (FAQ)</span>
+                    <button type="button" class="btn-faq-add" onclick="agregarFAQ()">+ Agregar</button>
+                </div>
+                <div id="faqList">
+                    <?php
+                    $faqs = [];
+                    if (!empty($personalizacion['faqs'])) {
+                        $parsed = $personalizacion['faqs'];
+                        if (is_string($parsed)) $parsed = json_decode($parsed, true);
+                        if (is_array($parsed)) $faqs = $parsed;
+                    }
+                    if (empty($faqs)):
+                    ?>
+                    <div class="faq-empty">Aún no hay preguntas. Haz clic en "Agregar" para crear la primera.</div>
+                    <?php endif; ?>
+                </div>
+                <textarea name="faqs" id="faqsInput" style="display:none"><?= htmlspecialchars(is_string($personalizacion['faqs'] ?? '') ? $personalizacion['faqs'] : json_encode($faqs, JSON_UNESCAPED_UNICODE)) ?></textarea>
+            </div>
+
             <!-- Guardar -->
             <div class="btn-save-wrap">
                 <button type="submit" class="btn-save">Guardar todos los cambios</button>
@@ -385,15 +358,17 @@
 
 <script>
 (function() {
-    const preview = document.getElementById('previewDevice');
+    let preview = document.getElementById('previewDevice');
 
     function actualizarPreview() {
+        preview = document.getElementById('previewDevice');
+        if (!preview) return;
+
         const primary = document.getElementById('color_primario').value;
         const secondary = document.getElementById('color_secundario').value;
         const bg = document.getElementById('color_fondo').value;
         const text = document.getElementById('color_texto').value;
         const fontName = document.getElementById('tipografiaInput').value;
-        const modoOscuro = document.getElementById('modoOscuroInput').checked;
 
         const fontValue = "'" + fontName + "', sans-serif";
         preview.style.setProperty('--preview-primary', primary);
@@ -403,35 +378,29 @@
         preview.style.background = bg;
         preview.style.fontFamily = fontValue;
 
-        // SVG-like glow: update pseudo element colors via custom props
         preview.style.setProperty('--preview-glow', primary + '15');
         preview.style.setProperty('--preview-glow2', primary + '30');
 
-        // Header background
         const hdr = preview.querySelector('.pv-hdr');
-        if (hdr) hdr.style.background = bg;
+        if (hdr) hdr.style.background = 'linear-gradient(135deg,' + primary + ',color-mix(in srgb,' + primary + ' 70%,#000))';
 
-        // Badge and active category
         const badges = preview.querySelectorAll('.pv-badge');
         badges.forEach(b => { b.style.color = secondary; b.style.borderColor = secondary + '40'; });
 
         const cats = preview.querySelectorAll('.pv-cat.active');
         cats.forEach(c => { c.style.background = secondary; c.style.borderColor = secondary; c.style.color = '#fff'; });
 
-        // Add buttons
         const addBtns = preview.querySelectorAll('.pv-addbtn');
         addBtns.forEach(b => { b.style.background = secondary; });
 
-        // Banner icons
         const icons = preview.querySelectorAll('.pv-banner-icon');
         icons.forEach(i => { i.style.background = secondary; });
 
-        // All text inherits font from preview
         const allEls = preview.querySelectorAll('.pv-hero h2, .pv-hero p, .pv-card-body h4, .pv-price, .pv-banner-item h4, .pv-banner-item p');
         allEls.forEach(el => el.style.fontFamily = fontValue);
     }
 
-    // Plantilla selection
+    // Plantilla selection with preview reload
     document.querySelectorAll('.plantilla-card').forEach(card => {
         card.addEventListener('click', function() {
             document.querySelectorAll('.plantilla-card').forEach(c => c.classList.remove('selected'));
@@ -441,9 +410,32 @@
             document.getElementById('color_secundario').value = this.dataset.secondary;
             if (this.dataset.bg) document.getElementById('color_fondo').value = this.dataset.bg;
             if (this.dataset.text) document.getElementById('color_texto').value = this.dataset.text;
-            actualizarPreview();
+            cargarPreview(this.dataset.id);
         });
     });
+
+    function cargarPreview(plantillaId) {
+        const frame = document.querySelector('.preview-frame');
+        const formData = new FormData();
+        formData.set('preview_ajax', '1');
+        formData.set('id_plantilla', plantillaId);
+        fetch(window.location.href, {
+            method: 'POST',
+            body: formData
+        })
+        .then(r => r.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newPreview = doc.querySelector('.preview-device');
+            if (newPreview) {
+                const oldPreview = document.getElementById('previewDevice');
+                if (oldPreview) oldPreview.replaceWith(newPreview);
+                actualizarPreview();
+            }
+        })
+        .catch(() => {});
+    }
 
     // Font selection
     var fuentesCargadas = {};
@@ -588,6 +580,70 @@
     // Init
     actualizarPreview();
 })();
+
+// ===== FAQ management =====
+let faqCount = 0;
+
+function renderFAQs() {
+    const container = document.getElementById('faqList');
+    const input = document.getElementById('faqsInput');
+    let faqs = [];
+    try { faqs = JSON.parse(input.value || '[]'); } catch(e) {}
+    container.innerHTML = '';
+    if (faqs.length === 0) {
+        container.innerHTML = '<div class="faq-empty">Aún no hay preguntas. Haz clic en "Agregar" para crear la primera.</div>';
+        return;
+    }
+    faqs.forEach((faq, idx) => {
+        const div = document.createElement('div');
+        div.className = 'faq-item';
+        div.innerHTML = `
+            <button type="button" class="faq-del" onclick="eliminarFAQ(${idx})">&times;</button>
+            <label>Pregunta</label>
+            <input type="text" class="faq-p" value="${escapeHTML(faq.p || '')}" placeholder="Ej: ¿Hacen envíos?" oninput="syncFAQs()">
+            <label>Respuesta</label>
+            <textarea class="faq-r" placeholder="Ej: Sí, hacemos envíos a toda la ciudad." oninput="syncFAQs()">${escapeHTML(faq.r || '')}</textarea>
+        `;
+        container.appendChild(div);
+    });
+    syncFAQs();
+}
+
+function agregarFAQ() {
+    const input = document.getElementById('faqsInput');
+    let faqs = [];
+    try { faqs = JSON.parse(input.value || '[]'); } catch(e) {}
+    faqs.push({ p: '', r: '' });
+    input.value = JSON.stringify(faqs);
+    renderFAQs();
+}
+
+function eliminarFAQ(idx) {
+    const input = document.getElementById('faqsInput');
+    let faqs = [];
+    try { faqs = JSON.parse(input.value || '[]'); } catch(e) {}
+    faqs.splice(idx, 1);
+    input.value = JSON.stringify(faqs);
+    renderFAQs();
+}
+
+function syncFAQs() {
+    const items = document.querySelectorAll('.faq-item');
+    const faqs = [];
+    items.forEach(item => {
+        const p = item.querySelector('.faq-p').value.trim();
+        const r = item.querySelector('.faq-r').value.trim();
+        if (p || r) faqs.push({ p, r });
+    });
+    document.getElementById('faqsInput').value = JSON.stringify(faqs);
+}
+
+function escapeHTML(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Initialize FAQ editor on load
+document.addEventListener('DOMContentLoaded', renderFAQs);
 </script>
 </body>
 </html>

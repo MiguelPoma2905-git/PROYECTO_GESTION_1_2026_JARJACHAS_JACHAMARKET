@@ -24,8 +24,8 @@ WHERE NOT EXISTS (SELECT 1 FROM emprendimientos WHERE nit = '1020304050');
 SET @id_negocio = (SELECT id_emprendimiento FROM emprendimientos WHERE nit = '1020304050');
 
 -- 4. Personalización con plantilla Electrodomésticos
-INSERT INTO personalizacion_emprendimiento (id_emprendimiento, id_plantilla, color_primario, color_secundario, color_fondo, color_texto)
-SELECT @id_negocio, 6, '#1A3A5C', '#2C6FBB', '#0F1A2E', '#E8EDF5'
+INSERT INTO personalizacion_emprendimiento (id_emprendimiento, id_plantilla, color_primario, color_secundario, color_fondo, color_texto, tipografia)
+SELECT @id_negocio, 6, '#1A3A5C', '#2C6FBB', '#0F1A2E', '#E8EDF5', 'Inter'
 WHERE NOT EXISTS (SELECT 1 FROM personalizacion_emprendimiento WHERE id_emprendimiento = @id_negocio);
 
 -- 5. Sucursal
@@ -143,5 +143,55 @@ INSERT INTO productos (id_emprendimiento, nombre, descripcion_larga, atributos, 
  'Freidora de aire Imaco 5.5L con 8 programas predefinidos, temperatura regulable hasta 200°C y temporizador.',
  '{"marca":"Imaco","modelo":"AF55","consumo_watts":"1700","color":"Negro","garantia_meses":"12","eficiencia":"A+","tipo":"Freidora"}',
  899.00, 13, 'Publicado');
+
+(@id_negocio, 'Smartwatch Samsung Galaxy Watch 6',
+ 'Smartwatch Samsung Galaxy Watch 6 de 44mm, GPS, monitor cardíaco, oxímetro, batería 40h, resistencia IP68.',
+ '{"marca":"Samsung","modelo":"GW6","consumo_watts":"5","color":"Negro Grafito","garantia_meses":"12","eficiencia":"A++","tipo":"Smartwatch","imagenes_adicionales":"[]"}',
+ 2899.00, 10, 'Publicado'),
+
+(@id_negocio, 'Tablet Lenovo Tab M10 3ra Gen',
+ 'Tablet Lenovo Tab M10 de 10.1 pulgadas HD, 4GB RAM, 64GB ROM, WiFi, Android 12, batería 5100mAh.',
+ '{"marca":"Lenovo","modelo":"Tab M10","consumo_watts":"10","color":"Gris Oscuro","garantia_meses":"12","eficiencia":"A+","tipo":"Tablet","imagenes_adicionales":"[]"}',
+ 1599.00, 15, 'Publicado'),
+
+(@id_negocio, 'Parlante Bluetooth JBL Charge 5',
+ 'Parlante Bluetooth JBL Charge 5 portátil con sonido envolvente, 20h de batería, resistencia IP67 y powerbank.',
+ '{"marca":"JBL","modelo":"Charge 5","consumo_watts":"30","color":"Azul","garantia_meses":"12","eficiencia":"A","tipo":"Audio","imagenes_adicionales":"[]"}',
+ 999.00, 20, 'Publicado'),
+
+(@id_negocio, 'Exprimidor Eléctrico Imaco 400W',
+ 'Exprimidor eléctrico Imaco de 400W con cesto filtrante de acero inoxidable, 2 velocidades y sistema anti-goteo.',
+ '{"marca":"Imaco","modelo":"EX400","consumo_watts":"400","color":"Blanco","garantia_meses":"6","eficiencia":"A","tipo":"Exprimidor","imagenes_adicionales":"[]"}',
+ 349.00, 25, 'Publicado'),
+
+(@id_negocio, 'Batidora KitchenAid Artisan 5KSM175',
+ 'Batidora KitchenAid Artisan de 5 cuartos, 10 velocidades, motor 300W, incluye batidor, gancho y mezclador.',
+ '{"marca":"KitchenAid","modelo":"5KSM175","consumo_watts":"300","color":"Rojo","garantia_meses":"24","eficiencia":"A+","tipo":"Batidora","imagenes_adicionales":"[]"}',
+ 4599.00, 6, 'Publicado'),
+
+(@id_negocio, 'Extractora de Jugos Philips HR1869',
+ 'Extractora de jugos Philips HR1869 de 800W, sistema de extracción en frío, fácil limpieza y depósito 1.5L.',
+ '{"marca":"Philips","modelo":"HR1869","consumo_watts":"800","color":"Negro/Plata","garantia_meses":"12","eficiencia":"A","tipo":"Extractora","imagenes_adicionales":"[]"}',
+ 1299.00, 11, 'Publicado'),
+
+(@id_negocio, 'Arrocera Oster 20 Tazas',
+ 'Arrocera Oster de 20 tazas con olla antiadherente extraíble, tapa de vidrio, función mantener caliente y vaporera.',
+ '{"marca":"Oster","modelo":"CKSTAR20","consumo_watts":"700","color":"Blanco","garantia_meses":"12","eficiencia":"A","tipo":"Arrocera","imagenes_adicionales":"[]"}',
+ 549.00, 18, 'Publicado'),
+
+(@id_negocio, 'Sandwichera Eléctrica Imaco 750W',
+ 'Sandwichera eléctrica Imaco de 750W con placas antiadherentes, indicador luminoso, para 2 sándwiches.',
+ '{"marca":"Imaco","modelo":"SW750","consumo_watts":"750","color":"Negro","garantia_meses":"6","eficiencia":"A","tipo":"Sandwichera","imagenes_adicionales":"[]"}',
+ 249.00, 30, 'Publicado'),
+
+(@id_negocio, 'Cafetera Espresso Oster Perfect Brew',
+ 'Cafetera espresso Oster Perfect Brew de 15 bares de presión, vaporizador de leche, depósito 1.2L y bandeja calienta tazas.',
+ '{"marca":"Oster","modelo":"BVSTEMP","consumo_watts":"1100","color":"Acero Inoxidable","garantia_meses":"12","eficiencia":"A","tipo":"Cafetera","imagenes_adicionales":"[]"}',
+ 1799.00, 9, 'Publicado'),
+
+(@id_negocio, 'Purificador de Aire Xiaomi Mi 4 Pro',
+ 'Purificador de aire Xiaomi Mi 4 Pro con filtro HEPA H13, cobertura 60m², control por app, modo automático y nocturno.',
+ '{"marca":"Xiaomi","modelo":"Mi 4 Pro","consumo_watts":"50","color":"Blanco","garantia_meses":"12","eficiencia":"A++","tipo":"Purificador","imagenes_adicionales":"[]"}',
+ 1899.00, 7, 'Publicado');
 
 SELECT CONCAT('✓ Seed Electrodomésticos completado: ', COUNT(*), ' productos insertados') AS resultado FROM productos WHERE id_emprendimiento = @id_negocio;

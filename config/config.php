@@ -6,7 +6,11 @@ date_default_timezone_set('America/La_Paz');
 
 // Configuración de errores
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+if (isset($_SERVER['SERVER_ADDR']) && ($_SERVER['SERVER_ADDR'] === '127.0.0.1' || $_SERVER['SERVER_ADDR'] === '::1')) {
+    ini_set('display_errors', 1);
+} else {
+    ini_set('display_errors', 0);
+}
 
 // URLs base - Auto-detecta automáticamente para que funcione en cualquier carpeta
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';

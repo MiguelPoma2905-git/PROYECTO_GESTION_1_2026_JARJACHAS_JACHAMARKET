@@ -107,6 +107,9 @@ class DashboardController extends Controller
             $nombreComercial = trim($_POST['nombre_comercial'] ?? '');
             $nit = trim($_POST['nit'] ?? '');
             $descripcion = trim($_POST['descripcion'] ?? '');
+            $direccion = trim($_POST['direccion'] ?? '');
+            $ciudad = trim($_POST['ciudad'] ?? '');
+            $telefono = trim($_POST['telefono'] ?? '');
 
             if (empty($nombreComercial)) {
                 $error = 'El nombre comercial es obligatorio';
@@ -116,6 +119,9 @@ class DashboardController extends Controller
                         'nombre_comercial' => $nombreComercial,
                         'nit' => $nit,
                         'descripcion' => $descripcion,
+                        'direccion' => $direccion,
+                        'ciudad' => $ciudad,
+                        'telefono' => $telefono,
                         'id_plantilla' => $plantillaId,
                         'color_primario' => $plantilla['color_primario'],
                         'color_secundario' => $plantilla['color_secundario'],
@@ -166,6 +172,33 @@ class DashboardController extends Controller
 
         $plantillas = $this->plantillaRepo->findAllActive();
 
+        // AJAX preview request
+        if (isset($_POST['preview_ajax'])) {
+            $previewId = (int)($_POST['id_plantilla'] ?? $personalizacion['id_plantilla']);
+            $previewFile = match($previewId) {
+                6 => 'electrodomesticos.php',
+                4 => 'tecnologico.php',
+                7 => 'modaviva.php',
+                8 => 'sabores.php',
+                9 => 'artesano.php',
+                10 => 'glowup.php',
+                11 => 'fullfit.php',
+                12 => 'hogardulce.php',
+                default => 'default.php',
+            };
+            $plantillaData = $this->plantillaRepo->findById($previewId);
+            if ($plantillaData) {
+                $personalizacion['id_plantilla'] = $previewId;
+                $personalizacion['color_primario'] = $plantillaData['color_primario'] ?? '#1A3A5C';
+                $personalizacion['color_secundario'] = $plantillaData['color_secundario'] ?? '#2C6FBB';
+                $personalizacion['color_fondo'] = $plantillaData['color_fondo'] ?? '#FDFBF7';
+                $personalizacion['color_texto'] = $plantillaData['color_texto'] ?? '#1A1A2E';
+            }
+            header('Content-Type: text/html; charset=utf-8');
+            include BASE_PATH . 'src/Views/dashboard/previews/' . $previewFile;
+            exit;
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'id_plantilla' => $_POST['id_plantilla'] ?? $personalizacion['id_plantilla'],
@@ -174,7 +207,8 @@ class DashboardController extends Controller
                 'color_fondo' => $_POST['color_fondo'] ?? null,
                 'color_texto' => $_POST['color_texto'] ?? null,
                 'modo_oscuro' => isset($_POST['modo_oscuro']) ? 1 : 0,
-                'tipografia' => $_POST['tipografia'] ?? 'Inter'
+                'tipografia' => $_POST['tipografia'] ?? 'Inter',
+                'faqs' => $_POST['faqs'] ?? null
             ];
 
             // Handle logo upload

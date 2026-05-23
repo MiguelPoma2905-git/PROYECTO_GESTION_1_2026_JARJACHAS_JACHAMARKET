@@ -1,7 +1,11 @@
 <?php
 // Front Controller - Single entry point
 
-require_once __DIR__ . '/../vendor/autoload.php';
+$autoloadPath = __DIR__ . '/../vendor/autoload.php';
+if (!file_exists($autoloadPath)) {
+    die('Error: Ejecuta "composer install" primero.');
+}
+require_once $autoloadPath;
 
 // Ensure global autoload for non-namespaced config classes
 require_once __DIR__ . '/../config/config.php';
@@ -55,6 +59,7 @@ $router->match(['GET', 'POST'], '/productos', [ProductoController::class, 'index
 
 // Plantillas disponibles
 $router->get('/plantillas-disponibles', [PlantillaController::class, 'disponibles']);
+$router->get('/plantilla/{id}', [PlantillaController::class, 'detalle']);
 
 // Pedidos (JSON endpoints)
 $router->post('/pedido/crear', [PedidoController::class, 'crear']);
