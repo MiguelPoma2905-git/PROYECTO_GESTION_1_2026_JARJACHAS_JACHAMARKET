@@ -14,6 +14,26 @@ class RepartidorController extends Controller
         $this->pedidoRepo = new PedidoRepository();
     }
 
+    public function dashboard(): void
+    {
+        $this->requireAuth();
+        $usuario = $_SESSION['usuario'];
+        $idRepartidor = (int)$usuario['id'];
+
+        $pedidosPendientes = $this->pedidoRepo->getPedidosPendientesRepartidor();
+        $misActivos = $this->pedidoRepo->getPedidosByRepartidor($idRepartidor);
+        $historial = $this->pedidoRepo->getHistorialRepartidor($idRepartidor);
+        $stats = $this->pedidoRepo->getStatsRepartidor($idRepartidor);
+
+        $this->view('dashboard/repartidor', [
+            'usuario' => $usuario,
+            'pedidos_pendientes' => $pedidosPendientes,
+            'mis_activos' => $misActivos,
+            'historial' => $historial,
+            'stats' => $stats,
+        ]);
+    }
+
     public function pedidosPendientes(): void
     {
         $this->requireAuth();

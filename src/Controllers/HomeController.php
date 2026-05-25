@@ -57,11 +57,13 @@ class HomeController extends Controller
         $isLoggedIn = $usuario !== null;
 
         $negocios = $this->emprendimientoRepo->findAprobadosExcept(0);
+        $plantillas = $this->plantillaRepo->findAllActive();
 
         $this->view('pages/explorar', [
             'usuario' => $usuario,
             'is_logged_in' => $isLoggedIn,
-            'negocios' => $negocios
+            'negocios' => $negocios,
+            'plantillas' => $plantillas
         ]);
     }
 

@@ -35,7 +35,12 @@
         .btn-outline { background:transparent; color:#888; border:1px solid rgba(255,255,255,0.1); }
         .btn-outline:hover { border-color:rgba(255,255,255,0.2); color:#fff; }
         .avatar-section { text-align:center; margin-bottom:24px; }
-        .avatar-preview { width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:12px; background:linear-gradient(135deg,#333,#555); display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:600; color:#fff; margin:0 auto 12px; }
+        .avatar-preview { width:150px; height:150px; border-radius:50%; margin-bottom:12px; background:linear-gradient(135deg,#333,#555); display:flex; align-items:center; justify-content:center; font-size:56px; font-weight:600; color:#fff; margin:0 auto 12px; cursor:pointer; transition:opacity .2s; position:relative; overflow:hidden; }
+        .avatar-preview:hover { opacity:0.85; }
+        .avatar-preview img { width:100%; height:100%; object-fit:cover; }
+        .avatar-preview .overlay-text { position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.5); color:#fff; font-size:10px; padding:4px; text-align:center; opacity:0; transition:opacity .2s; }
+        .avatar-preview:hover .overlay-text { opacity:1; }
+        .avatar-btn-wrap { display:flex; justify-content:center; gap:8px; }
         .role-badge { display:inline-block; background:rgba(255,255,255,0.06); padding:4px 12px; border-radius:6px; font-size:11px; color:#888; margin:3px 4px; }
         .role-badge.admin { background:rgba(52,152,219,0.15); color:#3498DB; }
         .role-badge.repartidor { background:rgba(231,76,60,0.12); color:#e74c3c; }
@@ -68,14 +73,19 @@
         <div class="card">
             <h2>Foto de perfil</h2>
             <div class="avatar-section">
-                <?php if ($avatar && $avatar !== 'assets/avatars/default/avatar_1.jpg'): ?>
-                    <img src="<?= BASE_URL ?>/<?= $avatar ?>" class="avatar-preview">
-                <?php else: ?>
-                    <div class="avatar-preview"><?= $inicial ?></div>
-                <?php endif; ?>
-                <form method="POST" action="<?= BASE_URL ?>/perfil/actualizar" enctype="multipart/form-data">
-                    <input type="file" name="avatar" accept="image/jpeg,image/png,image/webp" style="display:block;margin:0 auto 12px;font-size:12px;color:#888">
-                    <button type="submit" class="btn btn-sm btn-outline">Subir foto</button>
+                <form method="POST" action="<?= BASE_URL ?>/perfil/actualizar" enctype="multipart/form-data" id="avatarForm">
+                    <div class="avatar-preview" id="avatarPreview" title="Haz clic para cambiar foto">
+                        <?php if ($avatar && $avatar !== 'assets/avatars/default/avatar_1.jpg'): ?>
+                            <img src="<?= BASE_URL ?>/<?= $avatar ?>" alt="Avatar">
+                        <?php else: ?>
+                            <?= $inicial ?>
+                        <?php endif; ?>
+                        <span class="overlay-text">Cambiar foto</span>
+                    </div>
+                    <input type="file" name="avatar" accept="image/jpeg,image/png,image/webp" id="avatarInput" style="display:none">
+                    <div class="avatar-btn-wrap">
+                        <button type="button" class="btn btn-sm btn-outline" onclick="document.getElementById('avatarInput').click()">Subir foto</button>
+                    </div>
                 </form>
             </div>
 
@@ -154,5 +164,17 @@
         <?php endif; ?>
     </div>
 </div>
+<script>
+(function() {
+    var preview = document.getElementById('avatarPreview');
+    var input = document.getElementById('avatarInput');
+    if (preview && input) {
+        preview.addEventListener('click', function() { input.click(); });
+        input.addEventListener('change', function() {
+            if (this.files.length > 0) this.form.submit();
+        });
+    }
+})();
+</script>
 </body>
 </html>

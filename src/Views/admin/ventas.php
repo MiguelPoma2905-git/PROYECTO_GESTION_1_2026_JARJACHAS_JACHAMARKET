@@ -6,7 +6,7 @@
     <title>Ventas - Administración</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=5">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=6">
     <style>
         :root { --admin-bg: #0a0a0f; --admin-card: #12121a; --admin-border: rgba(255,255,255,0.06); --admin-accent: #6366f1; --admin-text: #f1f5f9; --admin-muted: #94a3b8; --admin-dim: #475569; }
         [data-theme="light"] { --admin-bg: #f8fafc; --admin-card: #ffffff; --admin-border: rgba(0,0,0,0.08); --admin-text: #0f172a; --admin-muted: #64748b; --admin-dim: #94a3b8; }

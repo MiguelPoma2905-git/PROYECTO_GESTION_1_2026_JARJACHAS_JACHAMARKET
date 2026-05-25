@@ -88,7 +88,8 @@ class DashboardController extends Controller
 
         $rolesNombres = $this->usuarioRepo->getRolesNombres($usuario['id']);
         if (!in_array('Emprendedor', $rolesNombres)) {
-            $this->redirect(BASE_URL . '/perfil?error=No tienes el rol de emprendedor');
+            $_SESSION['perfil_error'] = 'Solo los emprendedores pueden crear negocios.';
+            $this->redirect(BASE_URL . '/perfil');
         }
 
         $plantillaId = $_GET['plantilla'] ?? 0;
@@ -149,7 +150,8 @@ class DashboardController extends Controller
 
         $rolesNombres = $this->usuarioRepo->getRolesNombres($usuario['id']);
         if (!in_array('Emprendedor', $rolesNombres)) {
-            $this->redirect(BASE_URL . '/dashboard?error=No tienes permisos');
+            $_SESSION['perfil_error'] = 'Solo los emprendedores pueden personalizar tiendas.';
+            $this->redirect(BASE_URL . '/perfil');
         }
 
         $idEmprendimiento = $_GET['id_emprendimiento'] ?? 0;

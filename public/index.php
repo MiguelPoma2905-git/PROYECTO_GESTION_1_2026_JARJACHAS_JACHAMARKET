@@ -65,7 +65,8 @@ $router->get('/plantilla/{id}', [PlantillaController::class, 'detalle']);
 $router->post('/pedido/crear', [PedidoController::class, 'crear']);
 $router->post('/pedido/comprar-rapido', [PedidoController::class, 'comprarRapido']);
 
-// Repartidor (JSON endpoints)
+// Repartidor
+$router->get('/dashboard-repartidor', [RepartidorController::class, 'dashboard']);
 $router->get('/repartidor/pedidos-pendientes', [RepartidorController::class, 'pedidosPendientes']);
 $router->post('/repartidor/asignar', [RepartidorController::class, 'asignar']);
 $router->post('/repartidor/entregar', [RepartidorController::class, 'entregar']);

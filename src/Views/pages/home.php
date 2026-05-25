@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=5">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=6">
     <style>
         [data-theme="light"] .btn-hero-primary { background:#1a1a2e;color:#fff !important;box-shadow:0 4px 24px rgba(26,26,46,0.2); }
         [data-theme="light"] .btn-hero-primary:hover { background:#2a2a4e;box-shadow:0 8px 40px rgba(26,26,46,0.25); }
@@ -23,15 +23,25 @@
         .feat-card:nth-child(4){animation-delay:0.20s}
         .feat-card:nth-child(5){animation-delay:0.25s}
         .feat-card:nth-child(6){animation-delay:0.30s}
+        .feat-card { overflow:hidden; }
         .feat-card:hover { transform:translateY(-10px);border-color:rgba(255,255,255,0.08);box-shadow:0 30px 80px rgba(0,0,0,0.3); }
         [data-theme="light"] .feat-card:hover { border-color:rgba(0,0,0,0.08);box-shadow:0 30px 80px rgba(0,0,0,0.06); }
         .feat-card::before { content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,var(--card-bg));z-index:1;pointer-events:none; }
-        .feat-card-img { width:100%;height:280px;object-fit:cover;display:block;transition:transform .6s;background:var(--surface2); }
+        .feat-glow { position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,0.06) 0%,transparent 60%);z-index:0;pointer-events:none;animation:glowDrift 6s ease-in-out infinite; }
+        .feat-card:nth-child(2) .feat-glow { animation-delay:1.5s; }
+        .feat-card:nth-child(3) .feat-glow { animation-delay:3s; }
+        .feat-card:nth-child(4) .feat-glow { animation-delay:4.5s; }
+        @keyframes glowDrift { 0%,100%{transform:translate(0,0) scale(1);opacity:0.5} 33%{transform:translate(10%,10%) scale(1.1);opacity:0.8} 66%{transform:translate(-5%,5%) scale(0.9);opacity:0.4} }
+        .feat-card-img { width:100%;height:200px;object-fit:cover;display:block;transition:transform .6s;background:var(--surface2);position:relative;z-index:0; }
         .feat-card:hover .feat-card-img { transform:scale(1.06); }
         .feat-card-body { position:relative;z-index:2;padding:28px;margin-top:-60px; }
-        .feat-card-tag { display:inline-block;padding:4px 14px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px; }
-        .feat-card-body h3 { font-size:20px;font-weight:600;color:var(--text);margin-bottom:8px; }
+        .feat-card-tag { display:inline-block;padding:5px 16px;border-radius:4px;font-size:12px;font-weight:500;letter-spacing:0.5px;margin-bottom:12px;font-family:'Cormorant Garamond',Georgia,serif; }
+        .feat-card-body h3 { font-size:20px;font-weight:600;color:var(--text);margin-bottom:8px;font-family:'Cormorant Garamond',Georgia,serif; }
         .feat-card-body p { font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:16px; }
+        .feat-card::after { content:'';position:absolute;top:-30%;left:-30%;width:160%;height:160%;background:radial-gradient(circle,rgba(255,255,255,0.08) 0%,transparent 50%);pointer-events:none;z-index:0;opacity:0;transition:opacity .6s; }
+        .feat-card:hover::after { opacity:1; }
+        [data-theme="dark"] .feat-card-img { filter:brightness(0.85) contrast(1.1); }
+        [data-theme="dark"] .feat-card:hover .feat-card-img { filter:brightness(1) contrast(1.1); }
         .feat-card-btn { display:inline-flex;align-items:center;gap:8px;padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;transition:all .3s; }
         .feat-card-btn:hover { transform:translateY(-2px); }
         .feat-empty { text-align:center;padding:80px;color:var(--text-dim);grid-column:1/-1; }
@@ -50,8 +60,6 @@
             <button class="menu-toggle" id="menuToggle">&#9776;</button>
             <button class="theme-toggle" id="themeToggle" title="Cambiar tema" style="margin-left:12px;flex-shrink:0">&#9790;</button>
             <nav class="nav-menu" id="navMenu">
-                <a href="<?= BASE_URL ?>/">Inicio</a>
-                <a href="<?= BASE_URL ?>/db-demo" class="btn-nav-outline">Demostración BD</a>
                 <a href="<?= BASE_URL ?>/plantillas-disponibles">Plantillas</a>
                 <?php if ($is_logged_in): ?>
                     <a href="<?= BASE_URL ?>/dashboard">Mi panel</a>
@@ -112,6 +120,52 @@
             </div>
         </div>
 
+        <section class="hero-featured" style="padding-top:60px">
+            <div class="section-header" style="margin-bottom:40px">
+                <div class="section-label">Ventajas</div>
+                <h2 class="section-title">¿Por qué usar Jacha?</h2>
+                <p class="section-desc">Todo lo que necesitas para llevar tu emprendimiento al siguiente nivel</p>
+            </div>
+            <div class="feat-grid" style="grid-template-columns:repeat(4,1fr)">
+                    <div class="feat-card" style="animation-delay:0.05s;cursor:default">
+                    <div class="feat-glow"></div>
+                    <img src="<?= BASE_URL ?>/assets/images/features/producto_destacado_01.jpg" alt="Plantillas" class="feat-card-img" onerror="this.style.display='none'">
+                    <div class="feat-card-body">
+                        <span class="feat-card-tag" style="background:#A8E6CF;color:#2D7A5E">Plantilla</span>
+                        <h3>Elige tu plantilla</h3>
+                        <p>Selecciona entre m&uacute;ltiples dise&ntilde;os profesionales y personaliza colores para reflejar tu marca.</p>
+                    </div>
+                </div>
+                <div class="feat-card" style="animation-delay:0.10s;cursor:default">
+                    <div class="feat-glow"></div>
+                    <img src="<?= BASE_URL ?>/assets/images/features/producto_destacado_02.jpg" alt="Vende" class="feat-card-img" onerror="this.style.display='none'">
+                    <div class="feat-card-body">
+                        <span class="feat-card-tag" style="background:#B3D9F7;color:#2C6B9E">Vende</span>
+                        <h3>Publica productos</h3>
+                        <p>Llega a clientes de todo Bolivia sin complicaciones.</p>
+                    </div>
+                </div>
+                <div class="feat-card" style="animation-delay:0.15s;cursor:default">
+                    <div class="feat-glow"></div>
+                    <img src="<?= BASE_URL ?>/assets/images/features/producto_destacado_03.jpg" alt="Gestiona" class="feat-card-img" onerror="this.style.display='none'">
+                    <div class="feat-card-body">
+                        <span class="feat-card-tag" style="background:#FCE4BD;color:#8D6B2B">Pedidos</span>
+                        <h3>Gestiona pedidos</h3>
+                        <p>Administra ventas y asigna repartidores para cada entrega.</p>
+                    </div>
+                </div>
+                <div class="feat-card" style="animation-delay:0.20s;cursor:default">
+                    <div class="feat-glow"></div>
+                    <img src="<?= BASE_URL ?>/assets/images/features/producto_destacado_04.jpg" alt="Crece" class="feat-card-img" onerror="this.style.display='none'">
+                    <div class="feat-card-body">
+                        <span class="feat-card-tag" style="background:#D4C5F9;color:#5E3A87">Crece</span>
+                        <h3>Expande tu negocio</h3>
+                        <p>Analiza ventas y haz crecer tu presencia digital.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="hero-featured">
             <div class="section-header">
                 <div class="section-label">Negocios destacados</div>
@@ -136,7 +190,6 @@
             <div class="feat-empty"><p>Próximamente nuevos negocios destacados</p></div>
             <?php endif; ?>
         </section>
-
 
     </main>
 

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Gestionar Productos - Jacha Marketplace</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=5">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=6">
     <style>
         .product-form { background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px;margin-bottom:32px }
         .product-form .form-row { display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px }

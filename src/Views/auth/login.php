@@ -14,7 +14,7 @@ $error = $_GET['error'] ?? '';
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=5">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=6">
     <style>
         body { min-height:100vh;display:flex;align-items:center;justify-content:center;margin:0;padding:0 }
         .auth-container { margin:32px auto }
@@ -32,6 +32,7 @@ $error = $_GET['error'] ?? '';
             transition:all .2s; backdrop-filter:blur(8px);
         }
         .auth-theme-btn:hover { border-color:var(--border-hi); color:var(--text); }
+        .auth-form-header h1 { font-family:'Cormorant Garamond',Georgia,serif;font-size:38px;font-weight:500;color:var(--text);background:none;-webkit-background-clip:unset;background-clip:unset; }
     </style>
 </head>
 <body>

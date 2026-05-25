@@ -89,6 +89,62 @@ class PedidoRepository
         return false;
     }
 
+    public function getPedidosByRepartidor(int $idRepartidor): array
+    {
+        $stmt = $this->conn->prepare("
+            SELECT p.*, e.nombre_comercial,
+                   u.nombres as cliente_nombre, u.apellidos as cliente_apellidos,
+                   u.telefono as cliente_telefono,
+                   el.id_envio, el.distancia_km, el.fecha_despacho
+            FROM pedidos p
+            JOIN envios_logistica el ON p.id_pedido = el.id_pedido
+            JOIN emprendimientos e ON e.id_emprendimiento =
+                (SELECT id_emprendimiento FROM sucursales WHERE id_sucursal = p.id_sucursal_origen)
+            JOIN usuarios u ON p.id_cliente = u.id_usuario
+            WHERE el.id_repartidor = ? AND p.estado_logistico IN ('En_Ruta', 'Preparando')
+            ORDER BY el.fecha_despacho DESC
+        ");
+        $stmt->execute([$idRepartidor]);
+        return $stmt->fetchAll();
+    }
+
+    public function getHistorialRepartidor(int $idRepartidor): array
+    {
+        $stmt = $this->conn->prepare("
+            SELECT p.*, e.nombre_comercial,
+                   u.nombres as cliente_nombre, u.apellidos as cliente_apellidos,
+                   el.fecha_entrega
+            FROM pedidos p
+            JOIN envios_logistica el ON p.id_pedido = el.id_pedido
+            JOIN emprendimientos e ON e.id_emprendimiento =
+                (SELECT id_emprendimiento FROM sucursales WHERE id_sucursal = p.id_sucursal_origen)
+            JOIN usuarios u ON p.id_cliente = u.id_usuario
+            WHERE el.id_repartidor = ? AND p.estado_logistico = 'Entregado'
+            ORDER BY el.fecha_entrega DESC
+            LIMIT 50
+        ");
+        $stmt->execute([$idRepartidor]);
+        return $stmt->fetchAll();
+    }
+
+    public function getStatsRepartidor(int $idRepartidor): array
+    {
+        $hoy = date('Y-m-d');
+        $stmt = $this->conn->prepare("
+            SELECT
+                COUNT(CASE WHEN p.estado_logistico = 'Entregado' AND DATE(el.fecha_entrega) = ? THEN 1 END) as entregas_hoy,
+                COUNT(CASE WHEN p.estado_logistico = 'Entregado' THEN 1 END) as entregas_totales,
+                COALESCE(SUM(CASE WHEN p.estado_logistico = 'Entregado' AND DATE(el.fecha_entrega) = ? THEN p.costo_envio ELSE 0 END), 0) as ganancias_hoy,
+                COALESCE(SUM(CASE WHEN p.estado_logistico = 'Entregado' THEN p.costo_envio ELSE 0 END), 0) as ganancias_totales,
+                COUNT(CASE WHEN p.estado_logistico IN ('En_Ruta', 'Preparando') THEN 1 END) as activos
+            FROM envios_logistica el
+            JOIN pedidos p ON p.id_pedido = el.id_pedido
+            WHERE el.id_repartidor = ?
+        ");
+        $stmt->execute([$hoy, $hoy, $idRepartidor]);
+        return $stmt->fetch();
+    }
+
     public function marcarEntregado(int $idPedido, int $idRepartidor): bool
     {
         $stmt = $this->conn->prepare("

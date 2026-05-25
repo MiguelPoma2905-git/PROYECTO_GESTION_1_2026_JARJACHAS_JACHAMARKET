@@ -33,9 +33,9 @@ class Mailer {
             $this->mail->Body = $this->generarHTMLCorreo($codigo, $nombre);
             $this->mail->AltBody = "Tu código de verificación es: $codigo\n\nExpira en 10 minutos.\n\n© Jacha Marketplace";
             
-            $logoPath = __DIR__ . '/../public/assets/images/logo_jacha_sinfondo.png';
+            $logoPath = __DIR__ . '/../public/assets/images/logo_empresa.png';
             if (file_exists($logoPath)) {
-                $this->mail->AddEmbeddedImage($logoPath, 'logo_jacha', 'logo_jacha_sinfondo.png');
+                $this->mail->AddEmbeddedImage($logoPath, 'logo_jacha', 'logo_empresa.png');
             }
             
             return $this->mail->send();

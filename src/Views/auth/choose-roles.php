@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=5">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=6">
     <style>
         body { min-height:100vh;display:flex;align-items:center;justify-content:center;margin:0;padding:0 }
         .auth-theme-btn {
@@ -32,8 +32,17 @@
         .rol-card { background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 16px;text-align:left;cursor:pointer;transition:all 0.3s var(--ease);display:flex;align-items:center;gap:14px }
         .rol-card:hover { transform:translateX(4px);border-color:var(--border-hi);background:var(--hover-surface) }
         .rol-card.selected { border-color:var(--text);background:var(--surface3);box-shadow:0 0 20px var(--accent-shadow) }
-        .rol-image { width:48px;height:48px;border-radius:12px;overflow:hidden;flex-shrink:0;background:var(--surface2) }
-        .rol-image img { width:100%;height:100%;object-fit:cover;display:block }
+        .rol-image { width:48px;height:48px;border-radius:12px;overflow:hidden;flex-shrink:0;background:var(--surface2);border:1px solid var(--border);transition:border-color .2s }
+        .rol-image img { width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.95);transition:filter .2s }
+        .rol-card:hover .rol-image { border-color:var(--border-hi) }
+        .rol-card:hover .rol-image img { filter:brightness(1.05) }
+        .rol-card.selected .rol-image { border-color:var(--text);box-shadow:0 0 12px var(--accent-shadow) }
+        .rol-card.selected .rol-image img { filter:brightness(1.1) }
+        [data-theme="dark"] .rol-image { background:#fff;border-color:rgba(255,255,255,0.15); }
+        [data-theme="dark"] .rol-image img { filter:brightness(0.95) contrast(1.05); }
+        [data-theme="dark"] .rol-card:hover .rol-image img { filter:brightness(1.05) contrast(1.05); }
+        [data-theme="dark"] .rol-card.selected .rol-image img { filter:brightness(1.1) contrast(1.05); }
+        [data-theme="dark"] .rol-card.selected .rol-image { border-color:#fff;box-shadow:0 0 12px rgba(255,255,255,0.15); }
         .rol-info h4 { font-size:15px;font-weight:600;color:var(--text);margin-bottom:2px }
         .rol-info p { font-size:12px;color:var(--text-muted);line-height:1.4;margin:0 }
         .avatar-preview { width:100px;height:100px;border-radius:50%;overflow:hidden;margin:0 auto 16px;border:2px solid var(--border);background:var(--surface2) }
