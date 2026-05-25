@@ -64,6 +64,12 @@
             .roles-container { padding:28px 20px;margin:24px 12px }
             .avatar-grid { grid-template-columns:repeat(5,1fr) }
         }
+        @media (max-width:600px) {
+            body { background:var(--bg) !important; }
+            #bgCarousel,.bg-carousel-overlay,.bg-carousel-gradient-overlay,.carousel-particles,.light,.watermark { display:none !important; }
+            .roles-container { margin:0;min-height:100vh;border-radius:0;background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none;border:none;box-shadow:none;padding:28px 16px }
+            .auth-theme-btn { top:12px;right:12px;width:36px;height:36px;font-size:14px }
+        }
         @media (max-width:480px) {
             .avatar-grid { grid-template-columns:repeat(4,1fr) }
             .roles-container { padding:20px 16px }

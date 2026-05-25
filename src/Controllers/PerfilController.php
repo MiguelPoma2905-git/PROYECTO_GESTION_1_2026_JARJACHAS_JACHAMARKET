@@ -40,6 +40,12 @@ class PerfilController extends Controller
         $success = $_SESSION['perfil_msg'] ?? '';
         unset($_SESSION['perfil_error'], $_SESSION['perfil_msg']);
 
+        $esAdmin = in_array('Administrador', $rolesNombres);
+        if (!isset($_SESSION['rol_activo']) || !in_array($_SESSION['rol_activo'], $rolesNombres)) {
+            $_SESSION['rol_activo'] = $rolesNombres[0] ?? 'Cliente';
+        }
+        $rolActivo = $_SESSION['rol_activo'];
+
         $this->view('perfil/index', [
             'usuario' => $usuario,
             'avatar' => $avatar,
@@ -48,7 +54,9 @@ class PerfilController extends Controller
             'inicial' => $inicial,
             'mis_negocios' => $misNegocios,
             'error' => $error,
-            'success' => $success
+            'success' => $success,
+            'es_admin' => $esAdmin,
+            'rol_activo' => $rolActivo
         ]);
     }
 

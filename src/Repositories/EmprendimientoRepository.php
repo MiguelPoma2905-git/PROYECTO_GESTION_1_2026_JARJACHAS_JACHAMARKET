@@ -15,7 +15,7 @@ class EmprendimientoRepository
         $stmt = $this->conn->prepare("
             SELECT e.*, p.id_plantilla, p.nombre as plantilla_nombre,
                    pe.color_primario, pe.color_secundario, pe.color_texto, pe.color_fondo,
-                   pe.logo_personalizado, pe.banner_personalizado, pe.modo_oscuro, pe.tipografia, pe.faqs,
+                   pe.logo_personalizado, pe.banner_personalizado, pe.portada, pe.modo_oscuro, pe.tipografia, pe.faqs,
                    (SELECT COUNT(*) FROM productos WHERE id_emprendimiento = e.id_emprendimiento) as total_productos
             FROM emprendimientos e
             LEFT JOIN personalizacion_emprendimiento pe ON e.id_emprendimiento = pe.id_emprendimiento
@@ -30,16 +30,17 @@ class EmprendimientoRepository
     public function findAprobadosExcept(int $exceptUserId): array
     {
         $stmt = $this->conn->prepare("
-            SELECT e.id_emprendimiento, e.nombre_comercial, e.descripcion, 
-                   p.nombre as plantilla_nombre, pe.color_primario, pe.color_secundario,
-                   pe.logo_personalizado, pe.banner_personalizado,
-                   (SELECT COUNT(*) FROM productos WHERE id_emprendimiento = e.id_emprendimiento) as total_productos
+            SELECT e.id_emprendimiento, e.nombre_comercial, e.descripcion, e.telefono,
+                   p.nombre as plantilla_nombre, pe.color_primario, pe.color_secundario, pe.color_texto,
+                   pe.logo_personalizado, pe.banner_personalizado, pe.portada, pe.tipografia,
+                   (SELECT COUNT(*) FROM productos WHERE id_emprendimiento = e.id_emprendimiento) as total_productos,
+                   e.id_emprendimiento as orden_nuevos
             FROM emprendimientos e
             LEFT JOIN personalizacion_emprendimiento pe ON e.id_emprendimiento = pe.id_emprendimiento
             LEFT JOIN plantillas p ON pe.id_plantilla = p.id_plantilla
             WHERE e.estado = 'Aprobado' AND e.id_propietario != ?
             ORDER BY e.id_emprendimiento DESC
-            LIMIT 12
+            LIMIT 50
         ");
         $stmt->execute([$exceptUserId]);
         return $stmt->fetchAll();
@@ -50,7 +51,7 @@ class EmprendimientoRepository
         $stmt = $this->conn->prepare("
             SELECT e.id_emprendimiento, e.nombre_comercial, e.descripcion, 
                    p.nombre as plantilla_nombre, p.color_primario, p.color_secundario,
-                   pe.logo_personalizado, pe.banner_personalizado
+                   pe.logo_personalizado, pe.banner_personalizado, pe.portada
             FROM emprendimientos e
             JOIN personalizacion_emprendimiento pe ON e.id_emprendimiento = pe.id_emprendimiento
             JOIN plantillas p ON pe.id_plantilla = p.id_plantilla
@@ -66,7 +67,7 @@ class EmprendimientoRepository
         $stmt = $this->conn->prepare("
             SELECT e.*, p.id_plantilla, p.nombre as plantilla_nombre,
                    pe.color_primario, pe.color_secundario, pe.color_fondo, pe.color_texto,
-                   pe.logo_personalizado, pe.banner_personalizado, pe.modo_oscuro, pe.tipografia, pe.faqs
+                   pe.logo_personalizado, pe.banner_personalizado, pe.portada, pe.modo_oscuro, pe.tipografia, pe.faqs
             FROM emprendimientos e
             LEFT JOIN personalizacion_emprendimiento pe ON e.id_emprendimiento = pe.id_emprendimiento
             LEFT JOIN plantillas p ON pe.id_plantilla = p.id_plantilla
@@ -81,7 +82,7 @@ class EmprendimientoRepository
     {
         $stmt = $this->conn->prepare("
             SELECT e.*, pe.id_plantilla, pe.color_primario, pe.color_secundario, pe.color_fondo, pe.color_texto,
-                   pe.logo_personalizado, pe.banner_personalizado, pe.modo_oscuro, pe.tipografia, pe.faqs
+                   pe.logo_personalizado, pe.banner_personalizado, pe.portada, pe.modo_oscuro, pe.tipografia, pe.faqs
             FROM emprendimientos e
             LEFT JOIN personalizacion_emprendimiento pe ON e.id_emprendimiento = pe.id_emprendimiento
             WHERE e.id_emprendimiento = ? AND e.id_propietario = ?
@@ -103,8 +104,8 @@ class EmprendimientoRepository
             $idEmprendimiento = (int)$this->conn->lastInsertId();
 
             $stmt = $this->conn->prepare("
-                INSERT INTO personalizacion_emprendimiento (id_emprendimiento, id_plantilla, color_primario, color_secundario, color_fondo, color_texto, modo_oscuro, tipografia, faqs)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO personalizacion_emprendimiento (id_emprendimiento, id_plantilla, color_primario, color_secundario, color_fondo, color_texto, modo_oscuro, tipografia, faqs, portada)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
             $stmt->execute([
                 $idEmprendimiento,
@@ -115,7 +116,8 @@ class EmprendimientoRepository
                 $data['color_texto'] ?? null,
                 $data['modo_oscuro'] ?? 0,
                 $data['tipografia'] ?? 'Inter',
-                $data['faqs'] ?? null
+                $data['faqs'] ?? null,
+                $data['portada'] ?? null
             ]);
 
             $stmt = $this->conn->prepare("
@@ -207,6 +209,10 @@ class EmprendimientoRepository
         if (array_key_exists('faqs', $data)) {
             $fields[] = 'faqs = ?';
             $params[] = $data['faqs'];
+        }
+        if (array_key_exists('portada', $data)) {
+            $fields[] = 'portada = ?';
+            $params[] = $data['portada'];
         }
 
         if (empty($fields)) return;

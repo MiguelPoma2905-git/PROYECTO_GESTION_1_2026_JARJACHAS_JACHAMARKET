@@ -267,6 +267,17 @@
         .form-group .field textarea::placeholder { color: #555; }
         .form-group .field textarea { resize: vertical; min-height: 80px; }
 
+        .portada-upload { margin-bottom:18px; }
+        .portada-upload label { display:block;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted,#888);margin-bottom:8px; }
+        .portada-upload .drop-zone { border:1.5px dashed rgba(255,255,255,0.12);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;background:rgba(255,255,255,0.02); }
+        .portada-upload .drop-zone:hover { border-color:rgba(255,255,255,0.25);background:rgba(255,255,255,0.04); }
+        .portada-upload .drop-zone i { font-size:28px;color:var(--text-muted,#888);margin-bottom:8px;opacity:0.4; }
+        .portada-upload .drop-zone p { font-size:12px;color:var(--text-muted,#888); }
+        .portada-upload .drop-zone small { font-size:10px;color:var(--text-dim,#555); }
+        .portada-upload .portada-preview { display:none;margin-top:10px;border-radius:10px;overflow:hidden;position:relative;max-height:160px; }
+        .portada-upload .portada-preview img { width:100%;height:140px;object-fit:cover;display:block;border-radius:10px;border:1px solid rgba(255,255,255,0.08); }
+        .portada-upload .portada-preview .remove-portada { position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.6);color:#fff;border:none;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s; }
+        .portada-upload .portada-preview .remove-portada:hover { background:rgba(255,50,50,0.8);transform:scale(1.1); }
         .btn-submit {
             width: 100%; padding: 15px;
             background: linear-gradient(135deg, #6c8cff, #5a7ae8);
@@ -508,7 +519,7 @@
                     <h1>Crear nuevo negocio</h1>
                     <p>Completa los datos de tu emprendimiento</p>
                 </div>
-                <form method="POST" action="<?= BASE_URL ?>/crear-negocio?plantilla=<?= $_GET['plantilla'] ?? $plantilla['id_plantilla'] ?>">
+                <form method="POST" enctype="multipart/form-data" action="<?= BASE_URL ?>/crear-negocio?plantilla=<?= $_GET['plantilla'] ?? $plantilla['id_plantilla'] ?>">
                     <div class="form-group full">
                         <label>Nombre comercial <span class="req">*</span></label>
                         <div class="field">
@@ -555,9 +566,38 @@
                             <textarea name="descripcion" placeholder="Cu&eacute;ntanos sobre tu emprendimiento..."></textarea>
                         </div>
                     </div>
+                    <div class="portada-upload">
+                        <label><i class="fas fa-image"></i> Foto de portada (recomendado)</label>
+                        <div class="drop-zone" id="dropZone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Haz clic o arrastra una imagen aqu&iacute;</p>
+                            <small>JPG, PNG o WEBP &middot; M&aacute;ximo 5MB</small>
+                        </div>
+                        <input type="file" name="portada" id="portadaInput" accept="image/jpeg,image/png,image/webp" style="display:none">
+                        <div class="portada-preview" id="portadaPreview">
+                            <img id="portadaImg" src="" alt="Portada">
+                            <button type="button" class="remove-portada" id="removePortada">&times;</button>
+                        </div>
+                    </div>
                     <button type="submit" class="btn-submit">
                         <i class="fas fa-rocket"></i> Crear negocio
                     </button>
+                    <script>
+                    (function(){
+                        var dropZone = document.getElementById('dropZone');
+                        var input = document.getElementById('portadaInput');
+                        var preview = document.getElementById('portadaPreview');
+                        var img = document.getElementById('portadaImg');
+                        var removeBtn = document.getElementById('removePortada');
+                        dropZone.addEventListener('click', function(){ input.click(); });
+                        dropZone.addEventListener('dragover', function(e){ e.preventDefault(); dropZone.style.borderColor='rgba(255,255,255,0.4)'; });
+                        dropZone.addEventListener('dragleave', function(){ dropZone.style.borderColor='rgba(255,255,255,0.12)'; });
+                        dropZone.addEventListener('drop', function(e){ e.preventDefault(); dropZone.style.borderColor='rgba(255,255,255,0.12)'; if(e.dataTransfer.files.length) input.files=e.dataTransfer.files; showPreview(); });
+                        input.addEventListener('change', showPreview);
+                        removeBtn.addEventListener('click', function(){ input.value=''; preview.style.display='none'; dropZone.style.display='block'; });
+                        function showPreview(){ if(input.files&&input.files[0]){ var reader=new FileReader(); reader.onload=function(e){ img.src=e.target.result; preview.style.display='block'; dropZone.style.display='none'; }; reader.readAsDataURL(input.files[0]); } }
+                    })();
+                    </script>
                 </form>
             </div>
         </div>

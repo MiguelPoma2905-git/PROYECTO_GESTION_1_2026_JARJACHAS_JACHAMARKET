@@ -5,6 +5,7 @@ use App\Core\Controller;
 use App\Repositories\EmprendimientoRepository;
 use App\Repositories\UsuarioRepository;
 use App\Repositories\PlantillaRepository;
+use App\Repositories\PedidoRepository;
 
 class DashboardController extends Controller
 {
@@ -80,6 +81,43 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function estadisticasCliente(): void
+    {
+        $this->requireAuth();
+
+        $usuario = $_SESSION['usuario'];
+        $pedidoRepo = new PedidoRepository();
+        $usuarioRepo = new UsuarioRepository();
+
+        $rolesNombres = $usuarioRepo->getRolesNombres($usuario['id']);
+        if (!in_array('Cliente', $rolesNombres)) {
+            $this->redirect(BASE_URL . '/dashboard');
+        }
+
+        $statsCliente = $pedidoRepo->getStatsCliente($usuario['id']);
+        $pedidos = $pedidoRepo->getPedidosByCliente($usuario['id']);
+        $avatarUsuario = $usuarioRepo->getAvatar($usuario['id']);
+        $rolesUsuario = $usuarioRepo->getRoles($usuario['id']);
+
+        $_SESSION['rol_activo'] = 'Cliente';
+        $rolActivo = 'Cliente';
+
+        $inicial = strtoupper(substr($usuario['nombre'], 0, 1));
+        $esAdmin = in_array('Administrador', $rolesNombres);
+
+        $this->view('dashboard/cliente-estadisticas', [
+            'usuario' => $usuario,
+            'avatar_usuario' => $avatarUsuario,
+            'roles_usuario' => $rolesUsuario,
+            'roles_nombres' => $rolesNombres,
+            'rol_activo' => $rolActivo,
+            'stats' => $statsCliente,
+            'pedidos' => $pedidos,
+            'inicial' => $inicial,
+            'es_admin' => $esAdmin
+        ]);
+    }
+
     public function showCrearNegocio(): void
     {
         $this->requireAuth();
@@ -115,6 +153,18 @@ class DashboardController extends Controller
             if (empty($nombreComercial)) {
                 $error = 'El nombre comercial es obligatorio';
             } else {
+                $portadaPath = null;
+                if (isset($_FILES['portada']) && $_FILES['portada']['error'] === UPLOAD_ERR_OK) {
+                    $uploadDir = BASE_PATH . 'public/assets/uploads/portadas/';
+                    if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+                    $ext = strtolower(pathinfo($_FILES['portada']['name'], PATHINFO_EXTENSION));
+                    if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+                        $filename = 'portada_' . uniqid() . '.' . $ext;
+                        if (move_uploaded_file($_FILES['portada']['tmp_name'], $uploadDir . $filename)) {
+                            $portadaPath = 'assets/uploads/portadas/' . $filename;
+                        }
+                    }
+                }
                 try {
                     $this->emprendimientoRepo->insert([
                         'nombre_comercial' => $nombreComercial,
@@ -126,7 +176,8 @@ class DashboardController extends Controller
                         'id_plantilla' => $plantillaId,
                         'color_primario' => $plantilla['color_primario'],
                         'color_secundario' => $plantilla['color_secundario'],
-                        'color_texto' => $plantilla['color_texto'] ?? '#1A1A2E'
+                        'color_texto' => $plantilla['color_texto'] ?? '#1A1A2E',
+                        'portada' => $portadaPath
                     ], $usuario['id']);
 
                     $this->redirect(BASE_URL . '/dashboard?success=1');

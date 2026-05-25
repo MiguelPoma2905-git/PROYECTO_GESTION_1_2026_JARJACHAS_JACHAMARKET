@@ -36,6 +36,12 @@
         .rol-option h4 { font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px }
         .rol-option p { font-size:13px;color:var(--text-muted);line-height:1.4 }
         .error { color:var(--text-muted);font-size:13px;margin-top:16px;margin-bottom:16px }
+        @media (max-width:600px) {
+            body { background:var(--bg) !important; }
+            #bgCarousel,.bg-carousel-overlay,.bg-carousel-gradient-overlay,.carousel-particles,.watermark { display:none !important; }
+            .selector-container { margin:0;min-height:100vh;border-radius:0;background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none;border:none;box-shadow:none;padding:32px 20px }
+            .auth-theme-btn { top:12px;right:12px;width:36px;height:36px;font-size:14px }
+        }
         @media (max-width:480px) { .selector-container { padding:32px 24px } .rol-option { padding:16px } }
     </style>
 </head>

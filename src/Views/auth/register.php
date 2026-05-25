@@ -53,6 +53,12 @@ $error = $error ?? '';
         .carousel-slide-4 { background: linear-gradient(135deg, #111111 0%, #1a1a1a 30%, #2a2a2a 60%, #333333 100%); }
         .carousel-slide-5 { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 30%, #2a2a2a 60%, #444444 100%); }
         @media (max-width:700px) { .register-container { max-width:100%;margin:24px 16px;padding:36px 28px } .form-row { grid-template-columns:1fr;gap:0 } }
+        @media (max-width:600px) {
+            body { background:var(--bg) !important; }
+            #bgCarousel,.bg-carousel-overlay,.bg-carousel-gradient-overlay,.carousel-particles,.light,.watermark { display:none !important; }
+            .register-container { margin:0;min-height:100vh;border-radius:0;background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none;border:none;box-shadow:none;padding:32px 20px }
+            .auth-theme-btn { top:12px;right:12px;width:36px;height:36px;font-size:14px }
+        }
     </style>
 </head>
 <body>

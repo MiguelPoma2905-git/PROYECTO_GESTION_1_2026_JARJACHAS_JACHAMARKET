@@ -45,11 +45,11 @@ $router->get('/enviar-otp', [AuthController::class, 'sendOtp']);
 $router->get('/reenviar-otp', [AuthController::class, 'resendOtp']);
 $router->get('/reenviar-otp-login', [AuthController::class, 'resendOtpLogin']);
 $router->get('/logout', [AuthController::class, 'logout']);
-$router->match(['GET', 'POST'], '/selector-rol', [AuthController::class, 'showSelectorRol']);
 $router->post('/guardar-temp-avatar', [AuthController::class, 'guardarTempAvatar']);
 
 // Dashboard
 $router->get('/dashboard', [DashboardController::class, 'dashboard']);
+$router->get('/mis-estadisticas', [DashboardController::class, 'estadisticasCliente']);
 $router->match(['GET', 'POST'], '/crear-negocio', [DashboardController::class, 'showCrearNegocio']);
 $router->match(['GET', 'POST'], '/plantillas', [DashboardController::class, 'showPlantillas']);
 
@@ -104,7 +104,6 @@ $router->get('/enviar_otp.php', [AuthController::class, 'sendOtp']);
 $router->get('/reenviar_otp.php', [AuthController::class, 'resendOtp']);
 $router->get('/reenviar_otp_login.php', [AuthController::class, 'resendOtpLogin']);
 $router->get('/logout.php', [AuthController::class, 'logout']);
-$router->match(['GET', 'POST'], '/selector_rol.php', [AuthController::class, 'showSelectorRol']);
 $router->post('/guardar_temp_avatar.php', [AuthController::class, 'guardarTempAvatar']);
 $router->get('/dashboard_principal.php', [DashboardController::class, 'dashboard']);
 $router->match(['GET', 'POST'], '/crear_negocio.php', [DashboardController::class, 'showCrearNegocio']);

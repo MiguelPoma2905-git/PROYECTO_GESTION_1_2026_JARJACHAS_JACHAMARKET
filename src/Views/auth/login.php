@@ -33,6 +33,15 @@ $error = $_GET['error'] ?? '';
         }
         .auth-theme-btn:hover { border-color:var(--border-hi); color:var(--text); }
         .auth-form-header h1 { font-family:'Cormorant Garamond',Georgia,serif;font-size:38px;font-weight:500;color:var(--text);background:none;-webkit-background-clip:unset;background-clip:unset; }
+        @media (max-width:600px) {
+            body { background:var(--bg) !important; }
+            #bgCarousel,.bg-carousel-overlay,.bg-carousel-gradient-overlay,.carousel-particles,.light,.watermark { display:none !important; }
+            .auth-container { margin:0;border-radius:0;min-height:100vh;background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none;border:none;box-shadow:none }
+            .auth-brand { display:none }
+            .auth-form-side { flex:none;width:100%;border:none;padding:40px 24px;background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none }
+            .auth-form-header h1 { font-size:30px }
+            .auth-theme-btn { top:12px;right:12px;width:36px;height:36px;font-size:14px }
+        }
     </style>
 </head>
 <body>

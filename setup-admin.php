@@ -116,7 +116,7 @@ try {
 
     $conn->commit();
 
-    echo "\n✅ SUPER ADMIN CREADO EXITOSAMENTE\n";
+    echo "\n SUPER ADMIN CREADO EXITOSAMENTE\n";
     echo "   Email:      $email\n";
     echo "   Nombre:     $nombres $apellidos\n";
     echo "   ID Usuario: $idUsuario\n";

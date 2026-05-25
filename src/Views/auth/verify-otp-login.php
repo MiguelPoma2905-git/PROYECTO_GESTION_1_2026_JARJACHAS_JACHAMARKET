@@ -26,6 +26,13 @@
         .carousel-slide-3 { background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 30%, #2a2a2a 60%, #333333 100%); }
         .carousel-slide-4 { background: linear-gradient(135deg, #111111 0%, #1a1a1a 30%, #2a2a2a 60%, #333333 100%); }
         .carousel-slide-5 { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 30%, #2a2a2a 60%, #444444 100%); }
+        @media (max-width:600px) {
+            body { background:var(--bg) !important; }
+            #bgCarousel,.bg-carousel-overlay,.bg-carousel-gradient-overlay,.carousel-particles,.watermark { display:none !important; }
+            .auth-container { margin:0;min-height:100vh;border-radius:0;background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none;border:none;box-shadow:none }
+            .auth-form-side { padding:40px 24px !important;background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none }
+            .auth-theme-btn { top:12px;right:12px;width:36px;height:36px;font-size:14px }
+        }
     </style>
 </head>
 <body>

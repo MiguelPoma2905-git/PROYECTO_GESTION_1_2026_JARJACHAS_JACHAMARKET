@@ -277,12 +277,8 @@ class AuthController extends Controller
 
             unset($_SESSION['registro_temp']);
 
-            if ($totalRoles > 1) {
-                $this->redirect(BASE_URL . '/selector-rol');
-            } else {
-                $_SESSION['rol_activo'] = trim($rolesArray[0]);
-                $this->redirect(BASE_URL . '/dashboard');
-            }
+            $_SESSION['rol_activo'] = trim($rolesArray[0]);
+            $this->redirect(BASE_URL . '/dashboard');
 
         } catch (\Exception $e) {
             $db->rollBack();
@@ -322,13 +318,9 @@ class AuthController extends Controller
 
         unset($_SESSION['login_temp']);
 
-        if ($totalRoles > 1) {
-            $this->redirect(BASE_URL . '/selector-rol');
-        } else {
-            $rolUnico = trim($rolesArray[0]);
-            $_SESSION['rol_activo'] = $rolUnico;
-            $this->redirect(BASE_URL . '/dashboard');
-        }
+        $rolUnico = trim($rolesArray[0]);
+        $_SESSION['rol_activo'] = $rolUnico;
+        $this->redirect(BASE_URL . '/dashboard');
     }
 
     public function sendOtp(): void
@@ -415,55 +407,6 @@ class AuthController extends Controller
     {
         session_destroy();
         $this->redirect(BASE_URL . '/login');
-    }
-
-    public function showSelectorRol(): void
-    {
-        $this->requireAuth();
-
-        $usuario = $_SESSION['usuario'];
-        $db = $this->getDB();
-
-        $stmt = $db->prepare("
-            SELECT r.id_rol, r.nombre_rol 
-            FROM usuario_roles ur
-            JOIN roles r ON ur.id_rol = r.id_rol
-            WHERE ur.id_usuario = ?
-        ");
-        $stmt->execute([$usuario['id']]);
-        $rolesDisponibles = $stmt->fetchAll();
-
-        if (count($rolesDisponibles) <= 1) {
-            $rolUnico = $rolesDisponibles[0]['nombre_rol'];
-            $_SESSION['rol_activo'] = $rolUnico;
-            $this->redirect(BASE_URL . '/dashboard');
-        }
-
-        $error = '';
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $rolSeleccionado = $_POST['rol'] ?? '';
-            $rolValido = false;
-            foreach ($rolesDisponibles as $rol) {
-                if ($rol['nombre_rol'] === $rolSeleccionado) {
-                    $rolValido = true;
-                    break;
-                }
-            }
-
-            if ($rolValido) {
-                $_SESSION['rol_activo'] = $rolSeleccionado;
-                $this->redirect(BASE_URL . '/dashboard');
-            } else {
-                $error = 'Rol no válido';
-            }
-        }
-
-        $this->view('auth/selector-rol', [
-            'usuario' => $usuario,
-            'roles_disponibles' => $rolesDisponibles,
-            'error' => $error
-        ]);
     }
 
     public function guardarTempAvatar(): void
