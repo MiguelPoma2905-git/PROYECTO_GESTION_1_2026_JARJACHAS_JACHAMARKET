@@ -153,20 +153,18 @@ class DashboardController extends Controller
             if (empty($nombreComercial)) {
                 $error = 'El nombre comercial es obligatorio';
             } else {
-                $portadaPath = null;
+                $portadaBlob = null;
+                $portadaMime = null;
                 if (isset($_FILES['portada']) && $_FILES['portada']['error'] === UPLOAD_ERR_OK) {
-                    $uploadDir = BASE_PATH . 'public/assets/uploads/portadas/';
-                    if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
                     $ext = strtolower(pathinfo($_FILES['portada']['name'], PATHINFO_EXTENSION));
                     if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
-                        $filename = 'portada_' . uniqid() . '.' . $ext;
-                        if (move_uploaded_file($_FILES['portada']['tmp_name'], $uploadDir . $filename)) {
-                            $portadaPath = 'assets/uploads/portadas/' . $filename;
-                        }
+                        $portadaBlob = file_get_contents($_FILES['portada']['tmp_name']);
+                        $mimeMap = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'];
+                        $portadaMime = $mimeMap[$ext] ?? 'image/jpeg';
                     }
                 }
                 try {
-                    $this->emprendimientoRepo->insert([
+                    $idEmprendimiento = $this->emprendimientoRepo->insert([
                         'nombre_comercial' => $nombreComercial,
                         'nit' => $nit,
                         'descripcion' => $descripcion,
@@ -177,8 +175,14 @@ class DashboardController extends Controller
                         'color_primario' => $plantilla['color_primario'],
                         'color_secundario' => $plantilla['color_secundario'],
                         'color_texto' => $plantilla['color_texto'] ?? '#1A1A2E',
-                        'portada' => $portadaPath
                     ], $usuario['id']);
+
+                    if ($portadaBlob) {
+                        $this->emprendimientoRepo->updatePersonalizacion($idEmprendimiento, [
+                            'portada_blob' => $portadaBlob,
+                            'portada_mime' => $portadaMime
+                        ]);
+                    }
 
                     $this->redirect(BASE_URL . '/dashboard?success=1');
                 } catch (\Exception $e) {
@@ -266,66 +270,32 @@ class DashboardController extends Controller
 
             // Handle logo upload
             if (isset($_FILES['logo_personalizado']) && $_FILES['logo_personalizado']['error'] === UPLOAD_ERR_OK) {
-                $uploadDir = BASE_PATH . 'public/assets/uploads/logos/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
-                }
                 $ext = strtolower(pathinfo($_FILES['logo_personalizado']['name'], PATHINFO_EXTENSION));
-                $filename = 'logo_' . $idEmprendimiento . '_' . uniqid() . '.' . $ext;
-                $dest = $uploadDir . $filename;
-                if (move_uploaded_file($_FILES['logo_personalizado']['tmp_name'], $dest)) {
-                    $data['logo_personalizado'] = 'assets/uploads/logos/' . $filename;
-                    // Remove old logo if exists
-                    if (!empty($personalizacion['logo_personalizado'])) {
-                        $old = BASE_PATH . 'public/' . $personalizacion['logo_personalizado'];
-                        if (file_exists($old) && is_file($old)) {
-                            unlink($old);
-                        }
-                    }
+                if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+                    $data['logo_blob'] = file_get_contents($_FILES['logo_personalizado']['tmp_name']);
+                    $mimeMap = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'];
+                    $data['logo_mime'] = $mimeMap[$ext] ?? 'image/jpeg';
                 }
             }
 
             // Handle banner upload
             if (isset($_FILES['banner_personalizado']) && $_FILES['banner_personalizado']['error'] === UPLOAD_ERR_OK) {
-                $uploadDir = BASE_PATH . 'public/assets/uploads/banners/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
-                }
                 $ext = strtolower(pathinfo($_FILES['banner_personalizado']['name'], PATHINFO_EXTENSION));
-                $filename = 'banner_' . $idEmprendimiento . '_' . uniqid() . '.' . $ext;
-                $dest = $uploadDir . $filename;
-                if (move_uploaded_file($_FILES['banner_personalizado']['tmp_name'], $dest)) {
-                    $data['banner_personalizado'] = 'assets/uploads/banners/' . $filename;
-                    // Remove old banner if exists
-                    if (!empty($personalizacion['banner_personalizado'])) {
-                        $old = BASE_PATH . 'public/' . $personalizacion['banner_personalizado'];
-                        if (file_exists($old) && is_file($old)) {
-                            unlink($old);
-                        }
-                    }
+                if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+                    $data['banner_blob'] = file_get_contents($_FILES['banner_personalizado']['tmp_name']);
+                    $mimeMap = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'];
+                    $data['banner_mime'] = $mimeMap[$ext] ?? 'image/jpeg';
                 }
             }
 
             // Handle logo removal
             if (isset($_POST['eliminar_logo']) && $_POST['eliminar_logo'] === '1') {
-                if (!empty($personalizacion['logo_personalizado'])) {
-                    $old = BASE_PATH . 'public/' . $personalizacion['logo_personalizado'];
-                    if (file_exists($old) && is_file($old)) {
-                        unlink($old);
-                    }
-                }
-                $data['logo_personalizado'] = null;
+                $data['eliminar_logo'] = true;
             }
 
             // Handle banner removal
             if (isset($_POST['eliminar_banner']) && $_POST['eliminar_banner'] === '1') {
-                if (!empty($personalizacion['banner_personalizado'])) {
-                    $old = BASE_PATH . 'public/' . $personalizacion['banner_personalizado'];
-                    if (file_exists($old) && is_file($old)) {
-                        unlink($old);
-                    }
-                }
-                $data['banner_personalizado'] = null;
+                $data['eliminar_banner'] = true;
             }
 
             $this->emprendimientoRepo->updatePersonalizacion((int)$idEmprendimiento, $data);

@@ -35,10 +35,10 @@ class UsuarioRepository
 
     public function getAvatar(int $id): string
     {
-        $stmt = $this->conn->prepare("SELECT avatar FROM usuarios WHERE id_usuario = ?");
+        $stmt = $this->conn->prepare("SELECT avatar_blob FROM usuarios WHERE id_usuario = ?");
         $stmt->execute([$id]);
-        $avatar = $stmt->fetchColumn();
-        return $avatar ?: 'assets/avatars/default/avatar_1.jpg';
+        $blob = $stmt->fetchColumn();
+        return $blob ? 'serve.php?t=avatar&id=' . $id : 'assets/avatars/default/avatar_1.jpg';
     }
 
     public function getRoles(int $id): array
@@ -78,10 +78,16 @@ class UsuarioRepository
         return (int)$this->conn->lastInsertId();
     }
 
-    public function updateAvatar(int $id, string $avatar): void
+    public function updateAvatarBlob(int $id, string $blob, string $mime): void
     {
-        $stmt = $this->conn->prepare("UPDATE usuarios SET avatar = ? WHERE id_usuario = ?");
-        $stmt->execute([$avatar, $id]);
+        $stmt = $this->conn->prepare("UPDATE usuarios SET avatar_blob = ?, avatar_mime = ? WHERE id_usuario = ?");
+        $stmt->execute([$blob, $mime, $id]);
+    }
+
+    public function clearAvatarBlob(int $id): void
+    {
+        $stmt = $this->conn->prepare("UPDATE usuarios SET avatar_blob = NULL, avatar_mime = NULL WHERE id_usuario = ?");
+        $stmt->execute([$id]);
     }
 
     public function insertUsuarioRol(int $idUsuario, int $idRol): void

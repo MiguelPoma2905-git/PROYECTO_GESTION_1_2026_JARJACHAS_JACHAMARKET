@@ -286,7 +286,7 @@
             </a>
             <form method="POST" action="<?= BASE_URL ?>/admin/seed-demo" style="margin:0">
                 <button type="submit" class="btn-icon edit" style="padding:12px 24px;font-size:13px;background:rgba(99,102,241,0.12);color:#6366f1">
-                    <i class="fas fa-database"></i> Cargar Datos Demo (Electrodomésticos)
+                    <i class="fas fa-database"></i> Cargar Datos Base
                 </button>
             </form>
         </div>

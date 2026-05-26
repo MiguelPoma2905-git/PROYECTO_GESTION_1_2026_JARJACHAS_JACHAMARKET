@@ -116,9 +116,9 @@ composer install
 3. Crea la base de datos `db_jacha` en MySQL y ejecuta el schema:
 ```sql
 -- Abre phpMyAdmin o MySQL CLI y ejecuta:
-source sql/Top_2.sql
+source sql/top_3.sql
 ```
-O importa `sql/Top_2.sql` desde phpMyAdmin.
+O importa `sql/top_3.sql` desde phpMyAdmin.
 
 4. Configura el mail en `config/mail.php` para OTP:
 ```php
@@ -205,7 +205,7 @@ PROYECTO_GESTION_1_2026_JARJACHAS_JACHAMARKET/
 │   ├── Models/              # Modelos (OTP)
 │   ├── Repositories/        # Acceso a datos
 │   └── Views/               # Plantillas (auth, dashboard, shop, admin, perfil)
-├── sql/                     # Schemas, migrations, seeds
+├── sql/                     # Schema completo (top_3.sql)
 ├── vendor/                  # Composer dependencies
 ├── setup-admin.bat          # Script para crear super admin (Windows)
 ├── setup-admin.php          # Script PHP para crear super admin
@@ -242,4 +242,4 @@ PROYECTO_GESTION_1_2026_JARJACHAS_JACHAMARKET/
 - `public/uploads/` — imágenes de productos subidas
 - `public/assets/uploads/` — logos y banners subidos
 - `*.log` — archivos de log
-- `php_err.txt`, `test_db.php`, `db_check.php` — temporales
+- `public/uploads/`, `public/assets/uploads/` — uploads temporales (ignorados por git)

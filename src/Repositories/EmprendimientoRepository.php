@@ -10,12 +10,18 @@ class EmprendimientoRepository
         $this->conn = \getDB();
     }
 
+    private function imgUrl(string $type, int $id): string
+    {
+        return 'serve.php?t=' . $type . '&id=' . $id;
+    }
+
     public function findByPropietario(int $idPropietario): array
     {
         $stmt = $this->conn->prepare("
             SELECT e.*, p.id_plantilla, p.nombre as plantilla_nombre,
                    pe.color_primario, pe.color_secundario, pe.color_texto, pe.color_fondo,
-                   pe.logo_personalizado, pe.banner_personalizado, pe.portada, pe.modo_oscuro, pe.tipografia, pe.faqs,
+                   pe.modo_oscuro, pe.tipografia, pe.faqs,
+                   pe.logo_blob, pe.banner_blob, pe.portada_blob,
                    (SELECT COUNT(*) FROM productos WHERE id_emprendimiento = e.id_emprendimiento) as total_productos
             FROM emprendimientos e
             LEFT JOIN personalizacion_emprendimiento pe ON e.id_emprendimiento = pe.id_emprendimiento
@@ -24,7 +30,7 @@ class EmprendimientoRepository
             ORDER BY e.id_emprendimiento DESC
         ");
         $stmt->execute([$idPropietario]);
-        return $stmt->fetchAll();
+        return $this->injectImgUrls($stmt->fetchAll());
     }
 
     public function findAprobadosExcept(int $exceptUserId): array
@@ -32,7 +38,7 @@ class EmprendimientoRepository
         $stmt = $this->conn->prepare("
             SELECT e.id_emprendimiento, e.nombre_comercial, e.descripcion, e.telefono,
                    p.nombre as plantilla_nombre, pe.color_primario, pe.color_secundario, pe.color_texto,
-                   pe.logo_personalizado, pe.banner_personalizado, pe.portada, pe.tipografia,
+                   pe.logo_blob, pe.banner_blob, pe.portada_blob, pe.tipografia,
                    (SELECT COUNT(*) FROM productos WHERE id_emprendimiento = e.id_emprendimiento) as total_productos,
                    e.id_emprendimiento as orden_nuevos
             FROM emprendimientos e
@@ -43,7 +49,7 @@ class EmprendimientoRepository
             LIMIT 50
         ");
         $stmt->execute([$exceptUserId]);
-        return $stmt->fetchAll();
+        return $this->injectImgUrls($stmt->fetchAll());
     }
 
     public function findFeatured(): array
@@ -51,7 +57,7 @@ class EmprendimientoRepository
         $stmt = $this->conn->prepare("
             SELECT e.id_emprendimiento, e.nombre_comercial, e.descripcion, 
                    p.nombre as plantilla_nombre, p.color_primario, p.color_secundario,
-                   pe.logo_personalizado, pe.banner_personalizado, pe.portada
+                   pe.logo_blob, pe.banner_blob, pe.portada_blob
             FROM emprendimientos e
             JOIN personalizacion_emprendimiento pe ON e.id_emprendimiento = pe.id_emprendimiento
             JOIN plantillas p ON pe.id_plantilla = p.id_plantilla
@@ -59,7 +65,7 @@ class EmprendimientoRepository
             LIMIT 6
         ");
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $this->injectImgUrls($stmt->fetchAll());
     }
 
     public function findById(int $id): ?array
@@ -67,7 +73,8 @@ class EmprendimientoRepository
         $stmt = $this->conn->prepare("
             SELECT e.*, p.id_plantilla, p.nombre as plantilla_nombre,
                    pe.color_primario, pe.color_secundario, pe.color_fondo, pe.color_texto,
-                   pe.logo_personalizado, pe.banner_personalizado, pe.portada, pe.modo_oscuro, pe.tipografia, pe.faqs
+                   pe.modo_oscuro, pe.tipografia, pe.faqs,
+                   pe.logo_blob, pe.banner_blob, pe.portada_blob
             FROM emprendimientos e
             LEFT JOIN personalizacion_emprendimiento pe ON e.id_emprendimiento = pe.id_emprendimiento
             LEFT JOIN plantillas p ON pe.id_plantilla = p.id_plantilla
@@ -75,21 +82,34 @@ class EmprendimientoRepository
         ");
         $stmt->execute([$id]);
         $result = $stmt->fetch();
-        return $result ?: null;
+        return $result ? $this->injectImgUrls([$result])[0] : null;
     }
 
     public function findByIdAndPropietario(int $id, int $idPropietario): ?array
     {
         $stmt = $this->conn->prepare("
             SELECT e.*, pe.id_plantilla, pe.color_primario, pe.color_secundario, pe.color_fondo, pe.color_texto,
-                   pe.logo_personalizado, pe.banner_personalizado, pe.portada, pe.modo_oscuro, pe.tipografia, pe.faqs
+                   pe.modo_oscuro, pe.tipografia, pe.faqs,
+                   pe.logo_blob, pe.banner_blob, pe.portada_blob
             FROM emprendimientos e
             LEFT JOIN personalizacion_emprendimiento pe ON e.id_emprendimiento = pe.id_emprendimiento
             WHERE e.id_emprendimiento = ? AND e.id_propietario = ?
         ");
         $stmt->execute([$id, $idPropietario]);
         $result = $stmt->fetch();
-        return $result ?: null;
+        return $result ? $this->injectImgUrls([$result])[0] : null;
+    }
+
+    private function injectImgUrls(array $rows): array
+    {
+        foreach ($rows as &$row) {
+            $id = $row['id_emprendimiento'] ?? 0;
+            $row['logo_personalizado'] = !empty($row['logo_blob']) ? $this->imgUrl('logo', $id) : null;
+            $row['banner_personalizado'] = !empty($row['banner_blob']) ? $this->imgUrl('banner', $id) : null;
+            $row['portada'] = !empty($row['portada_blob']) ? $this->imgUrl('portada', $id) : null;
+            unset($row['logo_blob'], $row['banner_blob'], $row['portada_blob']);
+        }
+        return $rows;
     }
 
     public function insert(array $data, int $idPropietario): int
@@ -104,8 +124,8 @@ class EmprendimientoRepository
             $idEmprendimiento = (int)$this->conn->lastInsertId();
 
             $stmt = $this->conn->prepare("
-                INSERT INTO personalizacion_emprendimiento (id_emprendimiento, id_plantilla, color_primario, color_secundario, color_fondo, color_texto, modo_oscuro, tipografia, faqs, portada)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO personalizacion_emprendimiento (id_emprendimiento, id_plantilla, color_primario, color_secundario, color_fondo, color_texto, modo_oscuro, tipografia, faqs)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
             $stmt->execute([
                 $idEmprendimiento,
@@ -116,8 +136,7 @@ class EmprendimientoRepository
                 $data['color_texto'] ?? null,
                 $data['modo_oscuro'] ?? 0,
                 $data['tipografia'] ?? 'Inter',
-                $data['faqs'] ?? null,
-                $data['portada'] ?? null
+                $data['faqs'] ?? null
             ]);
 
             $stmt = $this->conn->prepare("
@@ -146,13 +165,20 @@ class EmprendimientoRepository
                    p.color_fondo as plantilla_color_fondo, p.color_texto as plantilla_color_texto, p.activo,
                    pe.id_personalizacion, pe.id_emprendimiento, pe.id_plantilla,
                    pe.color_primario, pe.color_secundario, pe.color_fondo, pe.color_texto,
-                   pe.logo_personalizado, pe.banner_personalizado, pe.modo_oscuro, pe.tipografia, pe.faqs
+                   pe.modo_oscuro, pe.tipografia, pe.faqs,
+                   pe.logo_blob, pe.banner_blob
             FROM personalizacion_emprendimiento pe
             JOIN plantillas p ON pe.id_plantilla = p.id_plantilla
             WHERE pe.id_emprendimiento = ?
         ");
         $stmt->execute([$idEmprendimiento]);
         $result = $stmt->fetch();
+        if ($result) {
+            $id = $result['id_emprendimiento'] ?? 0;
+            $result['logo_personalizado'] = !empty($result['logo_blob']) ? $this->imgUrl('logo', $id) : null;
+            $result['banner_personalizado'] = !empty($result['banner_blob']) ? $this->imgUrl('banner', $id) : null;
+            unset($result['logo_blob'], $result['banner_blob']);
+        }
         return $result ?: null;
     }
 
@@ -198,21 +224,39 @@ class EmprendimientoRepository
             $fields[] = 'tipografia = ?';
             $params[] = $data['tipografia'] ?? 'Inter';
         }
-        if (array_key_exists('logo_personalizado', $data)) {
-            $fields[] = 'logo_personalizado = ?';
-            $params[] = $data['logo_personalizado'];
+        if (array_key_exists('logo_blob', $data)) {
+            $fields[] = 'logo_blob = ?';
+            $params[] = $data['logo_blob'];
         }
-        if (array_key_exists('banner_personalizado', $data)) {
-            $fields[] = 'banner_personalizado = ?';
-            $params[] = $data['banner_personalizado'];
+        if (array_key_exists('logo_mime', $data)) {
+            $fields[] = 'logo_mime = ?';
+            $params[] = $data['logo_mime'];
+        }
+        if (array_key_exists('banner_blob', $data)) {
+            $fields[] = 'banner_blob = ?';
+            $params[] = $data['banner_blob'];
+        }
+        if (array_key_exists('banner_mime', $data)) {
+            $fields[] = 'banner_mime = ?';
+            $params[] = $data['banner_mime'];
+        }
+        if (array_key_exists('portada_blob', $data)) {
+            $fields[] = 'portada_blob = ?';
+            $params[] = $data['portada_blob'];
+        }
+        if (array_key_exists('portada_mime', $data)) {
+            $fields[] = 'portada_mime = ?';
+            $params[] = $data['portada_mime'];
         }
         if (array_key_exists('faqs', $data)) {
             $fields[] = 'faqs = ?';
             $params[] = $data['faqs'];
         }
-        if (array_key_exists('portada', $data)) {
-            $fields[] = 'portada = ?';
-            $params[] = $data['portada'];
+        if (array_key_exists('eliminar_logo', $data) && $data['eliminar_logo']) {
+            $fields[] = 'logo_blob = NULL, logo_mime = NULL';
+        }
+        if (array_key_exists('eliminar_banner', $data) && $data['eliminar_banner']) {
+            $fields[] = 'banner_blob = NULL, banner_mime = NULL';
         }
 
         if (empty($fields)) return;

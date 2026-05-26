@@ -1,15 +1,33 @@
--- ==============================================================================
--- SCRIPT UNIFICADO: DB_JACHA - CON PARTICIONES (VERSIÓN FUNCIONAL)
--- Incluye: estructura completa, 5000 registros, ÍNDICE, PARTICIONES, 
--- procedimiento, función, trigger
--- ==============================================================================
+-- ================================================================================
+-- SCRIPT COMPLETO: DB_JACHA - Top_3 (REBUILD COMPLETO CON BLOBS, 12 PLANTILLAS,
+--                  MIGRACIONES TIPOGRAFIA/FAQS/TELEFONO/FECHA_CREACION, PORTADA)
+-- ================================================================================
 
 -- ==============================
 -- 0. LIMPIEZA INICIAL
 -- ==============================
-DROP DATABASE IF EXISTS db_jacha;
-CREATE DATABASE db_jacha CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS db_jacha CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE db_jacha;
+
+DROP TABLE IF EXISTS movimientos_kardex;
+DROP TABLE IF EXISTS inventario;
+DROP TABLE IF EXISTS variantes_producto;
+DROP TABLE IF EXISTS detalles_pedido;
+DROP TABLE IF EXISTS envios_logistica;
+DROP TABLE IF EXISTS pedidos;
+DROP TABLE IF EXISTS personalizacion_emprendimiento;
+DROP TABLE IF EXISTS plantillas;
+DROP TABLE IF EXISTS productos;
+DROP TABLE IF EXISTS categorias;
+DROP TABLE IF EXISTS sucursales;
+DROP TABLE IF EXISTS emprendimientos;
+DROP TABLE IF EXISTS usuario_roles;
+DROP TABLE IF EXISTS otp_verificacion;
+DROP TABLE IF EXISTS rol_permiso;
+DROP TABLE IF EXISTS roles;
+DROP TABLE IF EXISTS permisos;
+DROP TABLE IF EXISTS logs_auditoria;
+DROP TABLE IF EXISTS usuarios;
 
 -- ==============================
 -- 1. TABLAS PRINCIPALES
@@ -40,7 +58,8 @@ CREATE TABLE usuarios (
     email VARCHAR(150) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     telefono VARCHAR(20),
-    avatar VARCHAR(255) NULL,
+    avatar_blob MEDIUMBLOB NULL,
+    avatar_mime VARCHAR(50) NULL,
     bio TEXT NULL,
     ubicacion VARCHAR(100) NULL,
     estado ENUM('Activo', 'Inactivo', 'Suspendido') DEFAULT 'Activo',
@@ -69,7 +88,9 @@ CREATE TABLE emprendimientos (
     id_propietario BIGINT NOT NULL,
     nombre_comercial VARCHAR(150) NOT NULL,
     nit VARCHAR(30) UNIQUE,
+    telefono VARCHAR(20) DEFAULT NULL,
     descripcion TEXT,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     logo_url VARCHAR(255),
     estado ENUM('Pendiente', 'Aprobado', 'Rechazado') DEFAULT 'Pendiente',
     FOREIGN KEY (id_propietario) REFERENCES usuarios(id_usuario)
@@ -104,6 +125,8 @@ CREATE TABLE productos (
     nombre VARCHAR(200) NOT NULL,
     descripcion_larga TEXT,
     atributos JSON NULL,
+    imagen_blob MEDIUMBLOB NULL,
+    imagen_mime VARCHAR(50) NULL,
     precio_base DECIMAL(10,2) NOT NULL,
     stock INT DEFAULT 0,
     estado ENUM('Borrador', 'Publicado', 'Oculto') DEFAULT 'Borrador',
@@ -111,17 +134,18 @@ CREATE TABLE productos (
     actualizado_en DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (id_emprendimiento) REFERENCES emprendimientos(id_emprendimiento) ON DELETE CASCADE,
     FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria),
-    INDEX idx_busqueda (nombre)
+    INDEX idx_busqueda (nombre),
+    INDEX idx_productos_emprendimiento_precio (id_emprendimiento, precio_base)
 ) ENGINE=InnoDB;
 
 CREATE TABLE variantes_producto (
     id_variante BIGINT AUTO_INCREMENT PRIMARY KEY,
     id_producto BIGINT NOT NULL,
     sku VARCHAR(50) UNIQUE NOT NULL,
-    atributo_1 VARCHAR(50), 
-    valor_1 VARCHAR(50),    
-    atributo_2 VARCHAR(50), 
-    valor_2 VARCHAR(50),    
+    atributo_1 VARCHAR(50),
+    valor_1 VARCHAR(50),
+    atributo_2 VARCHAR(50),
+    valor_2 VARCHAR(50),
     precio_adicional DECIMAL(10,2) DEFAULT 0.00,
     FOREIGN KEY (id_producto) REFERENCES productos(id_producto) ON DELETE CASCADE
 ) ENGINE=InnoDB;
@@ -196,9 +220,9 @@ CREATE TABLE detalles_pedido (
     id_pedido BIGINT NOT NULL,
     id_variante BIGINT NOT NULL,
     cantidad INT NOT NULL,
-    precio_unitario DECIMAL(10,2) NOT NULL, 
+    precio_unitario DECIMAL(10,2) NOT NULL,
     subtotal DECIMAL(10,2) NOT NULL,
-    fecha_pedido DATE NOT NULL,
+    fecha_pedido DATE DEFAULT (CURRENT_DATE),
     INDEX idx_pedido (id_pedido),
     INDEX idx_variante (id_variante)
 ) ENGINE=InnoDB;
@@ -208,7 +232,7 @@ CREATE TABLE envios_logistica (
     id_pedido BIGINT NOT NULL UNIQUE,
     id_repartidor BIGINT NULL,
     distancia_km DECIMAL(6,2),
-    tiempo_estimado_min INT,   
+    tiempo_estimado_min INT,
     fecha_despacho DATETIME NULL,
     fecha_entrega DATETIME NULL,
     INDEX idx_pedido (id_pedido),
@@ -238,8 +262,14 @@ CREATE TABLE personalizacion_emprendimiento (
     color_secundario VARCHAR(7),
     color_fondo VARCHAR(7),
     color_texto VARCHAR(7),
-    logo_personalizado VARCHAR(255),
-    banner_personalizado VARCHAR(255),
+    tipografia VARCHAR(100) DEFAULT 'Inter',
+    faqs TEXT,
+    logo_blob MEDIUMBLOB NULL,
+    logo_mime VARCHAR(50) NULL,
+    banner_blob MEDIUMBLOB NULL,
+    banner_mime VARCHAR(50) NULL,
+    portada_blob MEDIUMBLOB NULL,
+    portada_mime VARCHAR(50) NULL,
     modo_oscuro BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (id_emprendimiento) REFERENCES emprendimientos(id_emprendimiento) ON DELETE CASCADE,
     FOREIGN KEY (id_plantilla) REFERENCES plantillas(id_plantilla)
@@ -270,16 +300,22 @@ CREATE TABLE usuario_roles (
 -- ==============================
 -- 8. DATOS INICIALES
 -- ==============================
-INSERT INTO roles (nombre_rol) VALUES 
+INSERT INTO roles (nombre_rol) VALUES
 ('Administrador'), ('Emprendedor'), ('Cliente'), ('Repartidor');
 
-INSERT INTO plantillas (nombre, descripcion, color_primario, color_secundario, activo) VALUES
-('Moderno', 'Diseño limpio y moderno', '#C0392B', '#2C3E50', 1),
-('Elegante', 'Para negocios de moda', '#2C3E50', '#C0392B', 1),
-('Rústico', 'Para artesanías', '#8B4513', '#D2691E', 1),
-('Tecnológico', 'Para electrónica', '#3498DB', '#2C3E50', 1),
-('Gastronómico', 'Para restaurantes', '#E67E22', '#C0392B', 1),
-('Electrodomésticos', 'Diseño moderno y profesional para tiendas de electrodomésticos y tecnología del hogar', '#1A3A5C', '#2C6FBB', 1);
+INSERT INTO plantillas (id_plantilla, nombre, descripcion, color_primario, color_secundario, color_fondo, color_texto, activo) VALUES
+(1,  'Moderno',         'Diseño limpio y moderno',                                    '#C0392B', '#2C3E50', '#FDFBF7', '#1A1A2E', 1),
+(2,  'Elegante',        'Para negocios de moda',                                      '#2C3E50', '#C0392B', '#FDFBF7', '#1A1A2E', 1),
+(3,  'Rústico',         'Para artesanías',                                            '#8B4513', '#D2691E', '#FDFBF7', '#1A1A2E', 1),
+(4,  'Tecnológico',     'Para electrónica',                                           '#1A73E8', '#0D47A1', '#F0F4FF', '#1A1A2E', 1),
+(5,  'Gastronómico',    'Para restaurantes',                                          '#E67E22', '#C0392B', '#FDFBF7', '#1A1A2E', 1),
+(6,  'Electrodomésticos','Diseño moderno para electrodomésticos',                      '#1A3A5C', '#2C6FBB', '#FDFBF7', '#1A1A2E', 1),
+(7,  'ModaViva',        'Tienda de moda y estilo',                                    '#1A1A2E', '#C0392B', '#FDFBF7', '#1A1A2E', 1),
+(8,  'Sabores',         'Restaurante y gastronomía',                                  '#E05A2A', '#C94D22', '#FFF8F0', '#2C1810', 1),
+(9,  'Artesano',        'Productos artesanales',                                      '#8B5E3C', '#6B3FA0', '#FAF6F0', '#2D2D2D', 1),
+(10, 'GlowUp',          'Belleza y cuidado personal',                                 '#8B5CF6', '#EC4899', '#FDFBF7', '#1A1A2E', 1),
+(11, 'FullFit',         'Deportes y fitness',                                         '#10B981', '#059669', '#F0FDF4', '#1A1A2E', 1),
+(12, 'HogarDulce',      'Decoración del hogar',                                       '#D4A574', '#8B6914', '#FFFBF5', '#3D2B1F', 1);
 
 INSERT INTO categorias (nombre, slug) VALUES
 ('Moda', 'moda'),
@@ -289,24 +325,10 @@ INSERT INTO categorias (nombre, slug) VALUES
 ('Hogar', 'hogar');
 
 -- ==============================
--- 9. SUPER ADMINISTRADOR
+-- 9. SUPER ADMINISTRADOR (crear via setup-admin.bat)
 -- ==============================
-INSERT INTO usuarios (nombres, apellidos, email, password_hash, telefono, estado) VALUES
-('Miguel Angel', 'Poma Ramos', 'mikypramos2905@gmail.com', '$2y$10$okmF5BfryvYouyDxkc.P7uLVGs/AhqMZDdeuJrT/UrxTU4xOtLXWi', '71234567', 'Activo');
-
-INSERT INTO usuario_roles (id_usuario, id_rol)
-SELECT u.id_usuario, r.id_rol
-FROM usuarios u, roles r
-WHERE u.email = 'mikypramos2905@gmail.com'
-AND r.nombre_rol IN ('Administrador', 'Emprendedor', 'Cliente');
-
 -- ==============================
--- 10. ÍNDICE
--- ==============================
-CREATE INDEX idx_productos_emprendimiento_precio ON productos(id_emprendimiento, precio_base);
-
--- ==============================
--- 11. FUNCIÓN
+-- 10. FUNCIÓN
 -- ==============================
 DELIMITER //
 CREATE FUNCTION fn_calcular_ganancia_neta(p_precio_venta DECIMAL(10,2), p_costo DECIMAL(10,2), p_impuesto_porcentaje DECIMAL(5,2))
@@ -322,7 +344,7 @@ END //
 DELIMITER ;
 
 -- ==============================
--- 15. PROCEDIMIENTO
+-- 11. PROCEDIMIENTO
 -- ==============================
 DELIMITER //
 CREATE PROCEDURE sp_reporte_ventas_emprendimiento(IN p_id_emprendimiento INT, IN p_fecha_inicio DATE, IN p_fecha_fin DATE)
@@ -337,21 +359,22 @@ END //
 DELIMITER ;
 
 -- ==============================
--- 16. TRIGGER
+-- 12. TRIGGER
 -- ==============================
 DELIMITER //
 CREATE TRIGGER trg_actualizar_stock_venta
 AFTER INSERT ON detalles_pedido
 FOR EACH ROW
 BEGIN
-    UPDATE productos SET stock = stock - NEW.cantidad WHERE id_producto = NEW.id_variante;
+    UPDATE productos p
+    JOIN variantes_producto vp ON p.id_producto = vp.id_producto
+    SET p.stock = p.stock - NEW.cantidad
+    WHERE vp.id_variante = NEW.id_variante;
 END //
 DELIMITER ;
 
 -- ==============================
--- 17. VERIFICACIÓN
+-- 13. VERIFICACIÓN
 -- ==============================
-SELECT '=== DB_JACHA CREADA ===' AS mensaje;
-SELECT COUNT(*) AS total_productos FROM productos;
-SELECT COUNT(*) AS total_pedidos FROM pedidos;
+SELECT '=== DB_JACHA Top_3 CREADA CON ÉXITO ===' AS mensaje;
 SHOW TABLES;

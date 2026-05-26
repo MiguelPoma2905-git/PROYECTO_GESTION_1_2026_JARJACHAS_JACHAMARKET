@@ -237,28 +237,16 @@ class AuthController extends Controller
                 }
             }
 
-            $avatarFinal = $temp['avatar'] ?? 'assets/avatars/default/avatar_1.jpg';
+            $avatarFinal = $temp['avatar'] ?? null;
 
-            if (strpos($avatarFinal, 'uploads/temp_avatars/') === 0) {
+            if ($avatarFinal && strpos($avatarFinal, 'uploads/temp_avatars/') === 0) {
                 $tempPath = BASE_PATH . 'public/' . $avatarFinal;
-                $extension = pathinfo($tempPath, PATHINFO_EXTENSION);
-                $destinoDir = BASE_PATH . 'public/uploads/avatars/';
-
-                if (!file_exists($destinoDir)) {
-                    mkdir($destinoDir, 0777, true);
-                }
-
-                $nombreFinal = 'avatar_' . $idUsuario . '_' . time() . '.' . $extension;
-                $destino = $destinoDir . $nombreFinal;
-                $avatarFinalDb = 'uploads/avatars/' . $nombreFinal;
-
                 if (file_exists($tempPath)) {
-                    rename($tempPath, $destino);
-                    $avatarFinal = $avatarFinalDb;
-                    $this->usuarioRepo->updateAvatar($idUsuario, $avatarFinal);
+                    $blob = file_get_contents($tempPath);
+                    $mime = mime_content_type($tempPath) ?: 'image/jpeg';
+                    $this->usuarioRepo->updateAvatarBlob($idUsuario, $blob, $mime);
+                    unlink($tempPath);
                 }
-            } else {
-                $this->usuarioRepo->updateAvatar($idUsuario, $avatarFinal);
             }
 
             $db->commit();

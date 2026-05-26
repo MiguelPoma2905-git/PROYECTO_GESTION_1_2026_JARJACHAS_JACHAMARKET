@@ -109,19 +109,14 @@ class ProductoController extends Controller
             }
             $atributosJson = !empty($atributos) ? json_encode($atributos, JSON_UNESCAPED_UNICODE) : null;
 
-            $imagenUrl = '';
+            $imagenBlob = null;
+            $imagenMime = null;
             if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-                $uploadDir = BASE_PATH . 'public/uploads/productos/';
-                if (!file_exists($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
-                }
-                $extension = strtolower(pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION));
-                $nombreArchivo = 'prod_' . uniqid() . '.' . $extension;
-                $ruta = $uploadDir . $nombreArchivo;
-                if (move_uploaded_file($_FILES['imagen']['tmp_name'], $ruta)) {
-                    $imagenUrl = 'uploads/productos/' . $nombreArchivo;
-                }
+                $imagenBlob = file_get_contents($_FILES['imagen']['tmp_name']);
+                $imagenMime = mime_content_type($_FILES['imagen']['tmp_name']) ?: 'image/jpeg';
             }
+
+            $eliminarImagen = !empty($_POST['eliminar_imagen']);
 
             if (empty($nombre)) {
                 $error = 'El nombre del producto es obligatorio';
@@ -136,7 +131,9 @@ class ProductoController extends Controller
                         'atributos' => $atributosJson,
                         'estado' => $estado,
                         'stock' => $stock,
-                        'imagen_url' => $imagenUrl
+                        'imagen_blob' => $imagenBlob,
+                        'imagen_mime' => $imagenMime,
+                        'eliminar_imagen' => $eliminarImagen
                     ]);
                 } else {
                     $this->productoRepo->insert([
@@ -146,7 +143,8 @@ class ProductoController extends Controller
                         'atributos' => $atributosJson,
                         'estado' => $estado,
                         'stock' => $stock,
-                        'imagen_url' => $imagenUrl
+                        'imagen_blob' => $imagenBlob,
+                        'imagen_mime' => $imagenMime
                     ], $idEmprendimiento);
                 }
                 $this->redirect(BASE_URL . '/productos?id_emprendimiento=' . $idEmprendimiento . '&success=1');

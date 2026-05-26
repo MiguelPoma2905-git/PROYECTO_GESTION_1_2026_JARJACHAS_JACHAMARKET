@@ -15,6 +15,8 @@ $p = fn($k, $d = '') => htmlspecialchars($emprendimiento[$k] ?? $d);
 $tipografia = htmlspecialchars($emprendimiento['tipografia'] ?? 'Inter');
 
 $themeFile = match($tid) {
+    1 => 'moderno.php',
+    2 => 'elegante.php',
     6 => 'electrodomesticos.php',
     4 => 'tecnologico.php',
     7 => 'modaviva.php',

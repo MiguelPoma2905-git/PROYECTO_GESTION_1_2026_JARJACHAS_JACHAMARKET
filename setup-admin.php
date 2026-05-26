@@ -3,7 +3,7 @@
  * Script para crear un Super Administrador en JACHAmarket
  * 
  * Uso: php setup-admin.php
- *      o双击 setup-admin.bat (Windows)
+ *      setup-admin.bat (Windows)
  */
 
 // ─── Configurar output para consola ───
@@ -99,20 +99,17 @@ try {
     $stmt->execute([$nombres, $apellidos, $email, $hash, $telefono ?: null]);
     $idUsuario = (int)$conn->lastInsertId();
 
-    // Asignar rol Administrador + Cliente
+    // Asignar roles: Administrador, Emprendedor, Cliente
+    $rolesSuper = ['Administrador', 'Emprendedor', 'Cliente'];
     $stmt = $conn->prepare("SELECT id_rol FROM roles WHERE nombre_rol = ?");
-    $stmt->execute(['Administrador']);
-    $idAdmin = (int)$stmt->fetchColumn();
-
-    $stmt = $conn->prepare("INSERT INTO usuario_roles (id_usuario, id_rol) VALUES (?, ?)");
-    $stmt->execute([$idUsuario, $idAdmin]);
-
-    // Tambien asignar Cliente (opcional util)
-    $stmt = $conn->prepare("SELECT id_rol FROM roles WHERE nombre_rol = ?");
-    $stmt->execute(['Cliente']);
-    $idCliente = (int)$stmt->fetchColumn();
-    $stmt = $conn->prepare("INSERT IGNORE INTO usuario_roles (id_usuario, id_rol) VALUES (?, ?)");
-    $stmt->execute([$idUsuario, $idCliente]);
+    $insertRol = $conn->prepare("INSERT IGNORE INTO usuario_roles (id_usuario, id_rol) VALUES (?, ?)");
+    foreach ($rolesSuper as $rolNombre) {
+        $stmt->execute([$rolNombre]);
+        $idRol = (int)$stmt->fetchColumn();
+        if ($idRol) {
+            $insertRol->execute([$idUsuario, $idRol]);
+        }
+    }
 
     $conn->commit();
 
@@ -120,7 +117,7 @@ try {
     echo "   Email:      $email\n";
     echo "   Nombre:     $nombres $apellidos\n";
     echo "   ID Usuario: $idUsuario\n";
-    echo "   Rol:        Administrador\n";
+    echo "   Roles:      Administrador, Emprendedor, Cliente\n";
     echo "\nIngresa en: " . ($_SERVER['HTTP_HOST'] ?? 'http://localhost/PROYECTO_GESTION_1_2026_JARJACHAS_JACHAMARKET') . "/login\n";
 
 } catch (Exception $e) {

@@ -107,14 +107,19 @@ class PerfilController extends Controller
         if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
             $ext = strtolower(pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION));
             if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
-                $uploadDir = BASE_PATH . 'public/assets/avatars/';
-                if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-                $name = 'avatar_' . $id . '_' . uniqid() . '.' . $ext;
-                if (move_uploaded_file($_FILES['avatar']['tmp_name'], $uploadDir . $name)) {
-                    $avatarPath = 'assets/avatars/' . $name;
-                    $db->prepare("UPDATE usuarios SET avatar = ? WHERE id_usuario = ?")->execute([$avatarPath, $id]);
-                }
+                $blob = file_get_contents($_FILES['avatar']['tmp_name']);
+                $mimeMap = [
+                    'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg',
+                    'png' => 'image/png', 'gif' => 'image/gif',
+                    'webp' => 'image/webp'
+                ];
+                $mime = $mimeMap[$ext] ?? 'image/jpeg';
+                $this->usuarioRepo->updateAvatarBlob($id, $blob, $mime);
             }
+        }
+
+        if (isset($_POST['eliminar_avatar']) && $_POST['eliminar_avatar'] === '1') {
+            $this->usuarioRepo->clearAvatarBlob($id);
         }
 
         $_SESSION['perfil_msg'] = 'Datos actualizados correctamente';

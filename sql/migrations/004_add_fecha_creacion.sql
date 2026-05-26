@@ -1,2 +1,0 @@
-ALTER TABLE emprendimientos
-ADD COLUMN fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER descripcion;

@@ -10,46 +10,77 @@ class ProductoRepository
         $this->conn = \getDB();
     }
 
+    private function rowsWithImgUrl(array $rows): array
+    {
+        foreach ($rows as &$row) {
+            $id = $row['id_producto'] ?? 0;
+            $row['imagen_url'] = !empty($row['imagen_blob']) ? 'serve.php?t=producto&id=' . $id : '';
+            unset($row['imagen_blob'], $row['imagen_mime']);
+        }
+        return $rows;
+    }
+
     public function findByEmprendimiento(int $idEmprendimiento): array
     {
-        $stmt = $this->conn->prepare("SELECT * FROM productos WHERE id_emprendimiento = ? ORDER BY id_producto DESC");
+        $stmt = $this->conn->prepare("
+            SELECT id_producto, id_emprendimiento, id_categoria, nombre, descripcion_larga, atributos,
+                   imagen_blob, imagen_mime,
+                   precio_base, stock, estado, creado_en, actualizado_en
+            FROM productos WHERE id_emprendimiento = ? ORDER BY id_producto DESC
+        ");
         $stmt->execute([$idEmprendimiento]);
-        return $stmt->fetchAll();
+        return $this->rowsWithImgUrl($stmt->fetchAll());
     }
 
     public function findPublishedByEmprendimiento(int $idEmprendimiento): array
     {
-        $stmt = $this->conn->prepare("SELECT * FROM productos WHERE id_emprendimiento = ? AND estado = 'Publicado' ORDER BY id_producto DESC");
+        $stmt = $this->conn->prepare("
+            SELECT id_producto, id_emprendimiento, id_categoria, nombre, descripcion_larga, atributos,
+                   imagen_blob, imagen_mime,
+                   precio_base, stock, estado, creado_en, actualizado_en
+            FROM productos WHERE id_emprendimiento = ? AND estado = 'Publicado' ORDER BY id_producto DESC
+        ");
         $stmt->execute([$idEmprendimiento]);
-        return $stmt->fetchAll();
+        return $this->rowsWithImgUrl($stmt->fetchAll());
     }
 
     public function findById(int $id): ?array
     {
-        $stmt = $this->conn->prepare("SELECT * FROM productos WHERE id_producto = ?");
+        $stmt = $this->conn->prepare("
+            SELECT id_producto, id_emprendimiento, id_categoria, nombre, descripcion_larga, atributos,
+                   imagen_blob, imagen_mime,
+                   precio_base, stock, estado, creado_en, actualizado_en
+            FROM productos WHERE id_producto = ?
+        ");
         $stmt->execute([$id]);
         $result = $stmt->fetch();
-        return $result ?: null;
+        return $result ? $this->rowsWithImgUrl([$result])[0] : null;
     }
 
     public function findByIdAndEmprendimiento(int $id, int $idEmprendimiento): ?array
     {
-        $stmt = $this->conn->prepare("SELECT * FROM productos WHERE id_producto = ? AND id_emprendimiento = ?");
+        $stmt = $this->conn->prepare("
+            SELECT id_producto, id_emprendimiento, id_categoria, nombre, descripcion_larga, atributos,
+                   imagen_blob, imagen_mime,
+                   precio_base, stock, estado, creado_en, actualizado_en
+            FROM productos WHERE id_producto = ? AND id_emprendimiento = ?
+        ");
         $stmt->execute([$id, $idEmprendimiento]);
         $result = $stmt->fetch();
-        return $result ?: null;
+        return $result ? $this->rowsWithImgUrl([$result])[0] : null;
     }
 
     public function insert(array $data, int $idEmprendimiento): int
     {
         $stmt = $this->conn->prepare("
-            INSERT INTO productos (id_emprendimiento, nombre, precio_base, descripcion_larga, atributos, estado, stock, imagen_url)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO productos (id_emprendimiento, nombre, precio_base, descripcion_larga, atributos, estado, stock, imagen_blob, imagen_mime)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         $stmt->execute([
             $idEmprendimiento, $data['nombre'], $data['precio_base'],
             $data['descripcion'] ?? null, $data['atributos'] ?? null,
-            $data['estado'] ?? 'Borrador', $data['stock'] ?? 0, $data['imagen_url'] ?? ''
+            $data['estado'] ?? 'Borrador', $data['stock'] ?? 0,
+            $data['imagen_blob'] ?? null, $data['imagen_mime'] ?? null
         ]);
         return (int)$this->conn->lastInsertId();
     }
@@ -59,9 +90,15 @@ class ProductoRepository
         $sql = "UPDATE productos SET nombre = ?, precio_base = ?, descripcion_larga = ?, atributos = ?, estado = ?, stock = ?";
         $params = [$data['nombre'], $data['precio_base'], $data['descripcion'] ?? null, $data['atributos'] ?? null, $data['estado'] ?? 'Borrador', $data['stock'] ?? 0];
 
-        if (!empty($data['imagen_url'])) {
-            $sql .= ", imagen_url = ?";
-            $params[] = $data['imagen_url'];
+        if (!empty($data['imagen_blob'])) {
+            $sql .= ", imagen_blob = ?";
+            $params[] = $data['imagen_blob'];
+            $sql .= ", imagen_mime = ?";
+            $params[] = $data['imagen_mime'] ?? 'image/jpeg';
+        }
+
+        if (!empty($data['eliminar_imagen'])) {
+            $sql .= ", imagen_blob = NULL, imagen_mime = NULL";
         }
 
         $sql .= " WHERE id_producto = ? AND id_emprendimiento = ?";
@@ -78,7 +115,6 @@ class ProductoRepository
         return $stmt->execute([$id, $idEmprendimiento]);
     }
 
-    // For db_demo.php queries
     public function countAll(): int
     {
         $stmt = $this->conn->query("SELECT COUNT(*) as total FROM productos WHERE estado = 'Publicado'");
@@ -97,6 +133,6 @@ class ProductoRepository
         $stmt->execute($params);
         $rows = $stmt->fetchAll();
 
-        return ['data' => $rows, 'total' => $total];
+        return ['data' => $this->rowsWithImgUrl($rows), 'total' => $total];
     }
 }

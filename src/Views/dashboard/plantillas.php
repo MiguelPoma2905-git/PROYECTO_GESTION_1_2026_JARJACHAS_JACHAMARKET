@@ -171,6 +171,8 @@
                 <?php
                 $previewId = (int)($personalizacion['id_plantilla'] ?? 0);
                 $previewFile = match($previewId) {
+                    1 => 'moderno.php',
+                    2 => 'elegante.php',
                     6 => 'electrodomesticos.php',
                     4 => 'tecnologico.php',
                     7 => 'modaviva.php',

@@ -256,7 +256,7 @@ class AdminController extends Controller
         }
 
         $db = $this->getDB();
-        $sql = file_get_contents(__DIR__ . '/../../sql/seed_electrodomesticos.sql');
+        $sql = file_get_contents(__DIR__ . '/../../sql/top_3.sql');
 
         if (!$sql) {
             $_SESSION['admin_error'] = 'No se pudo leer el archivo SQL';
@@ -267,7 +267,7 @@ class AdminController extends Controller
         $count = 0;
         foreach ($statements as $statement) {
             $statement = trim($statement);
-            if (!empty($statement) && stripos($statement, 'SELECT') !== 0) {
+            if (!empty($statement) && stripos($statement, 'SELECT') !== 0 && stripos($statement, 'CREATE DATABASE') === false && stripos($statement, 'USE ') === false && stripos($statement, 'DROP TABLE') === false) {
                 try {
                     $db->exec($statement);
                     $count++;
@@ -277,7 +277,7 @@ class AdminController extends Controller
             }
         }
 
-        $_SESSION['admin_msg'] = 'Datos demo insertados correctamente (negocio + 20 productos)';
+        $_SESSION['admin_msg'] = 'Datos base insertados correctamente';
         $this->redirect(BASE_URL . '/admin');
     }
 
@@ -302,7 +302,7 @@ class AdminController extends Controller
 
         $db->exec("SET FOREIGN_KEY_CHECKS = 1");
 
-        $sql = file_get_contents(__DIR__ . '/../../sql/Top_2.sql');
+        $sql = file_get_contents(__DIR__ . '/../../sql/top_3.sql');
         if ($sql) {
             $statements = explode(';', $sql);
             foreach ($statements as $statement) {
@@ -315,34 +315,6 @@ class AdminController extends Controller
                     }
                 }
             }
-        }
-
-        // Run migrations
-        $migrationsDir = __DIR__ . '/../../sql/migrations';
-        if (is_dir($migrationsDir)) {
-            $migrations = glob($migrationsDir . '/*.sql');
-            sort($migrations);
-            foreach ($migrations as $migrationFile) {
-                $migrationSql = file_get_contents($migrationFile);
-                if ($migrationSql) {
-                    try {
-                        $db->exec($migrationSql);
-                    } catch (\PDOException $e) {
-                        error_log("Admin Reset DB Migration: " . $e->getMessage());
-                    }
-                }
-            }
-        }
-
-        $hash = password_hash('Pomada-23', PASSWORD_DEFAULT);
-        $db->prepare("INSERT INTO usuarios (nombres, apellidos, email, password_hash, telefono, estado) VALUES (?, ?, ?, ?, ?, 'Activo')")
-            ->execute(['Miguel Angel', 'Poma Ramos', 'mikypramos2905@gmail.com', $hash, '71234567']);
-        $idAdmin = (int)$db->lastInsertId();
-
-        $adminRoles = ['Administrador', 'Emprendedor', 'Cliente'];
-        $insertStmt = $db->prepare("INSERT INTO usuario_roles (id_usuario, id_rol) SELECT ?, id_rol FROM roles WHERE nombre_rol = ?");
-        foreach ($adminRoles as $rol) {
-            $insertStmt->execute([$idAdmin, $rol]);
         }
 
         $_SESSION['admin_msg'] = 'Base de datos reiniciada correctamente';
