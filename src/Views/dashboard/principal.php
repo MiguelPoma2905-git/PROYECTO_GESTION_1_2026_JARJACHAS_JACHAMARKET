@@ -137,6 +137,7 @@
         <nav class="sidebar-nav">
             <a href="<?= BASE_URL ?>/dashboard" class="active"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9632;</span> Dashboard</a>
             <?php if ($rol_activo === 'Emprendedor'): ?>
+                <a href="<?= BASE_URL ?>/repartidores-admin"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9733;</span> Repartidores</a>
                 <a href="<?= BASE_URL ?>/plantillas-disponibles"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9733;</span> Nuevo negocio</a>
             <?php elseif ($rol_activo === 'Cliente'): ?>
                 <a href="<?= BASE_URL ?>/mis-estadisticas"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9776;</span> Mis estad&iacute;sticas</a>

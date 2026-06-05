@@ -308,4 +308,105 @@ class DashboardController extends Controller
             'plantillas' => $plantillas
         ]);
     }
+
+    public function repartidoresAdmin(): void
+    {
+        $this->requireAuth();
+        $usuario = $_SESSION['usuario'];
+
+        $rolesNombres = $this->usuarioRepo->getRolesNombres($usuario['id']);
+        if (!in_array('Emprendedor', $rolesNombres)) {
+            $this->redirect(BASE_URL . '/dashboard');
+        }
+
+        $idEmprendimiento = (int)($_GET['id_emprendimiento'] ?? 0);
+        $negocios = $this->emprendimientoRepo->findByPropietario($usuario['id']);
+        $negocioSeleccionado = null;
+        $repartidores = [];
+
+        if ($idEmprendimiento > 0) {
+            foreach ($negocios as $n) {
+                if ($n['id_emprendimiento'] === $idEmprendimiento) {
+                    $negocioSeleccionado = $n;
+                    break;
+                }
+            }
+            if ($negocioSeleccionado) {
+                $repartidores = $this->emprendimientoRepo->listarRepartidores($idEmprendimiento);
+            }
+        }
+
+        $avatarUsuario = $this->usuarioRepo->getAvatar($usuario['id']);
+        $inicial = strtoupper(substr($usuario['nombre'], 0, 1));
+
+        $this->view('dashboard/repartidores-admin', [
+            'usuario' => $usuario,
+            'avatar_usuario' => $avatarUsuario,
+            'inicial' => $inicial,
+            'negocios' => $negocios,
+            'id_emprendimiento' => $idEmprendimiento,
+            'negocio_seleccionado' => $negocioSeleccionado,
+            'repartidores' => $repartidores,
+            'success' => $_GET['success'] ?? '',
+            'error' => $_GET['error'] ?? ''
+        ]);
+    }
+
+    public function repartidoresVincular(): void
+    {
+        $this->requireAuth();
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect(BASE_URL . '/dashboard');
+        }
+
+        $usuario = $_SESSION['usuario'];
+        $idEmprendimiento = (int)($_POST['id_emprendimiento'] ?? 0);
+        $email = trim($_POST['email'] ?? '');
+
+        $emprendimiento = $this->emprendimientoRepo->findByIdAndPropietario($idEmprendimiento, $usuario['id']);
+        if (!$emprendimiento) {
+            $this->redirect(BASE_URL . '/repartidores-admin?error=Negocio no válido');
+        }
+
+        if (empty($email)) {
+            $this->redirect(BASE_URL . '/repartidores-admin?id_emprendimiento=' . $idEmprendimiento . '&error=Debes ingresar un correo electrónico');
+        }
+
+        $repartidorUser = $this->usuarioRepo->findByEmail($email);
+        if (!$repartidorUser) {
+            $this->redirect(BASE_URL . '/repartidores-admin?id_emprendimiento=' . $idEmprendimiento . '&error=No se encontró ningún usuario con ese correo electrónico o no se encuentra activo');
+        }
+
+        $repartidorRoles = $this->usuarioRepo->getRolesNombres($repartidorUser['id_usuario']);
+        if (!in_array('Repartidor', $repartidorRoles)) {
+            $this->redirect(BASE_URL . '/repartidores-admin?id_emprendimiento=' . $idEmprendimiento . '&error=El usuario con ese correo electrónico no tiene asignado el rol de Repartidor');
+        }
+
+        try {
+            $this->emprendimientoRepo->agregarRepartidor($idEmprendimiento, $repartidorUser['id_usuario']);
+            $this->redirect(BASE_URL . '/repartidores-admin?id_emprendimiento=' . $idEmprendimiento . '&success=Repartidor vinculado correctamente');
+        } catch (\Exception $e) {
+            $this->redirect(BASE_URL . '/repartidores-admin?id_emprendimiento=' . $idEmprendimiento . '&error=El repartidor ya está vinculado a este negocio');
+        }
+    }
+
+    public function repartidoresDesvincular(): void
+    {
+        $this->requireAuth();
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect(BASE_URL . '/dashboard');
+        }
+
+        $usuario = $_SESSION['usuario'];
+        $idEmprendimiento = (int)($_POST['id_emprendimiento'] ?? 0);
+        $idRepartidor = (int)($_POST['id_repartidor'] ?? 0);
+
+        $emprendimiento = $this->emprendimientoRepo->findByIdAndPropietario($idEmprendimiento, $usuario['id']);
+        if (!$emprendimiento) {
+            $this->redirect(BASE_URL . '/repartidores-admin?error=Negocio no válido');
+        }
+
+        $this->emprendimientoRepo->quitarRepartidor($idEmprendimiento, $idRepartidor);
+        $this->redirect(BASE_URL . '/repartidores-admin?id_emprendimiento=' . $idEmprendimiento . '&success=Repartidor quitado del negocio');
+    }
 }

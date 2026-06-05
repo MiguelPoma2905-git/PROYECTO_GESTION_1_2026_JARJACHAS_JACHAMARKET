@@ -275,6 +275,30 @@ class EmprendimientoRepository
         return $result ?: null;
     }
 
+    public function agregarRepartidor(int $idEmprendimiento, int $idRepartidor): void
+    {
+        $stmt = $this->conn->prepare("INSERT INTO emprendimiento_repartidores (id_emprendimiento, id_repartidor) VALUES (?, ?)");
+        $stmt->execute([$idEmprendimiento, $idRepartidor]);
+    }
+
+    public function quitarRepartidor(int $idEmprendimiento, int $idRepartidor): void
+    {
+        $stmt = $this->conn->prepare("DELETE FROM emprendimiento_repartidores WHERE id_emprendimiento = ? AND id_repartidor = ?");
+        $stmt->execute([$idEmprendimiento, $idRepartidor]);
+    }
+
+    public function listarRepartidores(int $idEmprendimiento): array
+    {
+        $stmt = $this->conn->prepare("
+            SELECT u.id_usuario, u.nombres, u.apellidos, u.email
+            FROM usuarios u
+            JOIN emprendimiento_repartidores er ON u.id_usuario = er.id_repartidor
+            WHERE er.id_emprendimiento = ?
+        ");
+        $stmt->execute([$idEmprendimiento]);
+        return $stmt->fetchAll();
+    }
+
     public function countAll(): int
     {
         $stmt = $this->conn->query("SELECT COUNT(*) as total FROM emprendimientos WHERE estado = 'Aprobado'");

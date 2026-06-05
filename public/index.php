@@ -52,6 +52,9 @@ $router->get('/dashboard', [DashboardController::class, 'dashboard']);
 $router->get('/mis-estadisticas', [DashboardController::class, 'estadisticasCliente']);
 $router->match(['GET', 'POST'], '/crear-negocio', [DashboardController::class, 'showCrearNegocio']);
 $router->match(['GET', 'POST'], '/plantillas', [DashboardController::class, 'showPlantillas']);
+$router->get('/repartidores-admin', [DashboardController::class, 'repartidoresAdmin']);
+$router->post('/repartidores-admin/vincular', [DashboardController::class, 'repartidoresVincular']);
+$router->post('/repartidores-admin/desvincular', [DashboardController::class, 'repartidoresDesvincular']);
 
 // Products
 $router->get('/tienda/{id}', [ProductoController::class, 'showTienda']);
