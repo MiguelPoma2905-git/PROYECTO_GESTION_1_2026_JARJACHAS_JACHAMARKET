@@ -16,8 +16,16 @@ if (isset($_SERVER['SERVER_ADDR']) && ($_SERVER['SERVER_ADDR'] === '127.0.0.1' |
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 $docRoot = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT'] ?? 'C:/xampp/htdocs');
-$basePath = str_replace($docRoot, '', str_replace('\\', '/', dirname(__DIR__)));
-$basePath = rtrim($basePath, '/');
+$projectRoot = str_replace('\\', '/', dirname(__DIR__));
+
+// Cuando se usa `php -S localhost:8000 -t public`, DOCUMENT_ROOT apunta a /public.
+// En ese caso la app vive en la raíz del host y los assets deben salir de /assets/...
+if (basename($docRoot) === 'public' && realpath(dirname($docRoot)) === realpath($projectRoot)) {
+    $basePath = '';
+} else {
+    $basePath = str_replace($docRoot, '', $projectRoot);
+    $basePath = rtrim($basePath, '/');
+}
 define('BASE_URL', $protocol . '://' . $host . $basePath);
 define('BASE_PATH', dirname(__DIR__) . '/');
 

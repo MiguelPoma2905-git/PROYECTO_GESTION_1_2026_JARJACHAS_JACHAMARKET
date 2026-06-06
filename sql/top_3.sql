@@ -378,3 +378,14 @@ DELIMITER ;
 -- ==============================
 SELECT '=== DB_JACHA Top_3 CREADA CON ÉXITO ===' AS mensaje;
 SHOW TABLES;
+
+-- Parte de los repartidores que añadi (Samuel)
+CREATE TABLE emprendimiento_repartidores (
+    id_vinculo BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id_emprendimiento BIGINT NOT NULL,
+    id_repartidor BIGINT NOT NULL,
+    fecha_ingreso DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_emprendimiento) REFERENCES emprendimientos(id_emprendimiento) ON DELETE CASCADE,
+    FOREIGN KEY (id_repartidor) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+    UNIQUE (id_emprendimiento, id_repartidor)
+);

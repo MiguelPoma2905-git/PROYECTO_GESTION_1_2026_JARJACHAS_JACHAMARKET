@@ -51,7 +51,8 @@
         .avatar-option { width:100%;aspect-ratio:1;border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all .2s;background:var(--surface2) }
         .avatar-option:hover { border-color:var(--border-hi) }
         .avatar-option.selected { border-color:var(--border-hi);box-shadow:0 0 0 2px var(--accent-glow) }
-        .avatar-option img { width:100%;height:100%;object-fit:cover;display:block }
+        .avatar-option img { width:100%;height:100%;object-fit:cover;display:block; filter: invert(1); }
+        [data-theme="light"] .avatar-option img { filter: invert(0); }
         .upload-btn { width:100%;padding:10px;border:1px dashed var(--border);border-radius:10px;background:transparent;color:var(--text-muted);font-size:13px;cursor:pointer;transition:all .2s;text-align:center }
         .upload-btn:hover { border-color:var(--border-hi);color:var(--text) }
         .btn-continuar { width:100%;padding:14px;background:var(--text);color:var(--card-bg);border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;transition:all .3s }
