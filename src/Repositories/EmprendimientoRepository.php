@@ -286,4 +286,17 @@ class EmprendimientoRepository
         $stmt = $this->conn->query("SELECT COUNT(*) as total FROM usuarios WHERE estado = 'Activo'");
         return (int)$stmt->fetch()['total'];
     }
+
+    public function cambiarEstado(int $idEmprendimiento, string $nuevoEstado): void
+    {
+        $stmt = $this->conn->prepare("UPDATE emprendimientos SET estado = ? WHERE id_emprendimiento = ?");
+        $stmt->execute([$nuevoEstado, $idEmprendimiento]);
+    }
+
+    public function deleteByPropietario(int $idEmprendimiento, int $idPropietario): bool
+    {
+        $stmt = $this->conn->prepare("DELETE FROM emprendimientos WHERE id_emprendimiento = ? AND id_propietario = ?");
+        $stmt->execute([$idEmprendimiento, $idPropietario]);
+        return $stmt->rowCount() > 0;
+    }
 }

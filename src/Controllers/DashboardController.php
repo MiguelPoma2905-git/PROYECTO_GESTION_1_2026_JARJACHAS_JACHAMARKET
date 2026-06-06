@@ -66,6 +66,33 @@ class DashboardController extends Controller
         $success = isset($_GET['success']) ? 1 : 0;
         $esAdmin = in_array('Administrador', $rolesNombres);
 
+        // Datos para admin panel integrado
+        $adminStats = [];
+        $adminUsuarios = [];
+        $adminNegocios = [];
+        if ($esAdmin) {
+            $adminStats = [
+                'usuarios' => $db->query("SELECT COUNT(*) FROM usuarios")->fetchColumn(),
+                'negocios' => $db->query("SELECT COUNT(*) FROM emprendimientos")->fetchColumn(),
+                'productos' => $db->query("SELECT COUNT(*) FROM productos")->fetchColumn(),
+                'pedidos' => $db->query("SELECT COUNT(*) FROM pedidos")->fetchColumn(),
+            ];
+            $adminUsuarios = $db->query("
+                SELECT u.*, GROUP_CONCAT(r.nombre_rol) as roles
+                FROM usuarios u
+                LEFT JOIN usuario_roles ur ON u.id_usuario = ur.id_usuario
+                LEFT JOIN roles r ON ur.id_rol = r.id_rol
+                GROUP BY u.id_usuario
+                ORDER BY u.creado_en DESC
+            ")->fetchAll();
+            $adminNegocios = $db->query("
+                SELECT e.*, u.email as propietario_email, u.nombres as propietario_nombre
+                FROM emprendimientos e
+                JOIN usuarios u ON e.id_propietario = u.id_usuario
+                ORDER BY e.id_emprendimiento DESC
+            ")->fetchAll();
+        }
+
         $this->view('dashboard/principal', [
             'usuario' => $usuario,
             'avatar_usuario' => $avatarUsuario,
@@ -77,7 +104,10 @@ class DashboardController extends Controller
             'stats' => $stats,
             'inicial' => $inicial,
             'success' => $success,
-            'es_admin' => $esAdmin
+            'es_admin' => $esAdmin,
+            'admin_stats' => $adminStats,
+            'admin_usuarios' => $adminUsuarios,
+            'admin_negocios' => $adminNegocios,
         ]);
     }
 
@@ -306,6 +336,167 @@ class DashboardController extends Controller
             'emprendimiento' => $emprendimiento,
             'personalizacion' => $personalizacion,
             'plantillas' => $plantillas
+        ]);
+    }
+
+    public function repartidoresAdmin(): void
+    {
+        $this->requireAuth();
+        $usuario = $_SESSION['usuario'];
+
+        $rolesNombres = $this->usuarioRepo->getRolesNombres($usuario['id']);
+        if (!in_array('Emprendedor', $rolesNombres)) {
+            $this->redirect(BASE_URL . '/dashboard');
+        }
+
+        $idEmprendimiento = (int)($_GET['id_emprendimiento'] ?? 0);
+        $negocios = $this->emprendimientoRepo->findByPropietario($usuario['id']);
+        $negocioSeleccionado = null;
+        $repartidores = [];
+
+        if ($idEmprendimiento > 0) {
+            foreach ($negocios as $n) {
+                if ($n['id_emprendimiento'] === $idEmprendimiento) {
+                    $negocioSeleccionado = $n;
+                    break;
+                }
+            }
+            if ($negocioSeleccionado) {
+                $repartidores = $this->emprendimientoRepo->listarRepartidores($idEmprendimiento);
+            }
+        }
+
+        $avatarUsuario = $this->usuarioRepo->getAvatar($usuario['id']);
+        $inicial = strtoupper(substr($usuario['nombre'], 0, 1));
+
+        $this->view('dashboard/repartidores-admin', [
+            'usuario' => $usuario,
+            'avatar_usuario' => $avatarUsuario,
+            'inicial' => $inicial,
+            'negocios' => $negocios,
+            'id_emprendimiento' => $idEmprendimiento,
+            'negocio_seleccionado' => $negocioSeleccionado,
+            'repartidores' => $repartidores,
+            'success' => $_GET['success'] ?? '',
+            'error' => $_GET['error'] ?? ''
+        ]);
+    }
+
+    public function repartidoresVincular(): void
+    {
+        $this->requireAuth();
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect(BASE_URL . '/dashboard');
+        }
+
+        $usuario = $_SESSION['usuario'];
+        $idEmprendimiento = (int)($_POST['id_emprendimiento'] ?? 0);
+        $email = trim($_POST['email'] ?? '');
+
+        $emprendimiento = $this->emprendimientoRepo->findByIdAndPropietario($idEmprendimiento, $usuario['id']);
+        if (!$emprendimiento) {
+            $this->redirect(BASE_URL . '/repartidores-admin?error=Negocio no v\u00e1lido');
+        }
+
+        if (empty($email)) {
+            $this->redirect(BASE_URL . '/repartidores-admin?id_emprendimiento=' . $idEmprendimiento . '&error=Debes ingresar un correo electr\u00f3nico');
+        }
+
+        $repartidorUser = $this->usuarioRepo->findByEmail($email);
+        if (!$repartidorUser) {
+            $this->redirect(BASE_URL . '/repartidores-admin?id_emprendimiento=' . $idEmprendimiento . '&error=No se encontr\u00f3 ning\u00fan usuario con ese correo electr\u00f3nico o no se encuentra activo');
+        }
+
+        $repartidorRoles = $this->usuarioRepo->getRolesNombres($repartidorUser['id_usuario']);
+        if (!in_array('Repartidor', $repartidorRoles)) {
+            $this->redirect(BASE_URL . '/repartidores-admin?id_emprendimiento=' . $idEmprendimiento . '&error=El usuario con ese correo electr\u00f3nico no tiene asignado el rol de Repartidor');
+        }
+
+        try {
+            $this->emprendimientoRepo->agregarRepartidor($idEmprendimiento, $repartidorUser['id_usuario']);
+            $this->redirect(BASE_URL . '/repartidores-admin?id_emprendimiento=' . $idEmprendimiento . '&success=Repartidor vinculado correctamente');
+        } catch (\Exception $e) {
+            $this->redirect(BASE_URL . '/repartidores-admin?id_emprendimiento=' . $idEmprendimiento . '&error=El repartidor ya est\u00e1 vinculado a este negocio');
+        }
+    }
+
+    public function repartidoresDesvincular(): void
+    {
+        $this->requireAuth();
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect(BASE_URL . '/dashboard');
+        }
+
+        $usuario = $_SESSION['usuario'];
+        $idEmprendimiento = (int)($_POST['id_emprendimiento'] ?? 0);
+        $idRepartidor = (int)($_POST['id_repartidor'] ?? 0);
+
+        $emprendimiento = $this->emprendimientoRepo->findByIdAndPropietario($idEmprendimiento, $usuario['id']);
+        if (!$emprendimiento) {
+            $this->redirect(BASE_URL . '/repartidores-admin?error=Negocio no v\u00e1lido');
+        }
+
+        $this->emprendimientoRepo->quitarRepartidor($idEmprendimiento, $idRepartidor);
+        $this->redirect(BASE_URL . '/repartidores-admin?id_emprendimiento=' . $idEmprendimiento . '&success=Repartidor quitado del negocio');
+    }
+
+    public function gestionarNegocios(): void
+    {
+        $this->requireAuth();
+
+        $usuario = $_SESSION['usuario'];
+        $rolesNombres = $this->usuarioRepo->getRolesNombres($usuario['id']);
+        if (!in_array('Emprendedor', $rolesNombres)) {
+            $this->redirect(BASE_URL . '/dashboard');
+        }
+
+        $db = $this->getDB();
+        $avatarUsuario = $this->usuarioRepo->getAvatar($usuario['id']);
+        $rolesUsuario = $this->usuarioRepo->getRoles($usuario['id']);
+        $rolesNombres = $this->usuarioRepo->getRolesNombres($usuario['id']);
+        $rolActivo = $_SESSION['rol_activo'] ?? $rolesNombres[0] ?? 'Cliente';
+        $inicial = strtoupper(substr($usuario['nombres'] ?? $usuario['nombre'] ?? 'U', 0, 1));
+
+        $misNegocios = $this->emprendimientoRepo->findByPropietario($usuario['id']);
+
+        $mensaje = $_SESSION['gestion_msg'] ?? '';
+        $error = $_SESSION['gestion_error'] ?? '';
+        unset($_SESSION['gestion_msg'], $_SESSION['gestion_error']);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $idNegocio = (int)($_POST['id_negocio'] ?? 0);
+            $accion = $_POST['accion'] ?? '';
+
+            $negocio = $this->emprendimientoRepo->findByIdAndPropietario($idNegocio, $usuario['id']);
+            if (!$negocio) {
+                $_SESSION['gestion_error'] = 'Negocio no encontrado o no te pertenece';
+                $this->redirect(BASE_URL . '/gestionar-negocios');
+            }
+
+            if ($accion === 'ocultar') {
+                $this->emprendimientoRepo->cambiarEstado($idNegocio, 'Oculto');
+                $_SESSION['gestion_msg'] = 'Negocio ocultado correctamente';
+            } elseif ($accion === 'mostrar') {
+                $this->emprendimientoRepo->cambiarEstado($idNegocio, 'Aprobado');
+                $_SESSION['gestion_msg'] = 'Negocio visible nuevamente';
+            } elseif ($accion === 'eliminar') {
+                $this->emprendimientoRepo->deleteByPropietario($idNegocio, $usuario['id']);
+                $_SESSION['gestion_msg'] = 'Negocio eliminado correctamente';
+            }
+
+            $this->redirect(BASE_URL . '/gestionar-negocios');
+        }
+
+        $this->view('dashboard/gestionar-negocios', [
+            'mis_negocios' => $misNegocios,
+            'mensaje' => $mensaje,
+            'error' => $error,
+            'usuario' => $usuario,
+            'avatar_usuario' => $avatarUsuario,
+            'roles_usuario' => $rolesUsuario,
+            'roles_nombres' => $rolesNombres,
+            'rol_activo' => $rolActivo,
+            'inicial' => $inicial
         ]);
     }
 }

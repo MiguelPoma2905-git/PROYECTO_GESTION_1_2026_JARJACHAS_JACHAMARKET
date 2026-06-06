@@ -41,7 +41,7 @@ $router->get('/verificar-otp', [AuthController::class, 'showVerificarOtp']);
 $router->post('/verificar-otp', [AuthController::class, 'verifyOtp']);
 $router->get('/verificar-otp-login', [AuthController::class, 'showVerificarOtpLogin']);
 $router->post('/verificar-otp-login', [AuthController::class, 'verifyOtpLogin']);
-$router->get('/enviar-otp', [AuthController::class, 'sendOtp']);
+$router->match(['GET', 'POST'], '/enviar-otp', [AuthController::class, 'sendOtp']);
 $router->get('/reenviar-otp', [AuthController::class, 'resendOtp']);
 $router->get('/reenviar-otp-login', [AuthController::class, 'resendOtpLogin']);
 $router->get('/logout', [AuthController::class, 'logout']);
@@ -52,6 +52,10 @@ $router->get('/dashboard', [DashboardController::class, 'dashboard']);
 $router->get('/mis-estadisticas', [DashboardController::class, 'estadisticasCliente']);
 $router->match(['GET', 'POST'], '/crear-negocio', [DashboardController::class, 'showCrearNegocio']);
 $router->match(['GET', 'POST'], '/plantillas', [DashboardController::class, 'showPlantillas']);
+$router->get('/repartidores-admin', [DashboardController::class, 'repartidoresAdmin']);
+$router->post('/repartidores-admin/vincular', [DashboardController::class, 'repartidoresVincular']);
+$router->post('/repartidores-admin/desvincular', [DashboardController::class, 'repartidoresDesvincular']);
+$router->match(['GET', 'POST'], '/gestionar-negocios', [DashboardController::class, 'gestionarNegocios']);
 
 // Products
 $router->get('/tienda/{id}', [ProductoController::class, 'showTienda']);

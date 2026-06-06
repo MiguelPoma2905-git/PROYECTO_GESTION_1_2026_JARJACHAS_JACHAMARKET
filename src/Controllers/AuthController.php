@@ -323,6 +323,10 @@ class AuthController extends Controller
             $this->redirect(BASE_URL . '/elegir-roles');
         }
 
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' && isset($temp['codigo_otp'])) {
+            $this->redirect(BASE_URL . '/verificar-otp');
+        }
+
         $otpResult = $this->otp->generarCodigo($temp['email']);
 
         if (!$otpResult['success']) {

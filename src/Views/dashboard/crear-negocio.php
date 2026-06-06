@@ -26,6 +26,7 @@
             margin-bottom: 28px;
         }
         .top-bar .logo img { height: 30px; width: auto; opacity: 0.7; }
+        [data-theme="light"] .top-bar .logo img { filter: brightness(0); }
         .top-bar .back-link {
             font-size: 13px; color: var(--text-muted, #888);
             text-decoration: none; display: flex; align-items: center; gap: 6px;
@@ -40,13 +41,12 @@
             align-items: start;
         }
 
-        /* ===== LEFT COLUMN ===== */
         .left-col { display: flex; flex-direction: column; gap: 20px; }
 
         .preview-card {
             background: var(--card-bg, #141414);
             border: 1px solid var(--border, rgba(255,255,255,0.06));
-            border-radius: 20px;
+            border-radius: 4px;
             overflow: hidden;
         }
         .preview-card .card-hdr {
@@ -61,114 +61,14 @@
         .preview-card .card-hdr span {
             font-size: 10px; color: var(--text-dim, #555);
             background: rgba(255,255,255,0.04);
-            padding: 3px 10px; border-radius: 4px;
+            padding: 3px 10px; border-radius: 3px;
         }
 
-        /* Mini preview mockup */
-        .mini-preview {
-            position: relative;
-            padding: 32px 28px 28px;
-            overflow: hidden;
-        }
-        .mini-preview::before {
-            content: ''; position: absolute; inset: 0;
-            background:
-                radial-gradient(ellipse at 20% 30%, rgba(108,140,255,0.06) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 70%, rgba(108,140,255,0.03) 0%, transparent 50%);
-            pointer-events: none;
-        }
-        .mini-preview .mph {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 10px 16px; border-radius: 10px; margin-bottom: 20px;
-            position: relative; z-index: 1;
-        }
-        .mini-preview .mph-l { display: flex; align-items: center; gap: 10px; }
-        .mini-preview .mph-l .mico {
-            width: 24px; height: 24px; border-radius: 4px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px;
-        }
-        .mini-preview .mph-l .mname { font-size: 13px; font-weight: 600; }
-        .mini-preview .mph-r { display: flex; gap: 8px; }
-        .mini-preview .mph-r .mdot {
-            width: 20px; height: 20px; border-radius: 5px;
-        }
-        .mini-preview .mhero {
-            text-align: center; padding: 16px 0 12px; position: relative; z-index: 1;
-        }
-        .mini-preview .mhero .mbadge {
-            display: inline-block; font-size: 8px; font-weight: 600;
-            letter-spacing: 1.5px; text-transform: uppercase;
-            padding: 3px 10px; border-radius: 3px; margin-bottom: 8px;
-        }
-        .mini-preview .mhero h4 { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
-        .mini-preview .mhero p { font-size: 10px; opacity: 0.5; line-height: 1.5; }
-        .mini-preview .mgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; position: relative; z-index: 1; margin-top: 4px; }
-        .mini-preview .mcard {
-            border-radius: 10px; padding: 12px; position: relative; overflow: hidden;
-        }
-        .mini-preview .mcard .mimg {
-            height: 50px; border-radius: 6px; margin-bottom: 8px;
-        }
-        .mini-preview .mcard .mcard-h { font-size: 11px; font-weight: 600; margin-bottom: 4px; }
-        .mini-preview .mcard .mcard-sub { font-size: 9px; opacity: 0.4; margin-bottom: 6px; }
-        .mini-preview .mcard .mcard-bot { display: flex; align-items: center; justify-content: space-between; }
-        .mini-preview .mcard .mcard-bot .price { font-size: 13px; font-weight: 700; }
-        .mini-preview .mcard .mcard-bot .price small { font-size: 8px; font-weight: 400; opacity: 0.4; }
-        .mini-preview .mcard .mcard-bot .mbtn {
-            font-size: 9px; font-weight: 600; padding: 4px 12px;
-            border-radius: 5px; cursor: default;
-            border: none;
-        }
-        .mini-preview .mfoot {
-            text-align: center; padding: 16px 0 4px; position: relative; z-index: 1;
-            font-size: 9px; opacity: 0.15; letter-spacing: 0.5px;
+        .plantilla-img {
+            display: block; width: 100%; height: auto;
+            border-bottom: 1px solid var(--border, rgba(255,255,255,0.06));
         }
 
-        .preview-type-dark .mph { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); }
-        .preview-type-dark .mph-l .mname { color: #e8edf5; }
-        .preview-type-dark .mph-r .mdot { border: 1px solid rgba(255,255,255,0.1); }
-        .preview-type-dark .mbadge { color: #2C6FBB; background: rgba(44,111,187,0.12); border: 1px solid rgba(44,111,187,0.2); }
-        .preview-type-dark .mhero h4 { color: #e8edf5; }
-        .preview-type-dark .mhero p { color: #e8edf5; }
-        .preview-type-dark .mcard { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); }
-        .preview-type-dark .mcard .mimg { background: linear-gradient(135deg, #1a2a44, #0F1A2E); }
-        .preview-type-dark .mcard .mcard-h { color: #e8edf5; }
-        .preview-type-dark .mcard .mcard-sub { color: #e8edf5; }
-        .preview-type-dark .mcard .price { color: #e8edf5; }
-        .preview-type-dark .mcard .mbtn { background: #2C6FBB; color: #fff; }
-        .preview-type-dark .mfoot { color: #e8edf5; }
-
-        .preview-type-light { }
-        .preview-type-light .mph { background: linear-gradient(135deg, var(--pc), color-mix(in srgb, var(--pc) 70%, #000)); }
-        .preview-type-light .mph-l .mname { color: #fff; }
-        .preview-type-light .mph-r .mdot { border: 1px solid rgba(255,255,255,0.15); }
-        .preview-type-light .mbadge { color: var(--pc); background: rgba(255,255,255,0.8); border: 1px solid rgba(0,0,0,0.06); }
-        .preview-type-light .mhero h4 { color: var(--tc, #1A1A2E); }
-        .preview-type-light .mhero p { color: var(--tc, #1A1A2E); }
-        .preview-type-light .mcard { background: #fff; border: 1px solid rgba(0,0,0,0.04); box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
-        .preview-type-light .mcard .mimg { background: linear-gradient(135deg, var(--pc), var(--sc)); opacity: 0.12; }
-        .preview-type-light .mcard .mcard-h { color: #1A1A2E; }
-        .preview-type-light .mcard .mcard-sub { color: #1A1A2E; }
-        .preview-type-light .mcard .price { color: var(--pc); }
-        .preview-type-light .mcard .mbtn { background: var(--pc); color: #fff; }
-        .preview-type-light .mfoot { color: #1A1A2E; }
-
-        .preview-type-tech .mph { background: linear-gradient(135deg, var(--pc), var(--sc)); }
-        .preview-type-tech .mph-l .mname { color: #fff; }
-        .preview-type-tech .mph-r .mdot { border: 1px solid rgba(255,255,255,0.15); }
-        .preview-type-tech .mbadge { color: var(--pc); background: rgba(255,255,255,0.85); border: 1px solid rgba(0,0,0,0.04); }
-        .preview-type-tech .mhero h4 { background: linear-gradient(135deg, var(--tc), var(--pc)); -webkit-background-clip:text; background-clip:text; color:transparent; }
-        .preview-type-tech .mhero p { color: var(--tc); }
-        .preview-type-tech .mcard { background: #fff; border: 1px solid rgba(0,0,0,0.04); box-shadow: 0 2px 16px rgba(26,115,232,0.06); }
-        .preview-type-tech .mcard .mimg { background: linear-gradient(135deg, var(--pc), var(--sc)); opacity: 0.12; }
-        .preview-type-tech .mcard .mcard-h { color: #1A1A2E; }
-        .preview-type-tech .mcard .mcard-sub { color: #1A1A2E; }
-        .preview-type-tech .mcard .price { color: var(--pc); }
-        .preview-type-tech .mcard .mbtn { background: var(--pc); color: #fff; }
-        .preview-type-tech .mfoot { color: #1A1A2E; }
-
-        /* Info panels */
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -177,7 +77,7 @@
         .info-panel {
             background: var(--card-bg, #141414);
             border: 1px solid var(--border, rgba(255,255,255,0.06));
-            border-radius: 16px;
+            border-radius: 4px;
             padding: 20px;
         }
         .info-panel h4 {
@@ -191,7 +91,7 @@
             font-size: 12px; color: var(--text, #f0f0f0);
         }
         .color-row .swatch {
-            width: 28px; height: 28px; border-radius: 6px;
+            width: 28px; height: 28px; border-radius: 3px;
             border: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;
         }
         .color-row .clabel { opacity: 0.5; min-width: 70px; font-size: 11px; }
@@ -206,7 +106,6 @@
             font-size: 11px; color: var(--text-muted, #888); opacity: 0.6;
         }
 
-        /* Features */
         .features-list { display: flex; flex-direction: column; gap: 8px; }
         .feature-item {
             display: flex; align-items: center; gap: 10px;
@@ -215,20 +114,17 @@
         .feature-item i {
             width: 18px; text-align: center; font-size: 13px;
         }
-        .feature-item .f-dot {
-            width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
-        }
 
-        /* ===== RIGHT COLUMN ===== */
         .form-card {
             background: var(--card-bg, #141414);
             border: 1px solid var(--border, rgba(255,255,255,0.06));
-            border-radius: 20px;
+            border-radius: 4px;
             padding: 32px;
         }
         .form-card .hdr { margin-bottom: 28px; }
         .form-card .hdr h1 {
-            font-size: 24px; font-weight: 700; color: var(--text, #f0f0f0);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px; font-weight: 700; color: var(--text, #f0f0f0);
             margin-bottom: 4px;
         }
         .form-card .hdr p { font-size: 13px; color: var(--text-muted, #888); }
@@ -242,16 +138,15 @@
             text-transform: uppercase; letter-spacing: 0.5px;
             color: var(--text-muted, #888); margin-bottom: 5px;
         }
-        .form-group label .req { color: #ef4444; }
+        .form-group label .req { color: #9a5a5a; }
         .form-group .field {
             display: flex; align-items: center;
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 10px; transition: all .2s;
+            border-radius: 3px; transition: border-color .2s;
         }
         .form-group .field:focus-within {
-            border-color: #6c8cff;
-            box-shadow: 0 0 0 3px rgba(108,140,255,0.08);
+            border-color: rgba(255,255,255,0.25);
         }
         .form-group .field i {
             padding: 0 0 0 13px; color: #555;
@@ -269,33 +164,30 @@
 
         .portada-upload { margin-bottom:18px; }
         .portada-upload label { display:block;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted,#888);margin-bottom:8px; }
-        .portada-upload .drop-zone { border:1.5px dashed rgba(255,255,255,0.12);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;background:rgba(255,255,255,0.02); }
+        .portada-upload .drop-zone { border:1.5px dashed rgba(255,255,255,0.12);border-radius:4px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;background:rgba(255,255,255,0.02); }
         .portada-upload .drop-zone:hover { border-color:rgba(255,255,255,0.25);background:rgba(255,255,255,0.04); }
         .portada-upload .drop-zone i { font-size:28px;color:var(--text-muted,#888);margin-bottom:8px;opacity:0.4; }
         .portada-upload .drop-zone p { font-size:12px;color:var(--text-muted,#888); }
         .portada-upload .drop-zone small { font-size:10px;color:var(--text-dim,#555); }
-        .portada-upload .portada-preview { display:none;margin-top:10px;border-radius:10px;overflow:hidden;position:relative;max-height:160px; }
-        .portada-upload .portada-preview img { width:100%;height:140px;object-fit:cover;display:block;border-radius:10px;border:1px solid rgba(255,255,255,0.08); }
+        .portada-upload .portada-preview { display:none;margin-top:10px;border-radius:3px;overflow:hidden;position:relative;max-height:160px; }
+        .portada-upload .portada-preview img { width:100%;height:140px;object-fit:cover;display:block;border-radius:3px;border:1px solid rgba(255,255,255,0.08); }
         .portada-upload .portada-preview .remove-portada { position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.6);color:#fff;border:none;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s; }
-        .portada-upload .portada-preview .remove-portada:hover { background:rgba(255,50,50,0.8);transform:scale(1.1); }
+        .portada-upload .portada-preview .remove-portada:hover { background:rgba(200,50,50,0.8); }
         .btn-submit {
-            width: 100%; padding: 15px;
-            background: linear-gradient(135deg, #6c8cff, #5a7ae8);
-            color: #fff; border: none; border-radius: 12px;
+            width: 100%; padding: 14px;
+            background: #555;
+            color: #fff; border: none; border-radius: 4px;
             font-size: 14px; font-weight: 600; cursor: pointer;
-            transition: all .25s; font-family: inherit;
+            transition: background .2s; font-family: inherit;
             display: flex; align-items: center; justify-content: center; gap: 8px;
             margin-top: 4px;
         }
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(108,140,255,0.25);
-        }
+        .btn-submit:hover { background: #666; }
         .error-msg {
-            background: rgba(239,68,68,0.1);
-            border: 1px solid rgba(239,68,68,0.15);
-            border-radius: 10px; padding: 12px 16px;
-            font-size: 12px; color: #ef4444;
+            background: rgba(200,50,50,0.1);
+            border: 1px solid rgba(200,50,50,0.15);
+            border-radius: 3px; padding: 12px 16px;
+            font-size: 12px; color: #9a5a5a;
             margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
         }
 
@@ -305,7 +197,6 @@
             body { padding: 16px; }
             .form-row { grid-template-columns: 1fr; }
             .preview-card .card-hdr { padding: 14px 18px; }
-            .mini-preview { padding: 20px 18px 18px; }
             .form-card { padding: 24px; }
         }
     </style>
@@ -333,53 +224,26 @@
                         <h3><i class="fas fa-eye"></i> Vista previa</h3>
                         <span><?= htmlspecialchars($plantilla['nombre']) ?></span>
                     </div>
-                    <?php
-                    $pid = (int)$plantilla['id_plantilla'];
-                    $pc = htmlspecialchars($plantilla['color_primario'] ?? '#1A3A5C');
-                    $sc = htmlspecialchars($plantilla['color_secundario'] ?? '#2C6FBB');
-                    $tc = htmlspecialchars($plantilla['color_texto'] ?? '#1A1A2E');
-                    ?>
-                    <div class="mini-preview preview-type-<?= $pid === 6 || $pid === 10 || $pid === 11 ? 'dark' : ($pid === 4 ? 'tech' : 'light') ?>"
-                         style="--pc:<?= $pc ?>;--sc:<?= $sc ?>;--tc:<?= $tc ?>;background:<?= $pid === 6 || $pid === 10 || $pid === 11 ? '#0F1A2E' : ($pid === 4 ? '#F0F4FF' : '#FDFBF7') ?>">
-                        <div class="mph">
-                            <div class="mph-l">
-                                <div class="mico" style="background:<?= $pc ?>;color:#fff">🏪</div>
-                                <span class="mname">Tu Negocio</span>
-                            </div>
-                            <div class="mph-r">
-                                <div class="mdot" style="background:<?= $pc ?>"></div>
-                                <div class="mdot" style="background:<?= $sc ?>"></div>
-                            </div>
-                        </div>
-                        <div class="mhero">
-                            <div class="mbadge">✦ <?= htmlspecialchars($plantilla['nombre']) ?></div>
-                            <h4>Tu Negocio Aqu&iacute;</h4>
-                            <p>Productos de calidad para tus clientes</p>
-                        </div>
-                        <div class="mgrid">
-                            <div class="mcard">
-                                <div class="mimg"></div>
-                                <div class="mcard-h">Producto Premium</div>
-                                <div class="mcard-sub">Marca l&iacute;der</div>
-                                <div class="mcard-bot">
-                                    <div class="price"><small>Bs.</small> 299</div>
-                                    <button class="mbtn">A&ntilde;adir</button>
-                                </div>
-                            </div>
-                            <div class="mcard">
-                                <div class="mimg"></div>
-                                <div class="mcard-h">Producto Cl&aacute;sico</div>
-                                <div class="mcard-sub">Marca original</div>
-                                <div class="mcard-bot">
-                                    <div class="price"><small>Bs.</small> 149</div>
-                                    <button class="mbtn">A&ntilde;adir</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mfoot">&copy; 2026 Tu Negocio</div>
-                    </div>
+                    <img class="plantilla-img" src="<?= BASE_URL ?>/assets/images/plantillas/plantilla_<?= (int)$plantilla['id_plantilla'] ?>.jpg" alt="<?= htmlspecialchars($plantilla['nombre']) ?>">
                 </div>
 
+                <?php
+                $pid = (int)$plantilla['id_plantilla'];
+                $pc = htmlspecialchars($plantilla['color_primario'] ?? '#1A3A5C');
+                $sc = htmlspecialchars($plantilla['color_secundario'] ?? '#2C6FBB');
+                $tc = htmlspecialchars($plantilla['color_texto'] ?? '#1A1A2E');
+                $isDark = in_array($pid, [6, 10, 11]);
+                $isTech = $pid === 4;
+                $fbg = $isDark ? '#0F1A2E' : ($isTech ? '#F0F4FF' : '#FDFBF7');
+                $fontName = match($pid) {
+                    6 => 'Inter', 4 => 'DM Sans', 7 => 'Playfair Display',
+                    8 => 'Josefin Sans', 9 => 'Merriweather',
+                    10 => 'Playfair Display', 11 => 'Oswald',
+                    12 => 'Quicksand', default => 'Inter'
+                };
+                $fontDesc = $isDark ? 'Moderna sans-serif, ideal para lectura en oscuro' : ($isTech ? 'Sans-serif geom&eacute;trica con car&aacute;cter tecnol&oacute;gico' : 'Tipograf&iacute;a vers&aacute;til y moderna');
+                $modeLabel = $isDark ? 'Oscuro (dark)' : ($isTech ? 'Claro tecnol&oacute;gico' : 'Claro cl&aacute;sico');
+                ?>
                 <div class="info-grid">
                     <div class="info-panel">
                         <h4><i class="fas fa-palette"></i> Colores</h4>
@@ -395,9 +259,9 @@
                                 <span class="cval"><?= $sc ?></span>
                             </div>
                             <div class="color-row">
-                                <div class="swatch" style="background:<?= $pid === 6 || $pid === 10 || $pid === 11 ? '#0F1A2E' : ($pid === 4 ? '#F0F4FF' : '#FDFBF7') ?>"></div>
+                                <div class="swatch" style="background:<?= $fbg ?>"></div>
                                 <span class="clabel">Fondo</span>
-                                <span class="cval"><?= $pid === 6 || $pid === 10 || $pid === 11 ? '#0F1A2E' : ($pid === 4 ? '#F0F4FF' : '#FDFBF7') ?></span>
+                                <span class="cval"><?= $fbg ?></span>
                             </div>
                             <div class="color-row">
                                 <div class="swatch" style="background:<?= $tc ?>"></div>
@@ -409,25 +273,12 @@
 
                     <div class="info-panel">
                         <h4><i class="fas fa-font"></i> Tipograf&iacute;a</h4>
-                        <?php
-                        $fontName = match($pid) {
-                            6 => 'Inter',
-                            4 => 'DM Sans',
-                            7 => 'Playfair Display',
-                            8 => 'Josefin Sans',
-                            9 => 'Merriweather',
-                            10 => 'Playfair Display',
-                            11 => 'Oswald',
-                            12 => 'Quicksand',
-                            default => 'Inter'
-                        };
-                        ?>
                         <div class="font-display" style="font-family:'<?= $fontName ?>',sans-serif">Aa</div>
-                        <div class="font-sub"><?= $fontName ?> &middot; Sistema sans-serif moderna</div>
+                        <div class="font-sub"><?= $fontName ?> &middot; <?= $fontDesc ?></div>
                         <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.05)">
                             <div style="font-size:11px;color:var(--text-muted,#888);line-height:1.6">
                                 <strong style="color:var(--text,#f0f0f0)">Modo:</strong>
-                                <?= $pid === 6 || $pid === 10 || $pid === 11 ? 'Oscuro (dark)' : ($pid === 4 ? 'Claro tecnol&oacute;gico' : 'Claro cl&aacute;sico') ?>
+                                <?= $modeLabel ?>
                             </div>
                         </div>
                     </div>
@@ -471,7 +322,7 @@
                                     ['icon' => 'fa-hand-sparkles', 'label' => 'Estilo artesanal &uacute;nico', 'color' => '#8B6914'],
                                     ['icon' => 'fa-palette', 'label' => 'Colores tierra c&aacute;lidos', 'color' => '#8B6914'],
                                     ['icon' => 'fa-bolt', 'label' => 'Compra r&aacute;pida en 1 clic', 'color' => '#8B6914'],
-                                    ['icon' => 'a-images', 'label' => 'Muestra tus creaciones', 'color' => '#8B6914'],
+                                    ['icon' => 'fa-images', 'label' => 'Muestra tus creaciones', 'color' => '#8B6914'],
                                     ['icon' => 'fa-mobile-alt', 'label' => 'Adaptable a m&oacute;viles', 'color' => '#8B6914'],
                                 ],
                                 10 => [

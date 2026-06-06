@@ -12,14 +12,16 @@ class OTP
 
     public function generarCodigo(string $email): array
     {
-        $stmt = $this->conn->prepare("DELETE FROM otp_verificacion WHERE expira_en < NOW()");
-        $stmt->execute();
+        $now = date('Y-m-d H:i:s');
+
+        $stmt = $this->conn->prepare("DELETE FROM otp_verificacion WHERE expira_en < ?");
+        $stmt->execute([$now]);
 
         $stmt = $this->conn->prepare("
             SELECT COUNT(*) as intentos FROM otp_verificacion 
-            WHERE email = ? AND creado_en > DATE_SUB(NOW(), INTERVAL 1 HOUR)
+            WHERE email = ? AND creado_en > DATE_SUB(?, INTERVAL 1 HOUR)
         ");
-        $stmt->execute([$email]);
+        $stmt->execute([$email, $now]);
         $result = $stmt->fetch();
 
         if ($result['intentos'] >= 3) {
@@ -60,9 +62,6 @@ class OTP
             return ['success' => false, 'error' => 'El código ha expirado. Solicita uno nuevo.'];
         }
 
-        $stmt = $this->conn->prepare("UPDATE otp_verificacion SET intentos = intentos + 1 WHERE id_otp = ?");
-        $stmt->execute([$otp['id_otp']]);
-
         if ($otp['intentos'] >= 5) {
             return ['success' => false, 'error' => 'Demasiados intentos fallidos. Solicita un nuevo código.'];
         }
@@ -73,6 +72,8 @@ class OTP
             return ['success' => true];
         }
 
+        $stmt = $this->conn->prepare("UPDATE otp_verificacion SET intentos = intentos + 1 WHERE id_otp = ?");
+        $stmt->execute([$otp['id_otp']]);
         return ['success' => false, 'error' => 'Código incorrecto'];
     }
 }

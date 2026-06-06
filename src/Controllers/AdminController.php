@@ -23,36 +23,7 @@ class AdminController extends Controller
     public function panel(): void
     {
         $this->requireAdmin();
-        $db = $this->getDB();
-
-        $stats = [
-            'usuarios' => $db->query("SELECT COUNT(*) FROM usuarios")->fetchColumn(),
-            'negocios' => $db->query("SELECT COUNT(*) FROM emprendimientos")->fetchColumn(),
-            'productos' => $db->query("SELECT COUNT(*) FROM productos")->fetchColumn(),
-            'pedidos' => $db->query("SELECT COUNT(*) FROM pedidos")->fetchColumn(),
-        ];
-
-        $usuarios = $db->query("
-            SELECT u.*, GROUP_CONCAT(r.nombre_rol) as roles
-            FROM usuarios u
-            LEFT JOIN usuario_roles ur ON u.id_usuario = ur.id_usuario
-            LEFT JOIN roles r ON ur.id_rol = r.id_rol
-            GROUP BY u.id_usuario
-            ORDER BY u.creado_en DESC
-        ")->fetchAll();
-
-        $negocios = $db->query("
-            SELECT e.*, u.email as propietario_email, u.nombres as propietario_nombre
-            FROM emprendimientos e
-            JOIN usuarios u ON e.id_propietario = u.id_usuario
-            ORDER BY e.id_emprendimiento DESC
-        ")->fetchAll();
-
-        $this->view('admin/panel', [
-            'stats' => $stats,
-            'usuarios' => $usuarios,
-            'negocios' => $negocios
-        ]);
+        $this->redirect(BASE_URL . '/dashboard');
     }
 
     public function eliminarUsuario(): void
