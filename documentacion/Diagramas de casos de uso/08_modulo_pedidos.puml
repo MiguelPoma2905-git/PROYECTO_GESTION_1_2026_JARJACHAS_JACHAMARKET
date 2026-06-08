@@ -1,0 +1,38 @@
+@startuml
+title Módulo 8: Pedidos y Pagos - Casos de Uso
+
+skinparam linetype ortho
+skinparam defaultTextAlignment center
+skinparam nodeSep 120
+skinparam rankSep 120
+
+left to right direction
+
+actor "Cliente" as C
+actor "Sistema" as S
+
+rectangle "Pedidos y Pagos" {
+  usecase "Realizar Checkout" as UC1
+  usecase "Seleccionar Método de Pago" as UC2
+  usecase "Ingresar Dirección de Entrega" as UC3
+  usecase "Generar Código QR de Pago" as UC4
+  usecase "Generar Código Seguimiento" as UC8
+
+  usecase "Realizar Compra Rápida" as UC5
+
+  usecase "Ver Historial de Pedidos" as UC6
+  usecase "Ver Detalle del Pedido" as UC7
+
+  C --> UC1
+  C --> UC5
+  C --> UC6
+
+  UC1 --> UC2 : <<incluye>>
+  UC1 --> UC3 : <<incluye>>
+  UC4 --> UC2 : <<extiende>>
+  UC6 --> UC7 : <<incluye>>
+  S --> UC4
+  S --> UC8
+}
+
+@enduml

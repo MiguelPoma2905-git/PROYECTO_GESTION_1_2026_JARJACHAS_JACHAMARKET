@@ -1,0 +1,35 @@
+@startuml
+title Módulo 5: Productos - Casos de Uso
+
+skinparam linetype ortho
+skinparam defaultTextAlignment center
+skinparam nodeSep 120
+skinparam rankSep 120
+
+left to right direction
+
+actor "Emprendedor" as E
+actor "Sistema" as S
+
+rectangle "Productos" {
+  usecase "Registrar Producto" as UC1
+  usecase "Crear Variantes" as UC2
+  usecase "Controlar Stock (Kardex)" as UC8
+  usecase "Cambiar Estado Producto" as UC3
+  usecase "Editar Producto" as UC4
+  usecase "Eliminar Producto" as UC5
+
+  usecase "Reducir Stock Automático" as UC9
+
+  E --> UC1
+  E --> UC3
+  E --> UC4
+  E --> UC5
+
+  UC2 --> UC1 : <<extiende>>
+  UC1 --> UC8 : <<incluye>>
+
+  S --> UC9
+}
+
+@enduml
