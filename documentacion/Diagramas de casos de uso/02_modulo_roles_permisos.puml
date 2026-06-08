@@ -1,0 +1,41 @@
+@startuml
+title Módulo 2: Roles y Permisos - Casos de Uso
+
+skinparam linetype ortho
+skinparam defaultTextAlignment center
+skinparam nodeSep 120
+skinparam rankSep 120
+
+left to right direction
+
+actor "Administrador" as A
+actor "Usuario" as U
+
+rectangle "Roles y Permisos" {
+  usecase "Gestionar Roles del Sistema" as UC1
+  usecase "Asignar Múltiples Roles" as UC2
+  usecase "Cambiar Rol Activo" as UC3
+  usecase "Eliminar Rol Repartidor" as UC4
+
+  A --> UC1
+  A --> UC2
+  U --> UC3
+  U --> UC4
+
+  UC1 --> UC2 : <<incluye>>
+
+  note right of UC1
+    Admin crea roles (Admin,
+    Emprendedor, Cliente,
+    Repartidor). Rol Admin
+    solo asignable desde DB
+  end note
+
+  note right of UC4
+    Usuario con rol Repartidor
+    puede quitarlo desde su
+    dashboard
+  end note
+}
+
+@enduml

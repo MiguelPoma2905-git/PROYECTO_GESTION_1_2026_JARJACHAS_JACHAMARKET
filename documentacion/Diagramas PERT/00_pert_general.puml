@@ -1,0 +1,36 @@
+@startuml
+title PERT General - Proyecto JachaMarket\nActividades de Gestión del Proyecto
+caption Duración en días (O - M - P) = Optimista - Más Probable - Pesimista\nTE = (O + 4M + P) / 6
+
+skinparam linetype ortho
+skinparam defaultTextAlignment center
+skinparam nodeSep 60
+skinparam rankSep 80
+
+left to right direction
+
+rectangle "<size:10><b>1</b></size>\nAnálisis de\nRequerimientos\n(2 - 3 - 5)\n<b>TE=3.2</b>" as A1
+rectangle "<size:10><b>2</b></size>\nDiseño de\nArquitectura\n(3 - 4 - 6)\n<b>TE=4.2</b>" as A2
+rectangle "<size:10><b>3</b></size>\nDiseño de\nBase de Datos\n(2 - 3 - 5)\n<b>TE=3.2</b>" as A3
+rectangle "<size:10><b>4</b></size>\nConfiguración\nEntorno Desarrollo\n(1 - 2 - 3)\n<b>TE=2</b>" as A4
+rectangle "<size:10><b>5</b></size>\nDesarrollo\n(Sprints 1-4)\n(15 - 20 - 30)\n<b>TE=20.8</b>" as A5
+rectangle "<size:10><b>6</b></size>\nPruebas\nUnitarias\n(3 - 5 - 7)\n<b>TE=5</b>" as A6
+rectangle "<size:10><b>7</b></size>\nPruebas de\nIntegración\n(2 - 4 - 6)\n<b>TE=4</b>" as A7
+rectangle "<size:10><b>8</b></size>\nPruebas de\nAceptación (UAT)\n(2 - 3 - 5)\n<b>TE=3.2</b>" as A8
+rectangle "<size:10><b>9</b></size>\nDespliegue en\nProducción\n(1 - 2 - 3)\n<b>TE=2</b>" as A9
+rectangle "<size:10><b>10</b></size>\nDocumentación\nTécnica\n(2 - 3 - 5)\n<b>TE=3.2</b>" as A10
+rectangle "<size:10><b>11</b></size>\nCapacitación\na Usuarios\n(1 - 2 - 4)\n<b>TE=2.2</b>" as A11
+
+A1 --> A2
+A1 --> A3
+A2 --> A4
+A3 --> A4
+A4 --> A5
+A5 --> A6
+A6 --> A7
+A7 --> A8
+A8 --> A9
+A5 --> A10
+A10 --> A11
+
+@enduml

@@ -1,0 +1,44 @@
+@startuml
+title Módulo 1: Autenticación - Casos de Uso
+
+skinparam linetype ortho
+skinparam defaultTextAlignment center
+skinparam nodeSep 120
+skinparam rankSep 120
+
+left to right direction
+
+actor "Visitante" as V
+actor "Usuario Autenticado" as U
+actor "Sistema" as S
+
+rectangle "Autenticación" {
+  usecase "CU-01: Registrarse" as UC1
+  usecase "CU-05: Seleccionar Roles" as UC5
+  usecase "Cargar Avatar en Registro" as UC6
+  usecase "CU-03: Verificar OTP" as UC3
+  usecase "Reenviar Código OTP" as UC7
+
+  usecase "CU-02: Iniciar Sesión" as UC2
+  usecase "CU-04: Cerrar Sesión" as UC4
+
+  usecase "Bloquear Generación OTP" as UC8
+  usecase "Invalidar OTP" as UC9
+
+  V --> UC1
+  V --> UC2
+
+  UC1 --> UC5 : <<incluye>>
+  UC1 --> UC6 : <<incluye>>
+  UC1 --> UC3 : <<incluye>>
+  UC2 --> UC3 : <<incluye>>
+  UC7 --> UC3 : <<extiende>>
+
+  U --> UC2
+  U --> UC4
+
+  S --> UC8
+  S --> UC9
+}
+
+@enduml

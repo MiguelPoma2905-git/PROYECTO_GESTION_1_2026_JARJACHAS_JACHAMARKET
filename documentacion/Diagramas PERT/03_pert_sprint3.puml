@@ -1,0 +1,26 @@
+@startuml
+title PERT - Sprint 3: Desarrollo Avanzado\nActividades de Gestión del Proyecto
+caption Duración en días (O - M - P)\nActividades del proyecto, no del sistema
+
+skinparam linetype ortho
+skinparam defaultTextAlignment center
+skinparam nodeSep 50
+skinparam rankSep 70
+
+left to right direction
+
+rectangle "<size:9><b>SP3.1</b></size>\nSprint Planning\nPlanificar tareas\nAjustar prioridades\n(1 - 1 - 2)\n<b>TE=1.2</b>" as T01
+rectangle "<size:9><b>SP3.2</b></size>\nDesarrollo Diario\nCodificación funcionalidad\nIntegración continua\n(6 - 8 - 12)\n<b>TE=8.3</b>" as T02
+rectangle "<size:9><b>SP3.3</b></size>\nCode Review\nRevisión de pares\nValidar estándares\n(1 - 2 - 3)\n<b>TE=2</b>" as T03
+rectangle "<size:9><b>SP3.4</b></size>\nPruebas de\nIntegración\nVerificar conexión módulos\n(2 - 3 - 4)\n<b>TE=3</b>" as T04
+rectangle "<size:9><b>SP3.5</b></size>\nSprint Review\nDemostración al PO\nValidar funcionalidad\n(1 - 1 - 1)\n<b>TE=1</b>" as T05
+rectangle "<size:9><b>SP3.6</b></size>\nRetrospectiva\nIdentificar mejoras\nAjustar ritmo\n(1 - 1 - 1)\n<b>TE=1</b>" as T06
+
+T01 --> T02
+T02 --> T03
+T02 --> T04
+T03 --> T05
+T04 --> T05
+T05 --> T06
+
+@enduml
