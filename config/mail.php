@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/.env.php';
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -13,13 +14,13 @@ class Mailer {
         $this->mail = new PHPMailer(true);
         $this->mail->SMTPDebug = 0;
         $this->mail->isSMTP();
-        $this->mail->Host = 'smtp.gmail.com';
+        $this->mail->Host = SMTP_HOST;
         $this->mail->SMTPAuth = true;
-        $this->mail->Username = 'mikypramos2905@gmail.com';
-        $this->mail->Password = 'gqdgstlicrqweylt';
+        $this->mail->Username = SMTP_USER;
+        $this->mail->Password = SMTP_PASS;
         $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $this->mail->Port = 587;
-        $this->mail->setFrom('mikypramos2905@gmail.com', 'Jacha Marketplace');
+        $this->mail->Port = SMTP_PORT;
+        $this->mail->setFrom(SMTP_FROM, SMTP_FROM_NAME);
         $this->mail->isHTML(true);
         $this->mail->CharSet = 'UTF-8';
     }
@@ -176,6 +177,61 @@ class Mailer {
         </html>';
     }
     
+    public function enviarEnlaceRecuperacion($email, $enlace, $nombre = 'Usuario') {
+        try {
+            $this->mail->clearAddresses();
+            $this->mail->addAddress($email, $nombre);
+            $this->mail->Subject = 'Recuperación de contraseña - Jacha Marketplace';
+
+            $this->mail->Body = $this->generarHTMLRecuperacion($enlace, $nombre);
+            $this->mail->AltBody = "Hola $nombre,\n\nPara restablecer tu contraseña, visita el siguiente enlace:\n$enlace\n\nSi no solicitaste esto, ignora este correo.\n\n© Jacha Marketplace";
+
+            return $this->mail->send();
+        } catch (Exception $e) {
+            error_log("Error enviando correo de recuperación: " . $this->mail->ErrorInfo);
+            return false;
+        }
+    }
+
+    private function generarHTMLRecuperacion($enlace, $nombre) {
+        return '
+        <!DOCTYPE html>
+        <html lang="es">
+        <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <title>Recuperación de contraseña</title>
+        <style>
+            * { margin:0; padding:0; box-sizing:border-box; }
+            body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:#0a0a0a; margin:0; padding:0; }
+            .email-container { max-width:560px; margin:0 auto; background:#0a0a0a; padding:40px 20px; }
+            .email-card { background:#141414; border-radius:24px; overflow:hidden; border:1px solid rgba(255,255,255,0.08); box-shadow:0 25px 50px -12px rgba(0,0,0,0.5); }
+            .email-content { padding:48px 40px; }
+            .divider { width:48px; height:1px; background:rgba(255,255,255,0.15); margin:0 auto 32px auto; }
+            .title { text-align:center; font-family:Georgia,"Times New Roman",Times,serif; font-size:24px; font-weight:400; color:#ffffff; margin-bottom:16px; }
+            .text { text-align:center; color:#888; font-size:14px; margin-bottom:24px; line-height:1.6; }
+            .btn-wrap { text-align:center; margin:32px 0; }
+            .btn-reset { display:inline-block; padding:14px 36px; background:#ffffff; color:#0a0a0a; text-decoration:none; border-radius:12px; font-size:14px; font-weight:600; }
+            .footer { text-align:center; padding-top:32px; margin-top:32px; border-top:1px solid rgba(255,255,255,0.08); }
+            .footer-text { font-size:10px; color:#555; line-height:1.5; }
+            @media (max-width:480px) { .email-content { padding:32px 24px; } .title { font-size:20px; } }
+        </style>
+        </head>
+        <body>
+        <div class="email-container">
+            <div class="email-card">
+                <div class="email-content">
+                    <div class="divider"></div>
+                    <div class="title">Recupera tu contraseña</div>
+                    <div class="text">Hola, <strong>' . htmlspecialchars($nombre) . '</strong><br><br>Recibimos una solicitud para restablecer la contraseña de tu cuenta. Haz clic en el botón de abajo para crear una nueva contraseña.</div>
+                    <div class="btn-wrap"><a href="' . $enlace . '" class="btn-reset">Restablecer contraseña</a></div>
+                    <div class="text" style="font-size:12px;color:#555">Si no solicitaste este cambio, puedes ignorar este correo.<br>El enlace expira en 1 hora.</div>
+                    <div class="footer"><div class="footer-text">© 2026 Jacha Marketplace</div></div>
+                </div>
+            </div>
+        </div>
+        </body>
+        </html>';
+    }
+
     public function testConnection() {
         try {
             $this->mail->smtpConnect();

@@ -34,6 +34,10 @@ class AuthController extends Controller
             $this->redirect(BASE_URL . '/login');
         }
 
+        if (!validate_csrf_token($_POST['csrf_token'] ?? null)) {
+            $this->redirect(BASE_URL . '/login?error=Sesión inválida, intenta de nuevo');
+        }
+
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
 
@@ -83,6 +87,10 @@ class AuthController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect(BASE_URL . '/registro');
+        }
+
+        if (!validate_csrf_token($_POST['csrf_token'] ?? null)) {
+            $this->redirect(BASE_URL . '/registro?error=Sesión inválida, intenta de nuevo');
         }
 
         $nombres = trim($_POST['nombres'] ?? '');
@@ -389,6 +397,91 @@ class AuthController extends Controller
         }
 
         $this->redirect(BASE_URL . '/verificar-otp-login?resent=1');
+    }
+
+    public function showRecuperarPassword(): void
+    {
+        if (isset($_SESSION['usuario'])) {
+            $this->redirect(BASE_URL . '/');
+        }
+
+        $token = $_GET['token'] ?? '';
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$token) {
+            if (!validate_csrf_token($_POST['csrf_token'] ?? null)) {
+                $this->redirect(BASE_URL . '/recuperar-password?error=Sesión inválida, intenta de nuevo');
+            }
+
+            $email = trim($_POST['email'] ?? '');
+            if (empty($email)) {
+                $this->redirect(BASE_URL . '/recuperar-password?error=Ingresa tu correo electrónico');
+            }
+
+            $db = $this->getDB();
+            $stmt = $db->prepare("SELECT id_usuario, nombres, email FROM usuarios WHERE email = ? AND estado = 'Activo'");
+            $stmt->execute([$email]);
+            $usuario = $stmt->fetch();
+
+            if ($usuario) {
+                $token = bin2hex(random_bytes(32));
+                $expiry = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+                $stmt = $db->prepare("UPDATE usuarios SET reset_token = ?, reset_token_expiry = ? WHERE id_usuario = ?");
+                $stmt->execute([$token, $expiry, $usuario['id_usuario']]);
+
+                $enlace = BASE_URL . '/recuperar-password?token=' . urlencode($token);
+                $this->mailer->enviarEnlaceRecuperacion($email, $enlace, $usuario['nombres']);
+            }
+
+            $this->view('auth/recuperar-password', [
+                'success' => 'Si el correo existe en nuestros registros, recibirás un enlace para restablecer tu contraseña.'
+            ]);
+            return;
+        }
+
+        $this->view('auth/recuperar-password', ['token' => $token]);
+    }
+
+    public function resetPassword(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect(BASE_URL . '/login');
+        }
+
+        if (!validate_csrf_token($_POST['csrf_token'] ?? null)) {
+            $this->redirect(BASE_URL . '/recuperar-password?error=Sesión inválida, intenta de nuevo');
+        }
+
+        $token = $_POST['token'] ?? '';
+        $password = $_POST['password'] ?? '';
+        $confirm = $_POST['confirm_password'] ?? '';
+
+        if (empty($token) || empty($password) || empty($confirm)) {
+            $this->redirect(BASE_URL . '/recuperar-password?error=Todos los campos son requeridos');
+        }
+
+        if ($password !== $confirm) {
+            $this->redirect(BASE_URL . '/recuperar-password?token=' . urlencode($token) . '&error=Las contraseñas no coinciden');
+        }
+
+        if (strlen($password) < 6) {
+            $this->redirect(BASE_URL . '/recuperar-password?token=' . urlencode($token) . '&error=La contraseña debe tener al menos 6 caracteres');
+        }
+
+        $db = $this->getDB();
+        $stmt = $db->prepare("SELECT id_usuario FROM usuarios WHERE reset_token = ? AND reset_token_expiry > NOW() AND estado = 'Activo'");
+        $stmt->execute([$token]);
+        $usuario = $stmt->fetch();
+
+        if (!$usuario) {
+            $this->redirect(BASE_URL . '/recuperar-password?error=El enlace es inválido o ha expirado');
+        }
+
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $stmt = $db->prepare("UPDATE usuarios SET password_hash = ?, reset_token = NULL, reset_token_expiry = NULL WHERE id_usuario = ?");
+        $stmt->execute([$hash, $usuario['id_usuario']]);
+
+        $this->redirect(BASE_URL . '/login?success=Contraseña restablecida correctamente. Inicia sesión con tu nueva contraseña.');
     }
 
     public function logout(): void

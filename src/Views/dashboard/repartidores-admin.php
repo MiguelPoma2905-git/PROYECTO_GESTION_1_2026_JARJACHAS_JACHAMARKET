@@ -108,29 +108,35 @@
                     <?php if (count($repartidores) > 0): ?>
                         <div style="overflow-x:auto;">
                             <table class="repartidores-table">
-                                <thead>
-                                    <tr>
-                                        <th>Repartidor</th>
-                                        <th>Correo electrónico</th>
-                                        <th style="text-align:right">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($repartidores as $rep): ?>
-                                    <tr>
-                                        <td>
-                                            <strong><?= htmlspecialchars($rep['nombres']) ?> <?= htmlspecialchars($rep['apellidos']) ?></strong>
-                                        </td>
-                                        <td><?= htmlspecialchars($rep['email']) ?></td>
-                                        <td style="text-align:right">
-                                            <form method="POST" action="<?= BASE_URL ?>/repartidores-admin/desvincular" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas quitar a este repartidor del negocio?');">
-                                                <input type="hidden" name="id_emprendimiento" value="<?= $id_emprendimiento ?>">
-                                                <input type="hidden" name="id_repartidor" value="<?= $rep['id_usuario'] ?>">
-                                                <button type="submit" class="btn-action btn-danger" style="padding: 8px 16px; font-size: 11px;">Quitar</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    <?php endforeach; ?>
+                                    <thead>
+                                        <tr>
+                                            <th>Repartidor</th>
+                                            <th>Correo electrónico</th>
+                                            <th>Estado</th>
+                                            <th style="text-align:right">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($repartidores as $rep): ?>
+                                        <tr>
+                                            <td>
+                                                <strong><?= htmlspecialchars($rep['nombres']) ?> <?= htmlspecialchars($rep['apellidos']) ?></strong>
+                                            </td>
+                                            <td><?= htmlspecialchars($rep['email']) ?></td>
+                                            <td>
+                                                <span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;<?= $rep['estado'] === 'Aceptado' ? 'background:#2ECC7115;color:#2ECC71' : ($rep['estado'] === 'Rechazado' ? 'background:#E74C3C15;color:#E74C3C' : 'background:#F39C1215;color:#F39C12') ?>">
+                                                    <?= htmlspecialchars($rep['estado']) ?>
+                                                </span>
+                                            </td>
+                                            <td style="text-align:right">
+                                                <form method="POST" action="<?= BASE_URL ?>/repartidores-admin/desvincular" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas quitar a este repartidor del negocio?');">
+                                                    <input type="hidden" name="id_emprendimiento" value="<?= $id_emprendimiento ?>">
+                                                    <input type="hidden" name="id_repartidor" value="<?= $rep['id_usuario'] ?>">
+                                                    <button type="submit" class="btn-action btn-danger" style="padding: 8px 16px; font-size: 11px;">Quitar</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
                                 </tbody>
                             </table>
                         </div>

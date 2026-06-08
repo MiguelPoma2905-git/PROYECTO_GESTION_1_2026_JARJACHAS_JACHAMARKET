@@ -277,7 +277,7 @@ class EmprendimientoRepository
 
     public function agregarRepartidor(int $idEmprendimiento, int $idRepartidor): void
     {
-        $stmt = $this->conn->prepare("INSERT INTO emprendimiento_repartidores (id_emprendimiento, id_repartidor) VALUES (?, ?)");
+        $stmt = $this->conn->prepare("INSERT INTO emprendimiento_repartidores (id_emprendimiento, id_repartidor, estado) VALUES (?, ?, 'Pendiente')");
         $stmt->execute([$idEmprendimiento, $idRepartidor]);
     }
 
@@ -290,12 +290,35 @@ class EmprendimientoRepository
     public function listarRepartidores(int $idEmprendimiento): array
     {
         $stmt = $this->conn->prepare("
-            SELECT u.id_usuario, u.nombres, u.apellidos, u.email
+            SELECT u.id_usuario, u.nombres, u.apellidos, u.email, er.estado
             FROM usuarios u
             JOIN emprendimiento_repartidores er ON u.id_usuario = er.id_repartidor
             WHERE er.id_emprendimiento = ?
+            ORDER BY FIELD(er.estado, 'Pendiente', 'Aceptado', 'Rechazado')
         ");
         $stmt->execute([$idEmprendimiento]);
+        return $stmt->fetchAll();
+    }
+
+    public function actualizarEstadoRepartidor(int $idEmprendimiento, int $idRepartidor, string $estado): void
+    {
+        $stmt = $this->conn->prepare("UPDATE emprendimiento_repartidores SET estado = ? WHERE id_emprendimiento = ? AND id_repartidor = ?");
+        $stmt->execute([$estado, $idEmprendimiento, $idRepartidor]);
+    }
+
+    public function listarSolicitudesRepartidor(int $idRepartidor): array
+    {
+        $stmt = $this->conn->prepare("
+            SELECT er.id_emprendimiento, er.estado, er.fecha_ingreso,
+                   e.nombre_comercial, e.descripcion,
+                   u.nombres as prop_nombre, u.apellidos as prop_apellidos, u.email as prop_email
+            FROM emprendimiento_repartidores er
+            JOIN emprendimientos e ON er.id_emprendimiento = e.id_emprendimiento
+            JOIN usuarios u ON e.id_propietario = u.id_usuario
+            WHERE er.id_repartidor = ?
+            ORDER BY FIELD(er.estado, 'Pendiente', 'Aceptado', 'Rechazado'), er.fecha_ingreso DESC
+        ");
+        $stmt->execute([$idRepartidor]);
         return $stmt->fetchAll();
     }
 

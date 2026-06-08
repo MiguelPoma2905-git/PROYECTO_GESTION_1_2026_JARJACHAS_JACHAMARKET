@@ -409,4 +409,49 @@ class DashboardController extends Controller
         $this->emprendimientoRepo->quitarRepartidor($idEmprendimiento, $idRepartidor);
         $this->redirect(BASE_URL . '/repartidores-admin?id_emprendimiento=' . $idEmprendimiento . '&success=Repartidor quitado del negocio');
     }
+
+    public function repartidorSolicitudes(): void
+    {
+        $this->requireAuth();
+        $usuario = $_SESSION['usuario'];
+
+        $rolesNombres = $this->usuarioRepo->getRolesNombres($usuario['id']);
+        if (!in_array('Repartidor', $rolesNombres)) {
+            $this->redirect(BASE_URL . '/dashboard');
+        }
+
+        $idRepartidor = (int)$usuario['id'];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!validate_csrf_token($_POST['csrf_token'] ?? null)) {
+                $this->redirect(BASE_URL . '/repartidor-solicitudes?error=Sesión inválida');
+            }
+
+            $idEmprendimiento = (int)($_POST['id_emprendimiento'] ?? 0);
+            $accion = $_POST['accion'] ?? '';
+
+            if ($idEmprendimiento <= 0 || !in_array($accion, ['aceptar', 'rechazar'])) {
+                $this->redirect(BASE_URL . '/repartidor-solicitudes?error=Acción no válida');
+            }
+
+            $nuevoEstado = $accion === 'aceptar' ? 'Aceptado' : 'Rechazado';
+            $this->emprendimientoRepo->actualizarEstadoRepartidor($idEmprendimiento, $idRepartidor, $nuevoEstado);
+
+            $msg = $nuevoEstado === 'Aceptado' ? 'Solicitud aceptada correctamente' : 'Solicitud rechazada';
+            $this->redirect(BASE_URL . '/repartidor-solicitudes?success=' . urlencode($msg));
+        }
+
+        $solicitudes = $this->emprendimientoRepo->listarSolicitudesRepartidor($idRepartidor);
+        $avatarUsuario = $this->usuarioRepo->getAvatar($usuario['id']);
+        $inicial = strtoupper(substr($usuario['nombre'], 0, 1));
+
+        $this->view('dashboard/repartidor-solicitudes', [
+            'usuario' => $usuario,
+            'avatar_usuario' => $avatarUsuario,
+            'inicial' => $inicial,
+            'solicitudes' => $solicitudes,
+            'success' => $_GET['success'] ?? '',
+            'error' => $_GET['error'] ?? ''
+        ]);
+    }
 }

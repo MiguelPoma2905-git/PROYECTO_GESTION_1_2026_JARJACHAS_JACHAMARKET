@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Repartidor - Jacha</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=4">
     <style>
         body { font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
@@ -79,6 +80,11 @@
             <div class="value">Bs. <?= number_format($stats['ganancias_totales'] ?? 0, 2) ?></div>
             <div class="sub">historial completo</div>
         </div>
+    </div>
+
+    <div class="rep-section">
+        <h2>Calendario de entregas</h2>
+        <div id="calendar" style="background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:24px;"></div>
     </div>
 
     <div class="rep-section">
@@ -176,7 +182,63 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/es.js"></script>
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    if (calendarEl) {
+        var events = [];
+        <?php foreach ($pedidos_pendientes as $p): ?>
+        events.push({
+            title: 'Pendiente: <?= htmlspecialchars($p['codigo_seguimiento'], ENT_QUOTES) ?>',
+            start: '<?= date('Y-m-d', strtotime($p['fecha_creacion'])) ?>',
+            color: '#F39C12',
+            textColor: '#fff',
+            url: '<?= BASE_URL ?>/dashboard-repartidor'
+        });
+        <?php endforeach; ?>
+        <?php foreach ($mis_activos as $p): ?>
+        events.push({
+            title: '<?= $p['estado_logistico'] === 'En_Ruta' ? 'En ruta' : 'Activo' ?>: <?= htmlspecialchars($p['codigo_seguimiento'], ENT_QUOTES) ?>',
+            start: '<?= date('Y-m-d', strtotime($p['fecha_creacion'])) ?>',
+            color: '#3498DB',
+            textColor: '#fff',
+            url: '<?= BASE_URL ?>/dashboard-repartidor'
+        });
+        <?php endforeach; ?>
+        <?php foreach ($historial as $p): ?>
+        events.push({
+            title: 'Entregado: <?= htmlspecialchars($p['codigo_seguimiento'], ENT_QUOTES) ?>',
+            start: '<?= date('Y-m-d', strtotime($p['fecha_entrega'])) ?>',
+            color: '#2ECC71',
+            textColor: '#fff',
+            url: '<?= BASE_URL ?>/dashboard-repartidor'
+        });
+        <?php endforeach; ?>
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'es',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek'
+            },
+            buttonText: {
+                today: 'Hoy',
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día'
+            },
+            events: events,
+            height: 'auto',
+            firstDay: 1
+        });
+        calendar.render();
+    }
+});
+
 function mostrarToast(msg, tipo) {
     var t = document.getElementById('toast');
     t.textContent = msg;

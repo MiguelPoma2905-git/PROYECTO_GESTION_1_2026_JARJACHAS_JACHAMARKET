@@ -248,6 +248,131 @@ class AdminController extends Controller
         ]);
     }
 
+    public function analyticsData(): void
+    {
+        $this->requireAdmin();
+        $db = $this->getDB();
+
+        // Monthly sales (last 12 months)
+        $stmt = $db->query("
+            SELECT DATE_FORMAT(fecha_creacion, '%Y-%m') as mes,
+                   COUNT(*) as total_pedidos,
+                   COALESCE(SUM(total), 0) as total_ventas
+            FROM pedidos
+            WHERE fecha_creacion >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+            GROUP BY DATE_FORMAT(fecha_creacion, '%Y-%m')
+            ORDER BY mes ASC
+        ");
+        $ventasMensuales = $stmt->fetchAll();
+
+        // Top 5 businesses by revenue
+        $stmt = $db->query("
+            SELECT e.nombre_comercial,
+                   COUNT(p.id_pedido) as total_pedidos,
+                   COALESCE(SUM(p.total), 0) as total_ventas
+            FROM pedidos p
+            JOIN sucursales s ON p.id_sucursal_origen = s.id_sucursal
+            JOIN emprendimientos e ON s.id_emprendimiento = e.id_emprendimiento
+            GROUP BY e.id_emprendimiento, e.nombre_comercial
+            ORDER BY total_ventas DESC
+            LIMIT 5
+        ");
+        $topNegocios = $stmt->fetchAll();
+
+        // Orders by status
+        $stmt = $db->query("
+            SELECT estado_logistico, COUNT(*) as total
+            FROM pedidos
+            GROUP BY estado_logistico
+        ");
+        $pedidosPorEstado = $stmt->fetchAll();
+
+        // Orders by payment method
+        $stmt = $db->query("
+            SELECT metodo_pago, COUNT(*) as total, COALESCE(SUM(total), 0) as total_ventas
+            FROM pedidos
+            GROUP BY metodo_pago
+        ");
+        $pagos = $stmt->fetchAll();
+
+        // User registrations (last 12 months)
+        $stmt = $db->query("
+            SELECT DATE_FORMAT(creado_en, '%Y-%m') as mes,
+                   COUNT(*) as total_usuarios
+            FROM usuarios
+            WHERE creado_en >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+            GROUP BY DATE_FORMAT(creado_en, '%Y-%m')
+            ORDER BY mes ASC
+        ");
+        $registros = $stmt->fetchAll();
+
+        // Products per business
+        $stmt = $db->query("
+            SELECT e.nombre_comercial, COUNT(pr.id_producto) as total_productos
+            FROM emprendimientos e
+            LEFT JOIN productos pr ON e.id_emprendimiento = pr.id_emprendimiento
+            GROUP BY e.id_emprendimiento, e.nombre_comercial
+            ORDER BY total_productos DESC
+            LIMIT 5
+        ");
+        $productosPorNegocio = $stmt->fetchAll();
+
+        // Recent orders (last 10)
+        $stmt = $db->query("
+            SELECT p.codigo_seguimiento, p.total, p.fecha_creacion, p.estado_logistico,
+                   u.nombres as cliente_nombre, u.apellidos as cliente_apellidos,
+                   e.nombre_comercial
+            FROM pedidos p
+            JOIN usuarios u ON p.id_cliente = u.id_usuario
+            JOIN sucursales s ON p.id_sucursal_origen = s.id_sucursal
+            JOIN emprendimientos e ON s.id_emprendimiento = e.id_emprendimiento
+            ORDER BY p.fecha_creacion DESC
+            LIMIT 10
+        ");
+        $pedidosRecientes = $stmt->fetchAll();
+
+        // Overall summary
+        $stmt = $db->query("
+            SELECT
+                (SELECT COUNT(*) FROM usuarios) as total_usuarios,
+                (SELECT COUNT(*) FROM emprendimientos) as total_negocios,
+                (SELECT COUNT(*) FROM productos) as total_productos,
+                (SELECT COUNT(*) FROM pedidos) as total_pedidos,
+                (SELECT COALESCE(SUM(total), 0) FROM pedidos) as ingresos_totales,
+                (SELECT COALESCE(AVG(total), 0) FROM pedidos) as ticket_promedio,
+                (SELECT COUNT(*) FROM pedidos WHERE DATE(fecha_creacion) = CURDATE()) as pedidos_hoy,
+                (SELECT COALESCE(SUM(total), 0) FROM pedidos WHERE DATE(fecha_creacion) = CURDATE()) as ingresos_hoy
+        ");
+        $resumen = $stmt->fetch();
+
+        $this->json([
+            'success' => true,
+            'ventas_mensuales' => $ventasMensuales,
+            'top_negocios' => $topNegocios,
+            'pedidos_por_estado' => $pedidosPorEstado,
+            'pagos' => $pagos,
+            'registros' => $registros,
+            'productos_por_negocio' => $productosPorNegocio,
+            'pedidos_recientes' => $pedidosRecientes,
+            'resumen' => $resumen
+        ]);
+    }
+
+    public function analytics(): void
+    {
+        $this->requireAdmin();
+
+        $db = $this->getDB();
+        $stats = [
+            'usuarios' => $db->query("SELECT COUNT(*) FROM usuarios")->fetchColumn(),
+            'negocios' => $db->query("SELECT COUNT(*) FROM emprendimientos")->fetchColumn(),
+            'productos' => $db->query("SELECT COUNT(*) FROM productos")->fetchColumn(),
+            'pedidos' => $db->query("SELECT COUNT(*) FROM pedidos")->fetchColumn(),
+        ];
+
+        $this->view('admin/analytics', ['stats' => $stats]);
+    }
+
     public function seedDemo(): void
     {
         $this->requireAdmin();

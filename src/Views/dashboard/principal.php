@@ -145,6 +145,7 @@
                 <a href="<?= BASE_URL ?>/favoritos"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9829;</span> Favoritos</a>
             <?php elseif ($rol_activo === 'Repartidor'): ?>
                 <a href="<?= BASE_URL ?>/dashboard-repartidor"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9881;</span> Entregas</a>
+                <a href="<?= BASE_URL ?>/repartidor-solicitudes"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9733;</span> Mis solicitudes</a>
             <?php endif; ?>
             <?php if ($es_admin): ?>
             <a href="<?= BASE_URL ?>/admin" style="color: #3498DB;"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9881;</span> Administraci&oacute;n</a>

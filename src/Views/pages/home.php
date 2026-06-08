@@ -62,6 +62,7 @@
             <nav class="nav-menu" id="navMenu">
                 <a href="<?= BASE_URL ?>/plantillas-disponibles">Plantillas</a>
                 <?php if ($is_logged_in): ?>
+                    <a href="<?= BASE_URL ?>/explorar">Explorar negocios</a>
                     <a href="<?= BASE_URL ?>/dashboard">Mi panel</a>
                     <a href="<?= BASE_URL ?>/logout">Cerrar sesión</a>
                 <?php else: ?>

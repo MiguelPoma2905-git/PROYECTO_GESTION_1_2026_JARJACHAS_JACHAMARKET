@@ -44,6 +44,8 @@ $router->post('/verificar-otp-login', [AuthController::class, 'verifyOtpLogin'])
 $router->get('/enviar-otp', [AuthController::class, 'sendOtp']);
 $router->get('/reenviar-otp', [AuthController::class, 'resendOtp']);
 $router->get('/reenviar-otp-login', [AuthController::class, 'resendOtpLogin']);
+$router->match(['GET', 'POST'], '/recuperar-password', [AuthController::class, 'showRecuperarPassword']);
+$router->post('/reset-password', [AuthController::class, 'resetPassword']);
 $router->get('/logout', [AuthController::class, 'logout']);
 $router->post('/guardar-temp-avatar', [AuthController::class, 'guardarTempAvatar']);
 
@@ -55,6 +57,7 @@ $router->match(['GET', 'POST'], '/plantillas', [DashboardController::class, 'sho
 $router->get('/repartidores-admin', [DashboardController::class, 'repartidoresAdmin']);
 $router->post('/repartidores-admin/vincular', [DashboardController::class, 'repartidoresVincular']);
 $router->post('/repartidores-admin/desvincular', [DashboardController::class, 'repartidoresDesvincular']);
+$router->match(['GET', 'POST'], '/repartidor-solicitudes', [DashboardController::class, 'repartidorSolicitudes']);
 
 // Products
 $router->get('/tienda/{id}', [ProductoController::class, 'showTienda']);
@@ -88,6 +91,8 @@ $router->post('/admin/reiniciar-bd', [AdminController::class, 'resetDb']);
 $router->get('/admin/editar-usuario', [AdminController::class, 'editarUsuario']);
 $router->post('/admin/editar-usuario/guardar', [AdminController::class, 'editarUsuarioGuardar']);
 $router->get('/admin/ventas', [AdminController::class, 'ventas']);
+$router->get('/admin/analytics', [AdminController::class, 'analytics']);
+$router->get('/admin/analytics-data', [AdminController::class, 'analyticsData']);
 $router->post('/admin/seed-demo', [AdminController::class, 'seedDemo']);
 
 // DB Demo

@@ -88,6 +88,7 @@ $error = $error ?? '';
         <div class="error-msg"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
         <form method="POST" action="<?= BASE_URL ?>/registro" id="registroForm">
+            <input type="hidden" name="csrf_token" value="<?= get_csrf_token() ?>">
             <div class="form-row">
                 <div class="form-group">
                     <label>Nombres</label>

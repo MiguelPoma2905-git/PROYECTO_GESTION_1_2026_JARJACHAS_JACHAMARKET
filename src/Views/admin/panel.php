@@ -281,8 +281,11 @@
     <!-- NAV ACTIONS -->
     <div class="admin-body" style="padding-bottom:0">
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px">
+            <a href="<?= BASE_URL ?>/admin/analytics" class="btn-icon edit" style="padding:12px 24px;font-size:13px;background:rgba(139,92,246,0.12);color:#8b5cf6">
+                <i class="fas fa-chart-pie"></i> Analítica
+            </a>
             <a href="<?= BASE_URL ?>/admin/ventas" class="btn-icon edit" style="padding:12px 24px;font-size:13px;background:rgba(16,185,129,0.12);color:#10b981">
-                <i class="fas fa-chart-line"></i> Ver Ventas
+                <i class="fas fa-chart-line"></i> Ventas
             </a>
             <form method="POST" action="<?= BASE_URL ?>/admin/seed-demo" style="margin:0">
                 <button type="submit" class="btn-icon edit" style="padding:12px 24px;font-size:13px;background:rgba(99,102,241,0.12);color:#6366f1">

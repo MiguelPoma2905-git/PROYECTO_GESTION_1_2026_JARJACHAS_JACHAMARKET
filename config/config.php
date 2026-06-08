@@ -29,6 +29,25 @@ if (basename($docRoot) === 'public' && realpath(dirname($docRoot)) === realpath(
 define('BASE_URL', $protocol . '://' . $host . $basePath);
 define('BASE_PATH', dirname(__DIR__) . '/');
 
+// CSRF Protection
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+function get_csrf_token(): string {
+    if (!isset($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
+}
+
+function validate_csrf_token(?string $token): bool {
+    if (empty($token) || empty($_SESSION['csrf_token'])) {
+        return false;
+    }
+    return hash_equals($_SESSION['csrf_token'], $token);
+}
+
 // COLORES NEUTROS DEL SISTEMA (escala de grises)
 define('COLOR_PRIMARY', '#1a1a1a');    // Negro suave
 define('COLOR_SECONDARY', '#555555');  // Gris medio
