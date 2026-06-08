@@ -1,0 +1,49 @@
+@startuml
+title Ruta Crítica - Diagrama PERT General\nProyecto JachaMarket
+caption Flechas rojas = Ruta Crítica\nLa ruta crítica determina la duración mínima del proyecto
+
+skinparam linetype ortho
+skinparam defaultTextAlignment center
+skinparam nodeSep 60
+skinparam rankSep 80
+
+left to right direction
+
+' Nodos normales
+rectangle "<size:10><b>P1</b></size>\nRelevamiento\n(1-2-3)\nTE=2" as P1
+rectangle "<size:10><b>P3</b></size>\nDiseño BD\n(2-4-6)\nTE=4" as P3
+rectangle "<size:10><b>S1</b></size>\nSprint 1\n(4-6-8)\nTE=6" as S1
+rectangle "<size:10><b>S2</b></size>\nSprint 2\n(5-7-10)\nTE=7.2" as S2
+rectangle "<size:10><b>S3</b></size>\nSprint 3\n(5-8-12)\nTE=8.2" as S3
+rectangle "<size:10><b>S4</b></size>\nSprint 4\n(4-6-9)\nTE=6.2" as S4
+rectangle "<size:10><b>PR</b></size>\nPruebas\n(3-5-8)\nTE=5.2" as PR
+rectangle "<size:10><b>DP</b></size>\nDespliegue\n(1-2-3)\nTE=2" as DP
+
+' Nodo no crítico (gris)
+rectangle "<size:10><b>P2</b></size>\nArquitectura\n(2-3-5)\nTE=3.2" as P2 #LightGray
+
+' Flechas normales (gris)
+P1 -[#LightGray]-> P2
+P2 -[#LightGray]-> S1
+
+' Ruta crítica (rojo)
+P1 -[#Red]> P3
+P3 -[#Red]> S1
+S1 -[#Red]> S2
+S2 -[#Red]> S3
+S3 -[#Red]> S4
+S4 -[#Red]> PR
+PR -[#Red]> DP
+
+' Cálculo de duración total
+note bottom of DP
+  <b>Duración Total del Proyecto:</b>
+  P1(2) + P3(4) + S1(6) + S2(7.2) + S3(8.2)
+  + S4(6.2) + PR(5.2) + DP(2)
+  = <b>40.8 días hábiles</b>
+  
+  <b>Ruta Crítica:</b>
+  P1 → P3 → S1 → S2 → S3 → S4 → PR → DP
+end note
+
+@enduml

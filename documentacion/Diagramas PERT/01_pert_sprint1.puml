@@ -1,0 +1,32 @@
+@startuml
+title PERT - Sprint 1: Fundación y Autenticación\nProyecto JachaMarket
+caption Duración en días (O - M - P) = Optimista - Más Probable - Pesimista\nTE = (O + 4M + P) / 6
+
+skinparam linetype ortho
+skinparam defaultTextAlignment center
+skinparam nodeSep 50
+skinparam rankSep 70
+
+left to right direction
+
+rectangle "<size:9><b>ST1.1</b></size>\nEstructura BD\n17 tablas, FK, índices\n(2 - 3 - 5)\n<b>TE=3.2</b>" as T01
+rectangle "<size:9><b>ST1.2</b></size>\nRegistro\nFormulario + validación\n(1 - 2 - 3)\n<b>TE=2</b>" as T02
+rectangle "<size:9><b>ST1.3</b></size>\nSelección Roles\nCheckboxes + guardado\n(1 - 1 - 2)\n<b>TE=1.2</b>" as T03
+rectangle "<size:9><b>ST1.4</b></size>\nVerificación OTP\nGeneración + PHPMailer\n(2 - 3 - 4)\n<b>TE=3</b>" as T04
+rectangle "<size:9><b>ST1.5</b></size>\nLogin + Cierre\nSesión + password_hash\n(1 - 2 - 3)\n<b>TE=2</b>" as T05
+rectangle "<size:9><b>ST1.6</b></size>\nAvatar Registro\nRedimensionar + BLOB\n(1 - 2 - 2)\n<b>TE=1.8</b>" as T06
+rectangle "<size:9><b>ST1.7</b></size>\nRoles y Permisos\nCambio rol activo\n(2 - 3 - 4)\n<b>TE=3</b>" as T07
+rectangle "<size:9><b>ST1.8</b></size>\nPágina Principal\nNegocios destacados\n(1 - 2 - 3)\n<b>TE=2</b>" as T08
+rectangle "<size:9><b>ST1.9</b></size>\nObjetos BD\nFunction, SP, Trigger\nAuditoría\n(2 - 3 - 5)\n<b>TE=3.2</b>" as T09
+
+T01 --> T04
+T01 --> T08
+T01 --> T09
+
+T02 --> T03
+T03 --> T04
+T04 --> T05
+T05 --> T06
+T05 --> T07
+
+@enduml

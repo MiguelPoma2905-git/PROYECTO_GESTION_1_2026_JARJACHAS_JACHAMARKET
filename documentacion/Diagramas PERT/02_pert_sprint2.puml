@@ -1,0 +1,28 @@
+@startuml
+title PERT - Sprint 2: Perfil y Emprendimiento\nProyecto JachaMarket
+caption Duración en días (O - M - P) = Optimista - Más Probable - Pesimista\nTE = (O + 4M + P) / 6
+
+skinparam linetype ortho
+skinparam defaultTextAlignment center
+skinparam nodeSep 50
+skinparam rankSep 70
+
+left to right direction
+
+rectangle "<size:9><b>ST2.1</b></size>\nEditar Perfil\nDatos + contraseña\n(1 - 2 - 3)\n<b>TE=2</b>" as T01
+rectangle "<size:9><b>ST2.2</b></size>\nGestión Avatar\nSubir, cambiar, eliminar\n(1 - 1 - 2)\n<b>TE=1.2</b>" as T02
+rectangle "<size:9><b>ST2.3</b></size>\nQuitar Repartidor\nEliminar rol\n(1 - 1 - 1)\n<b>TE=1</b>" as T03
+rectangle "<size:9><b>ST2.4</b></size>\nGalería Plantillas\nPrevisualización + CRUD\n(2 - 3 - 4)\n<b>TE=3</b>" as T04
+rectangle "<size:9><b>ST2.5</b></size>\nCrear Negocio\nTransacción (emp+pers+su)\n(2 - 3 - 5)\n<b>TE=3.2</b>" as T05
+rectangle "<size:9><b>ST2.6</b></size>\nPersonalizar Tienda\nColores, logo, banner\nFAQs, preview AJAX\n(3 - 4 - 6)\n<b>TE=4.2</b>" as T06
+rectangle "<size:9><b>ST2.7</b></size>\nCRUD Sucursales\nAgregar, editar, eliminar\n(1 - 2 - 3)\n<b>TE=2</b>" as T07
+rectangle "<size:9><b>ST2.8</b></size>\nEliminar Negocio\nConfirmación + cascada\n(1 - 1 - 2)\n<b>TE=1.2</b>" as T08
+
+T01 --> T02
+
+T04 --> T05
+T05 --> T06
+T05 --> T07
+T05 --> T08
+
+@enduml

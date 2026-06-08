@@ -1,0 +1,34 @@
+@startuml
+title PERT - Sprint 3: Productos, Tienda, Carrito y Pedidos\nProyecto JachaMarket
+caption Duración en días (O - M - P) = Optimista - Más Probable - Pesimista\nTE = (O + 4M + P) / 6
+
+skinparam linetype ortho
+skinparam defaultTextAlignment center
+skinparam nodeSep 50
+skinparam rankSep 70
+
+left to right direction
+
+rectangle "<size:9><b>ST3.1</b></size>\nCRUD Productos\nAtributos JSON, imagen\n(2 - 3 - 5)\n<b>TE=3.2</b>" as T01
+rectangle "<size:9><b>ST3.2</b></size>\nVariantes\nSKU único + precio\n(1 - 2 - 3)\n<b>TE=2</b>" as T02
+rectangle "<size:9><b>ST3.3</b></size>\nEstado Producto\nBorrador/Publicado/Oculto\n(1 - 1 - 2)\n<b>TE=1.2</b>" as T03
+rectangle "<size:9><b>ST3.4</b></size>\nEditar/Eliminar\nProducto + seguridad\n(1 - 2 - 3)\n<b>TE=2</b>" as T04
+rectangle "<size:9><b>ST3.5</b></size>\nBúsqueda + Filtro\nPor nombre y categoría\n(1 - 2 - 2)\n<b>TE=1.8</b>" as T05
+rectangle "<size:9><b>ST3.6</b></size>\nTienda Pública\nPlantilla personalizada\n(2 - 3 - 4)\n<b>TE=3</b>" as T06
+rectangle "<size:9><b>ST3.7</b></size>\nCarrito Compras\nSesión + items\n(2 - 3 - 4)\n<b>TE=3</b>" as T07
+rectangle "<size:9><b>ST3.8</b></size>\nCheckout + Pedido\nMétodos pago, QR\nDirección, seguimiento\n(3 - 4 - 6)\n<b>TE=4.2</b>" as T08
+rectangle "<size:9><b>ST3.9</b></size>\nCompra Rápida\nPedido directo\n(1 - 1 - 2)\n<b>TE=1.2</b>" as T09
+rectangle "<size:9><b>ST3.10</b></size>\nHistorial Pedidos\nCliente + particionado\n(1 - 2 - 3)\n<b>TE=2</b>" as T10
+
+T01 --> T02
+T01 --> T03
+T01 --> T04
+T01 --> T06
+
+T06 --> T05
+T06 --> T07
+T07 --> T08
+T08 --> T09
+T08 --> T10
+
+@enduml
