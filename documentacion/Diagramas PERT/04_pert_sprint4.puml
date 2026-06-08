@@ -1,6 +1,6 @@
 @startuml
-title PERT - Sprint 4: Delivery, Admin y Cierre\nProyecto JachaMarket
-caption Duración en días (O - M - P) = Optimista - Más Probable - Pesimista\nTE = (O + 4M + P) / 6
+title PERT - Sprint 4: Cierre y Entrega\nActividades de Gestión del Proyecto
+caption Duración en días (O - M - P)\nActividades del proyecto, no del sistema
 
 skinparam linetype ortho
 skinparam defaultTextAlignment center
@@ -9,26 +9,18 @@ skinparam rankSep 70
 
 left to right direction
 
-rectangle "<size:9><b>ST4.1</b></size>\nDashboard Repartidor\nPedidos + API JSON\n(2 - 3 - 4)\n<b>TE=3</b>" as T01
-rectangle "<size:9><b>ST4.2</b></size>\nAsignación/Entrega\nAsignar, en ruta, entregado\n(1 - 2 - 3)\n<b>TE=2</b>" as T02
-rectangle "<size:9><b>ST4.3</b></size>\nEstadísticas\nRepartidor\n(1 - 1 - 2)\n<b>TE=1.2</b>" as T03
-rectangle "<size:9><b>ST4.4</b></size>\nPedidos Recibidos\nEmprendedor\n(1 - 2 - 2)\n<b>TE=1.8</b>" as T04
-rectangle "<size:9><b>ST4.5</b></size>\nEstadísticas\nVentas\n(1 - 1 - 2)\n<b>TE=1.2</b>" as T05
-rectangle "<size:9><b>ST4.6</b></size>\nPanel Admin\nEstadísticas globales\n(2 - 3 - 4)\n<b>TE=3</b>" as T06
-rectangle "<size:9><b>ST4.7</b></size>\nGestión Usuarios\nEditar, roles, eliminar\nProtección super admin\n(2 - 3 - 5)\n<b>TE=3.2</b>" as T07
-rectangle "<size:9><b>ST4.8</b></size>\nEliminar Negocios\nAdmin + cascada\n(1 - 1 - 2)\n<b>TE=1.2</b>" as T08
-rectangle "<size:9><b>ST4.9</b></size>\nReporte Ventas\nFiltros por negocio\n(1 - 2 - 3)\n<b>TE=2</b>" as T09
-rectangle "<size:9><b>ST4.10</b></size>\nSeed + Reset BD\nDatos demo + reinicio\n(1 - 2 - 3)\n<b>TE=2</b>" as T10
+rectangle "<size:9><b>SP4.1</b></size>\nSprint Planning\nPlanificar cierre\nDefinir entregables\n(1 - 1 - 2)\n<b>TE=1.2</b>" as T01
+rectangle "<size:9><b>SP4.2</b></size>\nDesarrollo Final\nCodificación restante\nCorrección de bugs\n(4 - 6 - 8)\n<b>TE=6</b>" as T02
+rectangle "<size:9><b>SP4.3</b></size>\nCode Review\nRevisión final\nValidar cobertura\n(1 - 2 - 3)\n<b>TE=2</b>" as T03
+rectangle "<size:9><b>SP4.4</b></size>\nPruebas de\nAceptación\nValidación con PO\n(2 - 3 - 5)\n<b>TE=3.2</b>" as T04
+rectangle "<size:9><b>SP4.5</b></size>\nSprint Review\nDemostración final\nAprobación de entrega\n(1 - 1 - 1)\n<b>TE=1</b>" as T05
+rectangle "<size:9><b>SP4.6</b></size>\nRetrospectiva\nFinal\nLecciones aprendidas\n(1 - 1 - 2)\n<b>TE=1.2</b>" as T06
 
 T01 --> T02
 T02 --> T03
-
+T02 --> T04
+T03 --> T05
 T04 --> T05
-T05 --> T09
-
-T06 --> T07
-T06 --> T08
-T07 --> T10
-T09 --> T10
+T05 --> T06
 
 @enduml

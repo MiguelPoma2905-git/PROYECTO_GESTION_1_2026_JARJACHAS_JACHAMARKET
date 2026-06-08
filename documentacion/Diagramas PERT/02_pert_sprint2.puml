@@ -1,6 +1,6 @@
 @startuml
-title PERT - Sprint 2: Perfil y Emprendimiento\nProyecto JachaMarket
-caption Duración en días (O - M - P) = Optimista - Más Probable - Pesimista\nTE = (O + 4M + P) / 6
+title PERT - Sprint 2: Desarrollo Continuo\nActividades de Gestión del Proyecto
+caption Duración en días (O - M - P)\nActividades del proyecto, no del sistema
 
 skinparam linetype ortho
 skinparam defaultTextAlignment center
@@ -9,20 +9,18 @@ skinparam rankSep 70
 
 left to right direction
 
-rectangle "<size:9><b>ST2.1</b></size>\nEditar Perfil\nDatos + contraseña\n(1 - 2 - 3)\n<b>TE=2</b>" as T01
-rectangle "<size:9><b>ST2.2</b></size>\nGestión Avatar\nSubir, cambiar, eliminar\n(1 - 1 - 2)\n<b>TE=1.2</b>" as T02
-rectangle "<size:9><b>ST2.3</b></size>\nQuitar Repartidor\nEliminar rol\n(1 - 1 - 1)\n<b>TE=1</b>" as T03
-rectangle "<size:9><b>ST2.4</b></size>\nGalería Plantillas\nPrevisualización + CRUD\n(2 - 3 - 4)\n<b>TE=3</b>" as T04
-rectangle "<size:9><b>ST2.5</b></size>\nCrear Negocio\nTransacción (emp+pers+su)\n(2 - 3 - 5)\n<b>TE=3.2</b>" as T05
-rectangle "<size:9><b>ST2.6</b></size>\nPersonalizar Tienda\nColores, logo, banner\nFAQs, preview AJAX\n(3 - 4 - 6)\n<b>TE=4.2</b>" as T06
-rectangle "<size:9><b>ST2.7</b></size>\nCRUD Sucursales\nAgregar, editar, eliminar\n(1 - 2 - 3)\n<b>TE=2</b>" as T07
-rectangle "<size:9><b>ST2.8</b></size>\nEliminar Negocio\nConfirmación + cascada\n(1 - 1 - 2)\n<b>TE=1.2</b>" as T08
+rectangle "<size:9><b>SP2.1</b></size>\nSprint Planning\nPlanificar tareas del Sprint\nRefinar backlog\n(1 - 1 - 2)\n<b>TE=1.2</b>" as T01
+rectangle "<size:9><b>SP2.2</b></size>\nDesarrollo Diario\nCodificación continua\nIntegración de avances\n(5 - 7 - 10)\n<b>TE=7.2</b>" as T02
+rectangle "<size:9><b>SP2.3</b></size>\nCode Review\nRevisión técnica\nValidar estándares\n(1 - 2 - 3)\n<b>TE=2</b>" as T03
+rectangle "<size:9><b>SP2.4</b></size>\nPruebas de\nRegresión\nVerificar funcionalidad\n(1 - 2 - 3)\n<b>TE=2</b>" as T04
+rectangle "<size:9><b>SP2.5</b></size>\nSprint Review\nDemostración al PO\n(1 - 1 - 1)\n<b>TE=1</b>" as T05
+rectangle "<size:9><b>SP2.6</b></size>\nRetrospectiva\nAjustar proceso\nMejora continua\n(1 - 1 - 1)\n<b>TE=1</b>" as T06
 
 T01 --> T02
-
+T02 --> T03
+T02 --> T04
+T03 --> T05
 T04 --> T05
 T05 --> T06
-T05 --> T07
-T05 --> T08
 
 @enduml
