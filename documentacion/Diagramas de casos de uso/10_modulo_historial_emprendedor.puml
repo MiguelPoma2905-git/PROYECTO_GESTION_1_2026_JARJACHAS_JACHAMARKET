@@ -1,0 +1,31 @@
+@startuml
+title Módulo 10: Historial del Emprendedor - Casos de Uso
+
+skinparam linetype ortho
+skinparam defaultTextAlignment center
+skinparam nodeSep 120
+skinparam rankSep 120
+
+left to right direction
+
+actor "Emprendedor" as E
+actor "Sistema" as S
+
+rectangle "Historial del Emprendedor" {
+  usecase "Ver Pedidos Recibidos" as UC1
+  usecase "Ver Detalle del Pedido" as UC2
+  usecase "Ver Estadísticas de Ventas" as UC3
+  usecase "Filtrar Pedidos por Fecha" as UC4
+  usecase "Exportar Reporte" as UC5
+
+  E --> UC1
+  E --> UC3
+
+  S --> UC5
+
+  UC1 --> UC2 : <<incluye>>
+  UC4 --> UC1 : <<extiende>>
+  UC5 --> UC3 : <<extiende>>
+}
+
+@enduml

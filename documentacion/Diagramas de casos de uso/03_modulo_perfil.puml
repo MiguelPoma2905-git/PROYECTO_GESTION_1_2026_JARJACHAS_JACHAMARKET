@@ -1,0 +1,45 @@
+@startuml
+title Módulo 3: Perfil de Usuario - Casos de Uso
+
+skinparam linetype ortho
+skinparam defaultTextAlignment center
+skinparam nodeSep 120
+skinparam rankSep 120
+
+left to right direction
+
+actor "Usuario Autenticado" as U
+
+rectangle "Perfil de Usuario" {
+  usecase "Editar Perfil" as UC1
+  usecase "Cambiar Contraseña" as UC2
+  usecase "Subir Avatar" as UC3
+  usecase "Cambiar Avatar" as UC4
+  usecase "Eliminar Avatar" as UC5
+
+  U --> UC1
+  U --> UC2
+  U --> UC3
+  U --> UC4
+  U --> UC5
+
+  UC2 --> UC1 : <<extiende>>
+
+  note right of UC1
+    Editar nombres, apellidos,
+    teléfono, bio, ubicación
+  end note
+
+  note right of UC2
+    Requiere contraseña actual
+    y confirmación de nueva
+  end note
+
+  note right of UC3
+    Imagen redimensionada
+    a 400px, guardada como
+    JPEG en BLOB
+  end note
+}
+
+@enduml
