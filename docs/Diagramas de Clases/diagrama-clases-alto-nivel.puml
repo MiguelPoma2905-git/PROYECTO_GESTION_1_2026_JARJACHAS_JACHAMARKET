@@ -1,0 +1,177 @@
+@startuml
+' ============================================================
+' DIAGRAMA DE CLASES DE ALTO NIVEL - JACHAmarket
+' ============================================================
+' Diseñado para ser LEGIBLE (pocas conexiones) y
+' de proporción CUADRADA (layout en diamante).
+' ============================================================
+
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam classFontSize 11
+skinparam classAttributeFontSize 10
+skinparam packageStyle rectangle
+skinparam backgroundColor #FFFFFF
+skinparam borderColor #2C3E50
+skinparam arrowColor #555555
+skinparam packageBorderColor #2C3E50
+skinparam packageBackgroundColor #F0F3F5
+skinparam packageFontSize 12
+skinparam packageFontStyle bold
+skinparam titleFontSize 16
+skinparam titleFontStyle bold
+
+title **Diagrama de Clases de Alto Nivel**\nJACHAmarket - Marketplace Multiroles
+
+' =========================== PAQUETES ===========================
+
+package "NÚCLEO\ndel Sistema" as P0 {
+  class Router {
+    +dispatch(metodo, uri)
+  }
+  abstract class Controller {
+    +view(vista, datos)
+    +redirect(url)
+    +json(data, status)
+    +getDB()
+    +requireAuth()
+  }
+}
+
+package "CONTROLADORES\n(9 clases)" as P1 {
+  class AuthController {
+    login · register
+    verifyOtp · logout
+  }
+  class DashboardController {
+    dashboard · crearNegocio
+    plantillas
+  }
+  class HomeController {
+    index · explorar
+  }
+  class ProductoController {
+    showTienda · productos
+  }
+  class PlantillaController {
+    disponibles · detalle
+  }
+  class PedidoController {
+    crear · comprarRapido
+  }
+  class RepartidorController {
+    dashboard · asignar
+    entregar
+  }
+  class AdminController {
+    panel · ventas
+    usuarios
+  }
+  class PerfilController {
+    index · actualizar
+  }
+}
+
+package "REPOSITORIOS\n(5 clases)" as P2 {
+  class UsuarioRepository {
+    findByEmail · findById
+    insert · getRoles
+  }
+  class EmprendimientoRepository {
+    findByPropietario
+    insert · updatePerso
+  }
+  class ProductoRepository {
+    findByEmprendimiento
+    insert · update · delete
+  }
+  class PedidoRepository {
+    crearPedido
+    asignarRepartidor
+  }
+  class PlantillaRepository {
+    findAllActive · findById
+  }
+}
+
+package "SERVICIOS" as P3 {
+  class OTP {
+    +generarCodigo(email)
+    +verificarCodigo(email, codigo)
+  }
+  class Mailer {
+    +enviarCodigoOTP(email, codigo, nombre)
+  }
+}
+
+class DB as "BASE DE DATOS\nMySQL (InnoDB)\ndb_jacha · 17 tablas" <<database>> #ECF0F1 {
+}
+
+' =========================== HERENCIA (9 líneas) ==============
+Controller <|-- AuthController
+Controller <|-- DashboardController
+Controller <|-- HomeController
+Controller <|-- ProductoController
+Controller <|-- PlantillaController
+Controller <|-- PedidoController
+Controller <|-- RepartidorController
+Controller <|-- AdminController
+Controller <|-- PerfilController
+
+' =========================== FLUJO PRINCIPAL ===================
+Router ..> Controller : despacha
+
+' =========================== CONEXIONES ENTRE PAQUETES =========
+' Se usan líneas REPRESENTATIVAS (no todas las combinaciones)
+' para mantener la legibilidad. Ver nota adjunta.
+
+' Controladores → Repositorios (1 línea representativa)
+AuthController ..> UsuarioRepository : consultan
+
+' Controladores → Servicios
+AuthController ..> OTP : autenticación
+AuthController ..> Mailer : envía OTP
+
+' Admin → DB (acceso directo, sin repositorio)
+AdminController ..> DB : acceso directo
+
+' Repositorios → DB
+UsuarioRepository ..> DB
+EmprendimientoRepository ..> DB
+ProductoRepository ..> DB
+PedidoRepository ..> DB
+PlantillaRepository ..> DB
+
+' OTP → DB
+OTP ..> DB
+
+' Mailer → externo
+Mailer ..> "SMTP Gmail" : envía correo
+
+' =========================== NOTA INFORMATIVA ==================
+
+note top of P1
+  **Matriz de dependencias reales**
+  (controlador → repositorios que consulta):
+  ─────────────────────────────────────
+  AuthController → UsuarioRepository
+  DashboardController → UsuarioRepo,
+    EmprendimientoRepo, PlantillaRepo
+  HomeController → EmprendimientoRepo,
+    PlantillaRepo
+  ProductoController → UsuarioRepo,
+    EmprendimientoRepo, ProductoRepo
+  PlantillaController → PlantillaRepo
+  PedidoController → UsuarioRepo,
+    EmprendimientoRepo, ProductoRepo,
+    PedidoRepo
+  RepartidorController → PedidoRepo
+  AdminController → (DB directa)
+  PerfilController → UsuarioRepo,
+    EmprendimientoRepo
+  ─────────────────────────────────────
+  **Todas** son flechas de dependencia
+  (usa / consulta).
+end note
+
+@enduml

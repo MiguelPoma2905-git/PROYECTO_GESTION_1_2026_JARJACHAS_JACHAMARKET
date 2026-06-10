@@ -1,0 +1,315 @@
+@startuml
+' ==================================================================
+' DIAGRAMA DE CLASES DE BAJO NIVEL - JACHAmarket
+' ==================================================================
+' Muestra: atributos + métodos + relaciones entre entidades
+' con conectores CONTROLADOS y proporción CUADRADA.
+' ==================================================================
+
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam classFontSize 10
+skinparam classAttributeFontSize 9
+skinparam packageStyle rectangle
+skinparam backgroundColor #FFFFFF
+skinparam borderColor #2C3E50
+skinparam arrowColor #555555
+skinparam packageBorderColor #2C3E50
+skinparam packageBackgroundColor #F0F3F5
+skinparam packageFontSize 11
+skinparam packageFontStyle bold
+skinparam titleFontSize 16
+skinparam titleFontStyle bold
+
+title **Diagrama de Clases - Bajo Nivel**\nJACHAmarket - Marketplace Multiroles
+
+' ======================= PAQUETES =============================
+
+package "NÚCLEO" as P_NUC {
+  class Router {
+    - routes: array
+    + get(uri, handler): void
+    + post(uri, handler): void
+    + dispatch(method, uri): void
+  }
+  abstract class Controller {
+    # view(vista, data): void
+    # redirect(url): void
+    # json(data, status): void
+    # getDB(): PDO
+    # requireAuth(): void
+  }
+}
+
+package "CONTROLADORES\n(9 clases)" as P_CTRL {
+  class AuthController {
+    login() · register()
+    verifyOtp() · logout()
+    sendOtp() · resendOtp()
+  }
+  class DashboardController {
+    dashboard() · showCrearNegocio()
+    showPlantillas() · gestionarNegocios()
+    repartidoresAdmin()
+  }
+  class HomeController {
+    index() · explorar()
+    dbDemo()
+  }
+  class ProductoController {
+    showTienda(id)
+    index()
+  }
+  class PlantillaController {
+    disponibles()
+    detalle(id)
+  }
+  class PedidoController {
+    crear()
+    comprarRapido()
+  }
+  class RepartidorController {
+    dashboard() · asignar()
+    entregar()
+  }
+  class AdminController {
+    panel() · ventas()
+    editarUsuario() · eliminarUsuario()
+  }
+  class PerfilController {
+    index() · actualizar()
+  }
+}
+
+package "ENTIDADES\nDE DOMINIO" as P_ENT {
+  class Usuario {
+    - id_usuario: BIGINT
+    - nombres: VARCHAR(100)
+    - apellidos: VARCHAR(100)
+    - email: VARCHAR(150)
+    - password_hash: VARCHAR(255)
+    - telefono: VARCHAR(20)
+    - bio: TEXT
+    - ubicacion: VARCHAR(100)
+    - estado: ENUM
+    - avatar_blob: MEDIUMBLOB
+  }
+
+  class Emprendimiento {
+    - id_emprendimiento: BIGINT
+    - id_propietario: BIGINT
+    - nombre_comercial: VARCHAR(150)
+    - nit: VARCHAR(30)
+    - descripcion: TEXT
+    - estado: ENUM
+    - logo_url: VARCHAR(255)
+  }
+
+  class Producto {
+    - id_producto: BIGINT
+    - id_emprendimiento: BIGINT
+    - id_categoria: INT
+    - nombre: VARCHAR(200)
+    - descripcion_larga: TEXT
+    - atributos: JSON
+    - precio_base: DECIMAL(10,2)
+    - stock: INT
+    - estado: ENUM
+    - imagen_blob: MEDIUMBLOB
+  }
+
+  class Pedido {
+    - id_pedido: BIGINT
+    - id_cliente: BIGINT
+    - id_sucursal_origen: BIGINT
+    - codigo_seguimiento: VARCHAR(50)
+    - subtotal: DECIMAL(10,2)
+    - costo_envio: DECIMAL(10,2)
+    - total: DECIMAL(10,2)
+    - metodo_pago: ENUM
+    - estado_pago: ENUM
+    - estado_logistico: ENUM
+    - direccion_entrega: TEXT
+    - fecha_creacion: DATE
+  }
+
+  class DetallePedido {
+    - id_detalle: BIGINT
+    - id_pedido: BIGINT
+    - id_variante: BIGINT
+    - cantidad: INT
+    - precio_unitario: DECIMAL(10,2)
+    - subtotal: DECIMAL(10,2)
+  }
+
+  class EnvioLogistica {
+    - id_envio: BIGINT
+    - id_pedido: BIGINT
+    - id_repartidor: BIGINT
+    - distancia_km: DECIMAL(6,2)
+    - tiempo_estimado_min: INT
+    - fecha_despacho: DATETIME
+    - fecha_entrega: DATETIME
+  }
+
+  class Sucursal {
+    - id_sucursal: BIGINT
+    - id_emprendimiento: BIGINT
+    - nombre_sucursal: VARCHAR(100)
+    - direccion: TEXT
+    - ciudad: VARCHAR(50)
+    - latitud: DECIMAL(10,8)
+    - longitud: DECIMAL(11,8)
+  }
+
+  class Categoria {
+    - id_categoria: INT
+    - id_padre: INT
+    - nombre: VARCHAR(100)
+    - slug: VARCHAR(100)
+  }
+
+  class Plantilla {
+    - id_plantilla: INT
+    - nombre: VARCHAR(100)
+    - color_primario: VARCHAR(7)
+    - color_secundario: VARCHAR(7)
+    - activo: BOOLEAN
+  }
+
+  class Personalizacion {
+    - id_personalizacion: BIGINT
+    - id_emprendimiento: BIGINT
+    - id_plantilla: INT
+    - tipografia: VARCHAR(100)
+    - faqs: TEXT
+    - modo_oscuro: BOOLEAN
+  }
+}
+
+package "REPOSITORIOS\n(5 clases)" as P_REPO {
+  class UsuarioRepository {
+    - conn: PDO
+    findByEmail(email) · findById(id)
+    insert(data) · getRoles(id)
+    updateAvatarBlob(id, blob, mime)
+  }
+  class EmprendimientoRepository {
+    - conn: PDO
+    findByPropietario(id) · findById(id)
+    insert(data, idProp)
+    updatePersonalizacion(id, data)
+  }
+  class ProductoRepository {
+    - conn: PDO
+    findByEmprendimiento(id) · findById(id)
+    insert(data, idEmp)
+    update(id, idEmp, data) · delete(id, idEmp)
+  }
+  class PedidoRepository {
+    - conn: PDO
+    crearPedido(datos)
+    asignarRepartidor(idPed, idRep)
+    marcarEntregado(idPed, idRep)
+    getPedidosByCliente(id)
+  }
+  class PlantillaRepository {
+    - conn: PDO
+    findAllActive()
+    findById(id)
+  }
+}
+
+package "SERVICIOS" as P_SRV {
+  class OTP {
+    + generarCodigo(email): array
+    + verificarCodigo(email, cod): array
+  }
+  class Mailer {
+    + enviarCodigoOTP(email, cod, nombre): bool
+  }
+}
+
+class DB as "MySQL\ndb_jacha\n17 tablas\nParticionado x mes" <<database>> #ECF0F1 {
+}
+
+' ==================== RELACIONES ==============================
+
+' --- HERENCIA (9 líneas) ---
+Controller <|-- AuthController
+Controller <|-- DashboardController
+Controller <|-- HomeController
+Controller <|-- ProductoController
+Controller <|-- PlantillaController
+Controller <|-- PedidoController
+Controller <|-- RepartidorController
+Controller <|-- AdminController
+Controller <|-- PerfilController
+
+' --- FLUJO PRINCIPAL ---
+Router ..> Controller : <<dispatch>>
+
+' --- DEPENDENCIAS CONTROLADOR → SERVICIOS ---
+AuthController ..> OTP : genera/verifica
+AuthController ..> Mailer : envía
+
+' --- CONTROLADORES → REPOSITORIOS (1 línea representativa) ---
+AuthController ..> UsuarioRepository : consulta
+
+' --- ADMIN → DB (acceso directo) ---
+AdminController ..> DB : SQL directo
+
+' --- ASOCIACIONES ENTRE ENTIDADES ---
+Usuario "1" --> "*" Pedido : realiza
+Usuario "1" --> "*" Emprendimiento : posee
+Emprendimiento "1" --> "*" Producto : vende
+Emprendimiento "1" --> "*" Sucursal : tiene
+Emprendimiento "1" --> "1" Personalizacion : personaliza
+Producto "*" --> "1" Categoria : pertenece
+Producto "1" --> "*" DetallePedido : incluye
+Pedido "1" --> "*" DetallePedido : contiene
+Pedido "1" --> "1" EnvioLogistica : genera
+EnvioLogistica "*" --> "1" Usuario : asignado a
+Plantilla "1" --> "*" Personalizacion : usada en
+
+' --- DEPENDENCIA REPOSITORIO → ENTIDAD ---
+UsuarioRepository ..> Usuario : <<CRUD>>
+EmprendimientoRepository ..> Emprendimiento : <<CRUD>>
+ProductoRepository ..> Producto : <<CRUD>>
+PedidoRepository ..> Pedido : <<CRUD>>
+
+' --- ENTIDADES → BD (para centrar DB abajo del todo) ---
+Usuario ..> DB : persiste
+
+' --- REPOSITORIOS → BD ---
+UsuarioRepository ..> DB
+EmprendimientoRepository ..> DB
+ProductoRepository ..> DB
+PedidoRepository ..> DB
+PlantillaRepository ..> DB
+OTP ..> DB
+
+' --- SERVICIOS → EXTERNO ---
+Mailer ..> "SMTP\n(Gmail)" : envía
+
+' ==================== NOTA INFORMATIVA ========================
+note top of P_CTRL
+  **Dependencias Controlador → Repositorio (todas):**
+  ─────────────────────────────────────
+  Auth → UsuarioRepo
+  Dashboard → Usuario, Emprendimiento,
+    PlantillaRepo
+  Home → Emprendimiento, PlantillaRepo
+  Producto → Usuario, Emprendimiento,
+    ProductoRepo
+  Plantilla → PlantillaRepo
+  Pedido → Usuario, Emprendimiento,
+    Producto, PedidoRepo
+  Repartidor → PedidoRepo
+  Perfil → Usuario, EmprendimientoRepo
+  ─────────────────────────────────────
+  Todas son flechas de dependencia
+  (el controlador **usa** al repositorio).
+end note
+
+@enduml

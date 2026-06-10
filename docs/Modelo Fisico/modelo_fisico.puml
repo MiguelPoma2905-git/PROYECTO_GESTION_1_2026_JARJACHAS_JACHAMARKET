@@ -1,0 +1,273 @@
+@startuml
+!theme plain
+
+skinparam backgroundColor #FDFBF7
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+
+skinparam class {
+  BackgroundColor #ffffff
+  BorderColor #2C3E50
+  FontColor #1a1a2e
+  HeaderBackgroundColor #1a1a2e
+  HeaderFontColor #FDFBF7
+}
+
+skinparam arrow {
+  Color #2C3E50
+  FontColor #2C3E50
+  FontSize 9
+}
+
+class usuarios {
+  + PK id_usuario : bigint
+  ..
+  # nombres : varchar(100)
+  # apellidos : varchar(100)
+  # email : varchar(150)
+  # password_hash : varchar(255)
+  # telefono : varchar(20)
+  # avatar_blob : mediumblob
+  # avatar_mime : varchar(50)
+  # bio : text
+  # ubicacion : varchar(100)
+  # estado : enum
+  # creado_en : datetime
+  # actualizado_en : datetime
+}
+
+class roles {
+  + PK id_rol : int
+  ..
+  # nombre_rol : varchar(50)
+}
+
+class usuario_roles {
+  + PK id_usuario : bigint
+  + PK id_rol : int
+}
+
+class permisos {
+  + PK id_permiso : int
+  ..
+  # nombre : varchar(50)
+  # descripcion : text
+}
+
+class rol_permiso {
+  + PK id_rol : int
+  + PK id_permiso : int
+}
+
+class otp_verificacion {
+  + PK id_otp : bigint
+  ..
+  # email : varchar(150)
+  # codigo : varchar(6)
+  # expira_en : datetime
+  # usado : tinyint
+  # intentos : int
+  # creado_en : datetime
+}
+
+class emprendimientos {
+  + PK id_emprendimiento : bigint
+  # FK id_propietario : bigint
+  ..
+  # nombre_comercial : varchar(150)
+  # nit : varchar(30)
+  # telefono : varchar(20)
+  # descripcion : text
+  # fecha_creacion : timestamp
+  # logo_url : varchar(255)
+  # estado : enum
+}
+
+class sucursales {
+  + PK id_sucursal : bigint
+  # FK id_emprendimiento : bigint
+  ..
+  # nombre_sucursal : varchar(100)
+  # direccion : text
+  # ciudad : varchar(50)
+  # latitud : decimal(10,8)
+  # longitud : decimal(11,8)
+}
+
+class personalizacion_emprendimiento {
+  + PK id_personalizacion : bigint
+  # FK id_emprendimiento : bigint
+  # FK id_plantilla : int
+  ..
+  # color_primario : varchar(7)
+  # color_secundario : varchar(7)
+  # color_fondo : varchar(7)
+  # color_texto : varchar(7)
+  # tipografia : varchar(100)
+  # faqs : text
+  # logo_blob : mediumblob
+  # logo_mime : varchar(50)
+  # banner_blob : mediumblob
+  # banner_mime : varchar(50)
+  # portada_blob : mediumblob
+  # portada_mime : varchar(50)
+  # modo_oscuro : tinyint
+}
+
+class plantillas {
+  + PK id_plantilla : int
+  ..
+  # nombre : varchar(100)
+  # descripcion : text
+  # color_primario : varchar(7)
+  # color_secundario : varchar(7)
+  # color_fondo : varchar(7)
+  # color_texto : varchar(7)
+  # vista_previa_url : varchar(255)
+  # activo : tinyint
+}
+
+class emprendimiento_repartidores {
+  + PK id_vinculo : bigint
+  # FK id_emprendimiento : bigint
+  # FK id_repartidor : bigint
+  ..
+  # fecha_ingreso : datetime
+}
+
+class categorias {
+  + PK id_categoria : int
+  # FK id_padre : int
+  ..
+  # nombre : varchar(100)
+  # slug : varchar(100)
+}
+
+class productos {
+  + PK id_producto : bigint
+  # FK id_emprendimiento : bigint
+  # FK id_categoria : int
+  ..
+  # nombre : varchar(200)
+  # descripcion_larga : text
+  # atributos : longtext
+  # imagen_blob : mediumblob
+  # imagen_mime : varchar(50)
+  # precio_base : decimal(10,2)
+  # stock : int
+  # estado : enum
+  # creado_en : datetime
+  # actualizado_en : datetime
+}
+
+class variantes_producto {
+  + PK id_variante : bigint
+  # FK id_producto : bigint
+  ..
+  # sku : varchar(50)
+  # atributo_1 : varchar(50)
+  # valor_1 : varchar(50)
+  # atributo_2 : varchar(50)
+  # valor_2 : varchar(50)
+  # precio_adicional : decimal(10,2)
+}
+
+class inventario {
+  + PK id_inventario : bigint
+  # FK id_variante : bigint
+  # FK id_sucursal : bigint
+  ..
+  # cantidad_actual : int
+  # alerta_minima : int
+}
+
+class pedidos {
+  + PK id_pedido : bigint
+  # FK id_cliente : bigint
+  # FK id_sucursal_origen : bigint
+  ..
+  # codigo_seguimiento : varchar(50)
+  # subtotal : decimal(10,2)
+  # costo_envio : decimal(10,2)
+  # total : decimal(10,2)
+  # metodo_pago : enum
+  # estado_pago : enum
+  # estado_logistico : enum
+  # direccion_entrega : text
+  + PK fecha_creacion : date
+}
+
+class detalles_pedido {
+  + PK id_detalle : bigint
+  # FK id_pedido : bigint
+  # FK id_variante : bigint
+  ..
+  # cantidad : int
+  # precio_unitario : decimal(10,2)
+  # subtotal : decimal(10,2)
+  # fecha_pedido : date
+}
+
+class envios_logistica {
+  + PK id_envio : bigint
+  # FK id_pedido : bigint
+  # FK id_repartidor : bigint
+  ..
+  # distancia_km : decimal(6,2)
+  # tiempo_estimado_min : int
+  # fecha_despacho : datetime
+  # fecha_entrega : datetime
+}
+
+class movimientos_kardex {
+  + PK id_movimiento : bigint
+  # FK id_inventario : bigint
+  ..
+  # tipo : enum
+  # cantidad : int
+  # fecha : datetime
+  # FK id_usuario_responsable : bigint
+  # observacion : text
+}
+
+class logs_auditoria {
+  + PK id_log : bigint
+  # FK id_usuario : bigint
+  ..
+  # tabla_afectada : varchar(50)
+  # accion : enum
+  # datos_viejos : longtext
+  # datos_nuevos : longtext
+  # fecha : datetime
+  # ip_origen : varchar(45)
+}
+
+' ============= RELACIONES =============
+
+usuarios --> usuario_roles
+roles --> usuario_roles
+roles --> rol_permiso
+permisos --> rol_permiso
+usuarios --> emprendimientos : id_propietario
+emprendimientos --> sucursales
+emprendimientos --> personalizacion
+plantillas --> personalizacion
+emprendimientos --> emprendimiento_repartidores
+usuarios --> emprendimiento_repartidores : id_repartidor
+categorias --> categorias : auto-ref
+emprendimientos --> productos
+categorias --> productos
+productos --> variantes_producto
+variantes_producto --> inventario
+sucursales --> inventario
+inventario --> movimientos_kardex
+usuarios --> movimientos_kardex : id_responsable
+usuarios --> pedidos : id_cliente
+sucursales --> pedidos : id_origen
+pedidos --> detalles_pedido
+variantes_producto --> detalles_pedido
+pedidos --> envios_logistica
+usuarios --> envios_logistica : id_repartidor
+usuarios --> logs_auditoria
+
+@enduml

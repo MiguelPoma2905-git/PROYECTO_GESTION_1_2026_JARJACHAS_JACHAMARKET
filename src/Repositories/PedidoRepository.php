@@ -53,6 +53,40 @@ class PedidoRepository
         }
     }
 
+    public function getPedidosByCliente(int $idCliente, int $limit = 50): array
+    {
+        $limit = max(1, min(200, $limit));
+        $stmt = $this->conn->prepare("
+            SELECT p.*, e.nombre_comercial,
+                   (SELECT COUNT(*) FROM detalles_pedido WHERE id_pedido = p.id_pedido) as total_items
+            FROM pedidos p
+            JOIN sucursales s ON p.id_sucursal_origen = s.id_sucursal
+            JOIN emprendimientos e ON s.id_emprendimiento = e.id_emprendimiento
+            WHERE p.id_cliente = ?
+            ORDER BY p.fecha_creacion DESC
+            LIMIT $limit
+        ");
+        $stmt->execute([$idCliente]);
+        return $stmt->fetchAll();
+    }
+
+    public function getDetallesByPedido(int $idPedido): array
+    {
+        $stmt = $this->conn->prepare("
+            SELECT dp.*,
+                   COALESCE(vp.id_producto, dp.id_variante) as id_producto,
+                   COALESCE(p.nombre, 'Producto') as producto_nombre,
+                   COALESCE(p.precio_base, dp.precio_unitario) as precio_base
+            FROM detalles_pedido dp
+            LEFT JOIN variantes_producto vp ON dp.id_variante = vp.id_variante
+            LEFT JOIN productos p ON p.id_producto = COALESCE(vp.id_producto, dp.id_variante)
+            WHERE dp.id_pedido = ?
+            ORDER BY dp.id_detalle ASC
+        ");
+        $stmt->execute([$idPedido]);
+        return $stmt->fetchAll();
+    }
+
     public function getPedidosPendientesRepartidor(): array
     {
         $stmt = $this->conn->prepare("
@@ -143,22 +177,6 @@ class PedidoRepository
         ");
         $stmt->execute([$hoy, $hoy, $idRepartidor]);
         return $stmt->fetch();
-    }
-
-    public function getPedidosByCliente(int $idCliente): array
-    {
-        $stmt = $this->conn->prepare("
-            SELECT p.*, e.nombre_comercial,
-                   (SELECT COUNT(*) FROM detalles_pedido WHERE id_pedido = p.id_pedido) as total_items
-            FROM pedidos p
-            JOIN sucursales s ON p.id_sucursal_origen = s.id_sucursal
-            JOIN emprendimientos e ON s.id_emprendimiento = e.id_emprendimiento
-            WHERE p.id_cliente = ?
-            ORDER BY p.fecha_creacion DESC
-            LIMIT 20
-        ");
-        $stmt->execute([$idCliente]);
-        return $stmt->fetchAll();
     }
 
     public function getStatsCliente(int $idCliente): array

@@ -1,0 +1,46 @@
+@startuml
+title Módulo 11: Administración del Sistema - Casos de Uso
+
+skinparam linetype ortho
+skinparam defaultTextAlignment center
+skinparam nodeSep 120
+skinparam rankSep 120
+
+left to right direction
+
+actor "Administrador" as A
+actor "Sistema" as S
+
+rectangle "Administración del Sistema" {
+  usecase "Ver Panel de Administración" as UC1
+  usecase "Gestionar Usuarios" as UC2
+  usecase "Editar Datos de Usuario" as UC3
+  usecase "Cambiar Roles de Usuario" as UC4
+  usecase "Eliminar Usuario" as UC5
+
+  usecase "Ver Reporte de Ventas" as UC7
+  usecase "Filtrar Reporte por Negocio y Fechas" as UC8
+
+  usecase "Eliminar Negocio" as UC6
+  usecase "Ejecutar Seed de Datos" as UC9
+  usecase "Resetear Base de Datos" as UC10
+
+  A --> UC1
+  A --> UC6
+  A --> UC9
+  A --> UC10
+
+  UC1 --> UC2 : <<incluye>>
+  UC2 --> UC3 : <<incluye>>
+  UC2 --> UC4 : <<incluye>>
+  UC5 --> UC2 : <<extiende>>
+
+  A --> UC7
+  UC7 --> UC8 : <<incluye>>
+  S --> UC3
+  S --> UC4
+  S --> UC5
+  S --> UC8
+}
+
+@enduml

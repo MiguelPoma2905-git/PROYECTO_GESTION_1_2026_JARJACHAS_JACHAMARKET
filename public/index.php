@@ -50,6 +50,7 @@ $router->post('/guardar-temp-avatar', [AuthController::class, 'guardarTempAvatar
 // Dashboard
 $router->get('/dashboard', [DashboardController::class, 'dashboard']);
 $router->get('/mis-estadisticas', [DashboardController::class, 'estadisticasCliente']);
+$router->get('/mis-pedidos', [DashboardController::class, 'misPedidos']);
 $router->match(['GET', 'POST'], '/crear-negocio', [DashboardController::class, 'showCrearNegocio']);
 $router->match(['GET', 'POST'], '/plantillas', [DashboardController::class, 'showPlantillas']);
 $router->get('/repartidores-admin', [DashboardController::class, 'repartidoresAdmin']);

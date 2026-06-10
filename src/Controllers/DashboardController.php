@@ -148,6 +148,46 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function misPedidos(): void
+    {
+        $this->requireAuth();
+
+        $usuario = $_SESSION['usuario'];
+        $pedidoRepo = new PedidoRepository();
+        $usuarioRepo = new UsuarioRepository();
+
+        $rolesNombres = $usuarioRepo->getRolesNombres($usuario['id']);
+        if (!in_array('Cliente', $rolesNombres)) {
+            $this->redirect(BASE_URL . '/dashboard');
+        }
+
+        $pedidos = $pedidoRepo->getPedidosByCliente($usuario['id']);
+
+        $detallesPorPedido = [];
+        foreach ($pedidos as $p) {
+            $detallesPorPedido[$p['id_pedido']] = $pedidoRepo->getDetallesByPedido($p['id_pedido']);
+        }
+
+        $avatarUsuario = $usuarioRepo->getAvatar($usuario['id']);
+        $rolesUsuario = $usuarioRepo->getRoles($usuario['id']);
+        $inicial = strtoupper(substr($usuario['nombre'], 0, 1));
+        $esAdmin = in_array('Administrador', $rolesNombres);
+        $_SESSION['rol_activo'] = 'Cliente';
+        $rolActivo = 'Cliente';
+
+        $this->view('dashboard/mis-pedidos', [
+            'usuario' => $usuario,
+            'avatar_usuario' => $avatarUsuario,
+            'roles_usuario' => $rolesUsuario,
+            'roles_nombres' => $rolesNombres,
+            'rol_activo' => $rolActivo,
+            'pedidos' => $pedidos,
+            'detalles_por_pedido' => $detallesPorPedido,
+            'inicial' => $inicial,
+            'es_admin' => $esAdmin,
+        ]);
+    }
+
     public function showCrearNegocio(): void
     {
         $this->requireAuth();
@@ -263,8 +303,10 @@ class DashboardController extends Controller
         if (isset($_POST['preview_ajax'])) {
             $previewId = (int)($_POST['id_plantilla'] ?? $personalizacion['id_plantilla']);
             $previewFile = match($previewId) {
-                6 => 'electrodomesticos.php',
+                1 => 'moderno.php',
+                2 => 'elegante.php',
                 4 => 'tecnologico.php',
+                6 => 'electrodomesticos.php',
                 7 => 'modaviva.php',
                 8 => 'sabores.php',
                 9 => 'artesano.php',

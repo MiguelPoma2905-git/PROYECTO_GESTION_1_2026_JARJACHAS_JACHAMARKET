@@ -1,0 +1,49 @@
+@startuml
+title Módulo 7: Carrito de Compras - Casos de Uso
+
+skinparam linetype ortho
+skinparam defaultTextAlignment center
+skinparam nodeSep 120
+skinparam rankSep 120
+
+left to right direction
+
+actor "Cliente" as C
+actor "Sistema" as S
+
+rectangle "Carrito de Compras" {
+  usecase "Agregar Producto al Carrito" as UC1
+  usecase "Visualizar Carrito" as UC2
+  usecase "Modificar Cantidad" as UC3
+  usecase "Eliminar Item del Carrito" as UC4
+  usecase "Mantener Carrito en Sesión" as UC5
+
+  C --> UC1
+  C --> UC2
+
+  S --> UC5
+
+  UC1 --> UC5 : <<incluye>>
+  UC2 --> UC3 : <<incluye>>
+  UC2 --> UC4 : <<incluye>>
+
+  note right of UC1
+    Selecciona variante y
+    cantidad. Confirmación
+    visual al agregar
+  end note
+
+  note right of UC2
+    Lista items con imagen,
+    nombre, cantidad, precio
+    unitario y subtotal
+  end note
+
+  note right of UC5
+    Carrito persistente entre
+    páginas durante la
+    navegación
+  end note
+}
+
+@enduml

@@ -198,6 +198,7 @@
                     <div class="f-grp">
                         <label><i class="fas fa-image"></i> Imagen del producto</label>
                         <input type="file" name="imagen" accept="image/*" id="imagenInput">
+                        <p style="font-size:11px;color:var(--text-dim);margin-top:4px;">Máx. 500 KB</p>
                         <?php if (!empty($producto_editar['imagen_url'])): ?>
                             <img src="<?= BASE_URL ?>/<?= $producto_editar['imagen_url'] ?>" alt="">
                         <?php endif; ?>

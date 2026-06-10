@@ -109,16 +109,23 @@ class ProductoController extends Controller
             }
             $atributosJson = !empty($atributos) ? json_encode($atributos, JSON_UNESCAPED_UNICODE) : null;
 
+            $maxFileSize = 500 * 1024;
             $imagenBlob = null;
             $imagenMime = null;
             if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-                $imagenBlob = file_get_contents($_FILES['imagen']['tmp_name']);
-                $imagenMime = mime_content_type($_FILES['imagen']['tmp_name']) ?: 'image/jpeg';
+                if ($_FILES['imagen']['size'] > $maxFileSize) {
+                    $error = 'La imagen supera el tamaño máximo de 500 KB';
+                } else {
+                    $imagenBlob = file_get_contents($_FILES['imagen']['tmp_name']);
+                    $imagenMime = mime_content_type($_FILES['imagen']['tmp_name']) ?: 'image/jpeg';
+                }
             }
 
             $eliminarImagen = !empty($_POST['eliminar_imagen']);
 
-            if (empty($nombre)) {
+            if ($error) {
+                // skip
+            } elseif (empty($nombre)) {
                 $error = 'El nombre del producto es obligatorio';
             } elseif ($precioBase <= 0) {
                 $error = 'El precio debe ser mayor a 0';

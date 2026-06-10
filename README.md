@@ -1,6 +1,6 @@
 # JACHAmarket — Marketplace Multiroles
 
-Plataforma web de comercio electrónico donde emprendedores pueden crear y personalizar sus tiendas online, clientes pueden comprar productos, repartidores gestionan entregas, y administradores controlan el sistema.
+Plataforma web de comercio electrónico donde emprendedores crean y personalizan sus tiendas online, clientes compran productos, repartidores gestionan entregas y administradores controlan el sistema.
 
 ---
 
@@ -9,7 +9,7 @@ Plataforma web de comercio electrónico donde emprendedores pueden crear y perso
 | | |
 |---|---|
 | **Backend** | PHP 8.x con PSR-4 autoload |
-| **Frontend** | HTML5, CSS3, JavaScript (vanilla) |
+| **Frontend** | HTML5, CSS3, JavaScript vanilla |
 | **Base de Datos** | MySQL / MariaDB con InnoDB |
 | **Servidor** | Apache con mod_rewrite |
 | **Entorno** | XAMPP |
@@ -21,60 +21,59 @@ Plataforma web de comercio electrónico donde emprendedores pueden crear y perso
 
 ## Funcionalidades
 
-### Sistema de Autenticación
+### Autenticación y Usuarios
 - Registro con validación de contraseña en tiempo real
 - Verificación OTP por email (6 dígitos, 10 min de expiración)
 - Login con OTP
 - Selección de roles al registrarse (Cliente, Emprendedor, Repartidor)
 - Selección/carga de avatar
 - Cambio de rol activo desde el dashboard
+- Perfil de usuario con edición de datos
 
 ### Tiendas (Storefront)
-- 3 plantillas visuales: ElectroHogar (oscuro), Tecnológico (azul claro), General
+- **10 plantillas visuales**: Moderno, Elegante, Tecnológico, Electrodomésticos, ModaViva, Sabores, Artesano, GlowUp, FullFit, HogarDulce (+ default)
 - Personalización por negocio: colores (primario, secundario, fondo, texto), modo oscuro, tipografía, logo, banner
-- Subida de logo y banner con preview
+- Subida de logo y banner con preview en tiempo real
 - Carrito de compras con localStorage
 - Filtro por categorías y ordenamiento (precio, nombre)
-- Compra rápida con modal (cantidad, dirección, método de pago, QR)
+- Compra rápida con modal (cantidad, dirección, método de pago)
 - Productos con atributos JSON (marca, tipo, especificaciones)
-- Bloqueo de compra para el propio dueño
+- Bloqueo de compra para el propio dueño del negocio
 
 ### Dashboard del Emprendedor
 - Crear y gestionar negocios
-- Personalizar tienda (colores, logo, banner, tipografía)
-- CRUD de productos con imagen
-- Vista previa en tiempo real de la personalización
+- Personalizar tienda (colores, logo, banner, tipografía) con vista previa en vivo
+- CRUD de productos con imagen (límite 500 KB)
+- Ver tienda pública propia
 
 ### Panel de Administración
 - Estadísticas del sistema (usuarios, negocios, productos, pedidos)
 - Gestión de usuarios (editar roles, eliminar)
 - Gestión de negocios (eliminar)
 - Reporte de ventas por negocio y plantilla
-- Seed de datos demo (electrodomésticos)
+- Seed de datos demo
 - Reset completo de la base de datos
 
 ### Sistema de Pedidos
-- Creación de pedidos con items múltiples
+- Creación de pedidos con múltiples items
 - Compra rápida (1 clic)
-- Código de seguimiento (JACHA-XXXXXXXX)
+- Código de seguimiento único (JACHA-XXXXXXXX)
+- Historial de pedidos por cliente
 - Estados logísticos: Recibido → Preparando → En_Ruta → Entregado / Cancelado
-- Estados de pago: Pendiente → Completado / Fallido / Reembolsado
 
 ### Sistema de Repartidores
+- Dashboard con estadísticas (entregas hoy, totales, ganancias)
 - Ver pedidos pendientes de entrega
-- Asignar repartidor a pedido
+- Asignarse entregas
 - Marcar pedido como entregado
-- API JSON para integración
+- Historial de entregas
 
-### Base de Datos (Características Avanzadas)
-- 17 tablas con relaciones
-- Particionamiento de pedidos por mes (13 particiones)
-- Índice compuesto en productos
+### Base de Datos
+- 17 tablas con relaciones, particionamiento, índices compuestos
 - Procedimiento almacenado: `sp_reporte_ventas_emprendimiento`
 - Función: `fn_calcular_ganancia_neta`
 - Trigger: `trg_actualizar_stock_venta`
 - Tabla de auditoría: `logs_auditoria`
-- 5000 productos de prueba
 
 ---
 
@@ -84,7 +83,7 @@ Plataforma web de comercio electrónico donde emprendedores pueden crear y perso
 |---|---|
 | **Administrador** | Panel admin, gestión de usuarios/negocios, reportes de ventas, reset BD, seed demo |
 | **Emprendedor** | Crear/personalizar tiendas, CRUD productos, ver tienda propia |
-| **Cliente** | Explorar tiendas, comprar productos, carrito de compras |
+| **Cliente** | Explorar tiendas, comprar productos, carrito, historial de pedidos |
 | **Repartidor** | Ver pedidos pendientes, asignarse entregas, marcar como entregado |
 
 Los usuarios pueden tener múltiples roles y cambiar entre ellos desde el dashboard.
@@ -115,76 +114,18 @@ composer install
 
 3. Crea la base de datos `db_jacha` en MySQL y ejecuta el schema:
 ```sql
--- Abre phpMyAdmin o MySQL CLI y ejecuta:
 source sql/top_3.sql
 ```
 O importa `sql/top_3.sql` desde phpMyAdmin.
 
-4. Configura el mail en `config/mail.php` para OTP:
-```php
-// Usa credenciales de Gmail SMTP
-```
+4. Configura el mail en `config/mail.php` para el envío de OTP.
 
 5. Accede a:
 ```
 http://localhost/PROYECTO_GESTION_1_2026_JARJACHAS_JACHAMARKET
 ```
 
----
-
-## Crear Super Administrador
-
-### Opción 1: Script automático (recomendado)
-
-Ejecuta `setup-admin.bat` (Windows) desde la raíz del proyecto:
-
-```
-Haz doble clic en setup-admin.bat
-```
-
-O desde terminal:
-
-```bash
-php setup-admin.php
-```
-
-El script te pedirá:
-- Email
-- Nombres y apellidos
-- Teléfono (opcional)
-- Contraseña
-
-Y automáticamente:
-1. Se conecta a la base de datos
-2. Crea los roles si no existen
-3. Crea el usuario con contraseña hasheada (bcrypt)
-4. Asigna el rol **Administrador** + **Cliente**
-5. Confirma la creación
-
-### Opción 2: SQL directo
-
-```sql
--- 1. Insertar usuario
-INSERT INTO usuarios (nombres, apellidos, email, password_hash, estado)
-VALUES ('Admin', 'Sistema', 'admin@email.com', '$2y$10$...hash...', 'Activo');
-
--- 2. Obtener IDs
-SET @id_usuario = LAST_INSERT_ID();
-SET @id_admin = (SELECT id_rol FROM roles WHERE nombre_rol = 'Administrador');
-SET @id_cliente = (SELECT id_rol FROM roles WHERE nombre_rol = 'Cliente');
-
--- 3. Asignar roles
-INSERT INTO usuario_roles (id_usuario, id_rol) VALUES (@id_usuario, @id_admin);
-INSERT INTO usuario_roles (id_usuario, id_rol) VALUES (@id_usuario, @id_cliente);
-```
-
-Para generar el hash de la contraseña usa: `php -r "echo password_hash('tu_password', PASSWORD_DEFAULT);"`
-
-### Opción 3: Usuario pre-seeded
-
-El schema incluye un super admin por defecto:
-- **Email:** `mikypramos2905@gmail.com`
-- **Password:** `Pomada-23`
+> **Nota:** Para crear un super administrador o configurar datos iniciales, pídelo directamente desde la terminal y se hará automáticamente.
 
 ---
 
@@ -192,24 +133,35 @@ El schema incluye un super admin por defecto:
 
 ```
 PROYECTO_GESTION_1_2026_JARJACHAS_JACHAMARKET/
-├── config/                  # Configuración (BD, mail, base URL)
-├── public/                  # Raíz web (index.php, assets, uploads)
-│   └── assets/
-│       ├── css/             # Estilos
-│       ├── images/          # Imágenes del sistema
-│       ├── js/              # JavaScript
-│       └── uploads/         # Subidas de usuarios (logos, banners)
+├── config/                      # Configuración (BD, mail, base URL)
+├── public/                      # Raíz web
+│   ├── index.php                # Front controller
+│   ├── serve.php                # Servidor de imágenes
+│   ├── assets/
+│   │   ├── css/                 # Estilos globales
+│   │   ├── images/              # Imágenes del sistema
+│   │   └── avatars/             # Avatares por defecto
+│   └── uploads/                 # Subidas de usuarios (logos, banners)
 ├── src/
-│   ├── Controllers/         # Controladores
-│   ├── Core/                # Router, Controller base
-│   ├── Models/              # Modelos (OTP)
-│   ├── Repositories/        # Acceso a datos
-│   └── Views/               # Plantillas (auth, dashboard, shop, admin, perfil)
-├── sql/                     # Schema completo (top_3.sql)
-├── vendor/                  # Composer dependencies
-├── setup-admin.bat          # Script para crear super admin (Windows)
-├── setup-admin.php          # Script PHP para crear super admin
-├── .htaccess                # Rewrite rules (Apache)
+│   ├── Controllers/             # Lógica de controladores
+│   ├── Core/                    # Router y Controller base
+│   ├── Models/                  # Modelos (OTP)
+│   ├── Repositories/            # Acceso a datos (queries SQL)
+│   └── Views/                   # Plantillas
+│       ├── auth/                # Login, registro, OTP
+│       ├── dashboard/           # Dashboard + previews de temas
+│       ├── pages/               # Landing, explorar, demo
+│       ├── perfil/              # Perfil de usuario
+│       └── shop/                # Tienda pública + temas (themes/)
+├── docs/                        # Diagramas y documentación
+│   ├── Diagramas de casos de uso/
+│   ├── Diagramas de Clases/
+│   ├── Diagramas PERT/
+│   ├── Modelo Fisico/
+│   └── Documentos/
+├── sql/                         # Schema completo (top_3.sql)
+├── vendor/                      # Composer dependencies
+├── .htaccess                    # Rewrite rules (Apache)
 └── composer.json
 ```
 
@@ -217,21 +169,99 @@ PROYECTO_GESTION_1_2026_JARJACHAS_JACHAMARKET/
 
 ## Rutas Principales
 
+### Públicas
 | Ruta | Descripción |
 |---|---|
 | `/` | Landing page |
+| `/explorar` | Explorar tiendas |
+| `/tienda/{id}` | Tienda pública de un negocio |
+| `/plantillas-disponibles` | Ver plantillas disponibles |
+| `/plantilla/{id}` | Detalle de una plantilla |
+| `/db-demo` | Demo técnico de la BD |
+
+### Autenticación
+| Ruta | Descripción |
+|---|---|
 | `/login` | Iniciar sesión |
 | `/registro` | Registrarse |
+| `/elegir-roles` | Seleccionar roles después del registro |
+| `/verificar-otp` | Verificar OTP (registro) |
+| `/verificar-otp-login` | Verificar OTP (login) |
+| `/enviar-otp` | Enviar código OTP |
+| `/reenviar-otp` | Reenviar OTP (registro) |
+| `/reenviar-otp-login` | Reenviar OTP (login) |
+| `/logout` | Cerrar sesión |
+
+### Dashboard
+| Ruta | Descripción |
+|---|---|
 | `/dashboard` | Dashboard principal |
-| `/tienda/{id}` | Tienda pública |
-| `/productos` | Gestionar productos |
-| `/plantillas` | Personalizar tienda |
+| `/mis-estadisticas` | Estadísticas de cliente |
+| `/mis-pedidos` | Historial de pedidos del cliente |
 | `/crear-negocio` | Crear nuevo negocio |
+| `/plantillas` | Personalizar tienda (colores, logo, banner) |
+| `/productos` | CRUD de productos |
+| `/gestionar-negocios` | Gestionar negocios propios |
+| `/repartidores-admin` | Gestionar repartidores del negocio |
+
+### Perfil
+| Ruta | Descripción |
+|---|---|
+| `/perfil` | Ver/editar perfil |
+| `/perfil/actualizar` | Actualizar datos de perfil |
+| `/perfil/quitar-repartidor` | Quitar rol de repartidor |
+| `/perfil/eliminar-negocio` | Eliminar negocio propio |
+
+### Administración
+| Ruta | Descripción |
+|---|---|
 | `/admin` | Panel de administración |
 | `/admin/ventas` | Reporte de ventas |
-| `/perfil` | Perfil de usuario |
-| `/explorar` | Explorar tiendas |
-| `/db-demo` | Demo técnico de BD |
+| `/admin/editar-usuario` | Editar usuario |
+| `/admin/eliminar-usuario` | Eliminar usuario |
+| `/admin/eliminar-negocio` | Eliminar negocio |
+| `/admin/reiniciar-bd` | Resetear base de datos |
+| `/admin/seed-demo` | Poblar datos de demostración |
+
+### Repartidor
+| Ruta | Descripción |
+|---|---|
+| `/dashboard-repartidor` | Dashboard del repartidor |
+| `/repartidor/pedidos-pendientes` | Pedidos disponibles para entregar |
+| `/repartidor/asignar` | Asignarse un pedido |
+| `/repartidor/entregar` | Marcar pedido como entregado |
+
+### API (JSON)
+| Ruta | Descripción |
+|---|---|
+| `POST /pedido/crear` | Crear pedido desde el carrito |
+| `POST /pedido/comprar-rapido` | Compra rápida de un producto |
+| `POST /guardar-temp-avatar` | Guardar avatar temporal |
+
+---
+
+## Documentación Técnica
+
+Los diagramas del sistema están en la carpeta `docs/` en formato PlantUML:
+
+| Carpeta | Contenido |
+|---|---|
+| `docs/Diagramas de casos de uso/` | 11 diagramas de casos de uso por módulo |
+| `docs/Diagramas de Clases/` | Diagrama de clases alto nivel y bajo nivel |
+| `docs/Diagramas PERT/` | 5 diagramas PERT + ruta crítica |
+| `docs/Modelo Fisico/` | Modelo físico de la base de datos |
+
+---
+
+## Próximas implementaciones
+
+- **Cálculo de margen de ganancia** — Agregar campo `precio_costo` a productos y reporte de márgenes por producto/negocio.
+- **Módulo de inventario por sucursal** — Variantes de producto con SKU y stock distribuido por sucursal.
+- **Kardex** — Registro histórico de movimientos de stock (entradas, salidas, ajustes) con trazabilidad.
+- **Gestión de categorías jerárquicas** — Árbol de categorías con subcategorías.
+- **Notificaciones** — Alertas de stock mínimo y notificaciones en tiempo real.
+
+> **Nota:** La integración de pagos (QR, Tarjeta, Transferencia) es una simulación del flujo transaccional con fines académicos. No se conecta a una pasarela de pagos real ni procesa transacciones financieras verdaderas.
 
 ---
 
@@ -242,4 +272,3 @@ PROYECTO_GESTION_1_2026_JARJACHAS_JACHAMARKET/
 - `public/uploads/` — imágenes de productos subidas
 - `public/assets/uploads/` — logos y banners subidos
 - `*.log` — archivos de log
-- `public/uploads/`, `public/assets/uploads/` — uploads temporales (ignorados por git)
