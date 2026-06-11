@@ -1196,6 +1196,9 @@ input, textarea, select { font-family: inherit; }
   transition: all 0.2s;
   font-size: 13px;
 }
+.sidebar-nav a i { width:16px;text-align:center;flex-shrink:0;font-size:14px;color:var(--text-muted);transition:color .2s }
+.sidebar-nav a:hover i { color:var(--text) }
+.sidebar-nav a.active i { color:var(--text) }
 .sidebar-nav a:hover { background: var(--hover-surface); color: var(--text); transform: translateX(3px); }
 .sidebar-nav a.active {
   background: var(--hover-surface);

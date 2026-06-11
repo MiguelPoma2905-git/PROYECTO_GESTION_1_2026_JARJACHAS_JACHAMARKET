@@ -48,6 +48,30 @@
         @keyframes featUp { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
         @media(max-width:1024px){ .feat-grid{grid-template-columns:repeat(2,1fr)} .hero-featured{padding:60px 32px} }
         @media(max-width:768px){ .feat-grid{grid-template-columns:1fr} .hero-featured{padding:40px 20px} .feat-card-img{height:220px} }
+
+        .hero-featured.hero-bg { position:relative;background:transparent;z-index:0; }
+        .hero-featured.hero-bg::before { content:'';position:absolute;inset:0;background:url('<?= BASE_URL ?>/assets/images/fondo_extra.jpg') center/cover no-repeat fixed;z-index:-2; }
+        .hero-featured.hero-bg::after { content:'';position:absolute;inset:0;background:rgba(0,0,0,0.6);z-index:-1; }
+        [data-theme="light"] .hero-featured.hero-bg::after { background:rgba(255,255,255,0.5); }
+        .hero-featured.hero-bg .section-header { text-align:center;padding:60px 0 20px; }
+        .hero-featured.hero-bg .section-title { color:#fff; }
+        [data-theme="light"] .hero-featured.hero-bg .section-title { color:#1a1a2e; }
+        .hero-featured.hero-bg .section-desc { color:rgba(255,255,255,0.75); }
+        [data-theme="light"] .hero-featured.hero-bg .section-desc { color:rgba(0,0,0,0.6); }
+        .hero-featured.hero-bg .section-label { color:rgba(255,255,255,0.6); }
+        [data-theme="light"] .hero-featured.hero-bg .section-label { color:rgba(0,0,0,0.5); }
+        .hero-featured.hero-bg .feat-card { background:var(--card-bg);border:1px solid var(--border); }
+        .hero-featured.hero-bg .feat-card:hover { border-color:rgba(255,255,255,0.15); }
+        [data-theme="light"] .hero-featured.hero-bg .feat-card:hover { border-color:rgba(0,0,0,0.1); }
+
+        .hero-greeting { font-family:'Cormorant Garamond',Georgia,serif;font-size:54px;font-weight:500;color:var(--text);line-height:1.15;margin-bottom:12px;min-height:1.2em }
+        .hero-greeting .glow-char { display:inline-block;animation:heroGlow 2.5s ease-in-out infinite;text-shadow:0 0 8px rgba(255,255,255,0.2),0 0 25px rgba(255,255,255,0.3),0 0 50px rgba(255,255,255,0.15),0 0 100px rgba(255,255,255,0.08) }
+        [data-theme="light"] .hero-greeting .glow-char { text-shadow:0 0 6px rgba(255,255,255,0.5),0 0 16px rgba(255,255,255,0.3),0 0 30px rgba(255,255,255,0.15) }
+        .hero-greeting .cursor { display:inline-block;width:3px;height:1.1em;background:var(--text);margin-left:3px;animation:blink 0.8s step-end infinite;vertical-align:text-bottom }
+        .hero-greeting .hero-em { font-style:italic;color:var(--accent,inherit) }
+        @keyframes heroGlow { 0%,100%{text-shadow:0 0 8px rgba(255,255,255,0.15),0 0 20px rgba(255,255,255,0.25),0 0 40px rgba(255,255,255,0.15),0 0 80px rgba(255,255,255,0.08)} 50%{text-shadow:0 0 12px rgba(255,255,255,0.3),0 0 30px rgba(255,255,255,0.4),0 0 60px rgba(255,255,255,0.2),0 0 120px rgba(255,255,255,0.1)} }
+        @keyframes blink { 50%{opacity:0} }
+        @media(max-width:768px){ .hero-greeting { font-size:36px } }
     </style>
 </head>
 <body>
@@ -76,7 +100,7 @@
         <section class="hero">
             <div class="hero-text">
                 <span class="hero-badge">Bolivia · 2026</span>
-                <h1>Potencia tu <em>emprendimiento</em><br>en el mundo digital</h1>
+                <h1 class="hero-greeting" id="heroGreeting"></h1>
                 <p class="hero-desc">
                     La plataforma que conecta el talento boliviano con clientes de todo el país.
                     Crea tu tienda online, gestiona tus ventas y haz crecer tu negocio.
@@ -166,7 +190,7 @@
             </div>
         </section>
 
-        <section class="hero-featured">
+        <section class="hero-featured hero-bg">
             <div class="section-header">
                 <div class="section-label">Negocios destacados</div>
                 <h2 class="section-title">Descubre y adquiere productos</h2>
@@ -186,17 +210,25 @@
                 </div>
                 <?php endforeach; ?>
             </div>
-            <?php else: ?>
-            <div class="feat-empty"><p>Próximamente nuevos negocios destacados</p></div>
             <?php endif; ?>
         </section>
+        <?php if (count($escaparates) === 0): ?>
+        <section class="hero-featured" style="padding-top:0">
+            <div class="feat-empty"><p>Próximamente nuevos negocios destacados</p></div>
+        </section>
+        <?php endif; ?>
 
     </main>
 
     <footer class="footer">
-        <img src="<?= BASE_URL ?>/assets/images/logo_empresa.png" alt="Jacha" style="height:28px;width:auto">
+        <img src="<?= BASE_URL ?>/assets/images/logo_empresa.png" alt="Jacha" class="footer-logo" style="height:28px;width:auto">
         <p class="footer-copy">© 2026 Jacha Marketplace - Potenciando emprendimientos bolivianos</p>
     </footer>
+    <style>
+        .footer-logo { filter:brightness(0) invert(1); }
+        [data-theme="light"] .footer-logo { filter:none; }
+        [data-theme="dark"] .footer-logo { filter:brightness(0) invert(1); }
+    </style>
 
     <span class="watermark"><img src="<?= BASE_URL ?>/assets/images/logo1.jpg" alt=""></span>
 
@@ -223,21 +255,64 @@
 })();
 </script>
     <script>
-        const slides = document.querySelectorAll('.carousel-slide');
-        const indicators = document.querySelectorAll('.indicator');
-        let currentIndex = 0, interval;
-        function showSlide(index) { slides.forEach((s,i)=>s.classList.toggle('active',i===index)); indicators.forEach((ind,i)=>ind.classList.toggle('active',i===index)); currentIndex=index; }
-        function nextSlide() { showSlide((currentIndex+1)%slides.length); }
-        function startCarousel() { if(interval) clearInterval(interval); interval = setInterval(nextSlide,5000); }
-        indicators.forEach(i=>i.addEventListener('click',()=>{ showSlide(parseInt(i.getAttribute('data-index'))); startCarousel(); }));
-        if(slides.length>0) startCarousel();
-        
-        const menuToggle = document.getElementById('menuToggle');
-        const navMenu = document.getElementById('navMenu');
-        if(menuToggle) menuToggle.addEventListener('click',()=>navMenu.classList.toggle('active'));
-        document.querySelectorAll('.nav-menu a').forEach(l=>l.addEventListener('click',()=>{if(window.innerWidth<=768)navMenu.classList.remove('active');}));
-        
+        document.addEventListener('DOMContentLoaded', function() {
+            var heroEl = document.getElementById('heroGreeting');
+            if (heroEl) {
+                var words = [
+                    'Potencia', 'tu', 'emprendimiento', 'en', 'el', 'mundo', 'digital'
+                ];
+                var wordIdx = 0, charIdx = 0, firstDone = false;
+                heroEl.innerHTML = '';
+                var currentSpan = null;
+                function typeWord() {
+                    if (wordIdx >= words.length) {
+                        var cursor = document.createElement('span');
+                        cursor.className = 'cursor';
+                        heroEl.appendChild(cursor);
+                        return;
+                    }
+                    var word = words[wordIdx];
+                    if (charIdx >= word.length) {
+                        wordIdx++;
+                        charIdx = 0;
+                        currentSpan = null;
+                        firstDone = true;
+                        if (word === 'emprendimiento') {
+                            heroEl.appendChild(document.createElement('br'));
+                        }
+                        setTimeout(typeWord, 40 + Math.random() * 30);
+                        return;
+                    }
+                    if (!currentSpan) {
+                        if (firstDone) heroEl.appendChild(document.createTextNode(' '));
+                        currentSpan = document.createElement('span');
+                        currentSpan.style.cssText = 'display:inline-block;white-space:nowrap';
+                        heroEl.appendChild(currentSpan);
+                    }
+                    var ch = document.createElement('span');
+                    ch.className = 'glow-char';
+                    ch.textContent = word[charIdx];
+                    currentSpan.appendChild(ch);
+                    charIdx++;
+                    setTimeout(typeWord, 25 + Math.random() * 30);
+                }
+                setTimeout(typeWord, 500);
+            }
 
+            var slides = document.querySelectorAll('.carousel-slide');
+            var indicators = document.querySelectorAll('.indicator');
+            var currentIndex = 0, interval;
+            function showSlide(index) { slides.forEach(function(s,i){s.classList.toggle('active',i===index)}); indicators.forEach(function(ind,i){ind.classList.toggle('active',i===index)}); currentIndex=index; }
+            function nextSlide() { showSlide((currentIndex+1)%slides.length); }
+            function startCarousel() { if(interval) clearInterval(interval); interval = setInterval(nextSlide,5000); }
+            if (indicators.length) indicators.forEach(function(i){i.addEventListener('click',function(){ showSlide(parseInt(i.getAttribute('data-index'))); startCarousel(); })});
+            if(slides.length>0) startCarousel();
+
+            var menuToggle = document.getElementById('menuToggle');
+            var navMenu = document.getElementById('navMenu');
+            if(menuToggle) menuToggle.addEventListener('click',function(){navMenu.classList.toggle('active')});
+            document.querySelectorAll('.nav-menu a').forEach(function(l){l.addEventListener('click',function(){if(window.innerWidth<=768)navMenu.classList.remove('active')})});
+        });
     </script>
 </body>
 </html>

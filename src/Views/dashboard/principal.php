@@ -14,8 +14,8 @@
         .btn-create { border-radius:4px !important; }
         .greeting-wrap { overflow:hidden; transition:all 0.6s ease; }
         .greeting-text { font-family:Georgia,var(--font-serif);font-size:26px;font-weight:400;color:var(--text);margin-bottom:20px;min-height:1.2em; }
-        .greeting-text .glow-char { display:inline-block;animation:glowPulse 2s ease-in-out infinite;text-shadow:0 0 20px rgba(255,255,255,0.3); }
-        .greeting-text .cursor { display:inline-block;width:2px;height:1em;background:var(--text);margin-left:2px;animation:blink 0.8s step-end infinite;vertical-align:text-bottom; }
+        .greeting-text .glow-char { display:inline-block;animation:glowPulseWhite 2.5s ease-in-out infinite;text-shadow:0 0 8px rgba(255,255,255,0.15),0 0 20px rgba(255,255,255,0.25),0 0 40px rgba(255,255,255,0.15),0 0 80px rgba(255,255,255,0.08); }
+        .greeting-text .cursor { display:inline-block;width:3px;height:1.1em;background:var(--text);margin-left:3px;animation:blink 0.8s step-end infinite;vertical-align:text-bottom; }
         .greeting-text.fade-out { opacity:0;transform:translateY(-12px);transition:all 0.8s ease; }
         @keyframes glowPulse { 0%,100%{text-shadow:0 0 20px rgba(255,255,255,0.15)} 50%{text-shadow:0 0 40px rgba(255,255,255,0.35)} }
         @keyframes glowPulseWhite { 0%,100%{text-shadow:0 0 8px rgba(255,255,255,0.15),0 0 20px rgba(255,255,255,0.25),0 0 40px rgba(255,255,255,0.15),0 0 80px rgba(255,255,255,0.08)} 50%{text-shadow:0 0 12px rgba(255,255,255,0.3),0 0 30px rgba(255,255,255,0.4),0 0 60px rgba(255,255,255,0.2),0 0 120px rgba(255,255,255,0.1)} }
@@ -57,8 +57,8 @@
         .activity-item strong { color:var(--text);font-weight:500; }
         .btn-square { display:inline-block;padding:10px 22px;background:var(--text);color:var(--bg);border-radius:4px;text-decoration:none;font-size:13px;font-weight:600; }
         .btn-square:hover { }
-        [data-theme="dark"] .greeting-text .glow-char { text-shadow:0 0 25px rgba(255,255,255,0.25); }
-        [data-theme="light"] .greeting-text .glow-char { text-shadow:0 0 20px rgba(0,0,0,0.08); }
+        [data-theme="dark"] .greeting-text .glow-char { text-shadow:0 0 8px rgba(255,255,255,0.2),0 0 25px rgba(255,255,255,0.3),0 0 50px rgba(255,255,255,0.15),0 0 100px rgba(255,255,255,0.08); }
+        [data-theme="light"] .greeting-text .glow-char { text-shadow:0 0 6px rgba(255,255,255,0.5),0 0 16px rgba(255,255,255,0.3),0 0 30px rgba(255,255,255,0.15); }
         [data-theme="dark"] .cliente-greeting .glow-char { text-shadow:0 0 8px rgba(255,255,255,0.2),0 0 25px rgba(255,255,255,0.3),0 0 50px rgba(255,255,255,0.15),0 0 100px rgba(255,255,255,0.08); }
         [data-theme="light"] .cliente-greeting .glow-char { text-shadow:0 0 6px rgba(255,255,255,0.5),0 0 16px rgba(255,255,255,0.3),0 0 30px rgba(255,255,255,0.15); }
         [data-theme="light"] .sidebar-header img { filter:brightness(0); }
@@ -170,24 +170,29 @@
         </div>
         
         <nav class="sidebar-nav">
-            <a href="<?= BASE_URL ?>/dashboard" class="active"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9632;</span> Dashboard</a>
+            <a href="<?= BASE_URL ?>/dashboard" class="active"><i class="fas fa-th-large"></i> Dashboard</a>
             <?php if ($rol_activo === 'Administrador'): ?>
-                <a href="#admin-usuarios"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9776;</span> Usuarios</a>
-                <a href="#admin-negocios"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9776;</span> Negocios</a>
-                <a href="<?= BASE_URL ?>/admin/ventas"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9776;</span> Ventas</a>
+                <a href="#admin-usuarios"><i class="fas fa-users"></i> Usuarios</a>
+                <a href="#admin-negocios"><i class="fas fa-store"></i> Negocios</a>
+                <a href="<?= BASE_URL ?>/admin/ventas"><i class="fas fa-chart-bar"></i> Ventas</a>
             <?php elseif ($rol_activo === 'Emprendedor'): ?>
-                <a href="<?= BASE_URL ?>/productos"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9733;</span> Productos</a>
-                <a href="<?= BASE_URL ?>/gestionar-negocios"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9733;</span> Gestionar negocios</a>
-                <a href="<?= BASE_URL ?>/repartidores-admin"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9733;</span> Repartidores</a>
-                <a href="<?= BASE_URL ?>/plantillas-disponibles"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9733;</span> Nuevo negocio</a>
+                <a href="<?= BASE_URL ?>/productos"><i class="fas fa-cube"></i> Productos</a>
+                <a href="<?= BASE_URL ?>/categorias"><i class="fas fa-folder"></i> Categorías</a>
+                <a href="<?= BASE_URL ?>/gestionar-negocios"><i class="fas fa-store-alt"></i> Gestionar negocios</a>
+                <a href="<?= BASE_URL ?>/repartidores-admin"><i class="fas fa-truck"></i> Repartidores</a>
+                <a href="<?= BASE_URL ?>/plantillas-disponibles"><i class="fas fa-plus-circle"></i> Nuevo negocio</a>
+                <a href="<?= BASE_URL ?>/herramientas" style="margin-top:24px;border-top:1px solid var(--border);padding-top:16px;"><i class="fas fa-tools"></i> Herramientas</a>
+                <a href="<?= BASE_URL ?>/sucursales"><i class="fas fa-code-branch"></i> Sucursales</a>
+                <a href="<?= BASE_URL ?>/inventario"><i class="fas fa-boxes"></i> Inventario</a>
+                <a href="<?= BASE_URL ?>/kardex"><i class="fas fa-history"></i> Kardex</a>
             <?php elseif ($rol_activo === 'Cliente'): ?>
-                <a href="<?= BASE_URL ?>/mis-estadisticas"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9776;</span> Mis estad&iacute;sticas</a>
-                <a href="<?= BASE_URL ?>/mis-pedidos"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9776;</span> Mis pedidos</a>
-                <a href="<?= BASE_URL ?>/favoritos"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9829;</span> Favoritos</a>
+                <a href="<?= BASE_URL ?>/mis-estadisticas"><i class="fas fa-chart-pie"></i> Mis estad&iacute;sticas</a>
+                <a href="<?= BASE_URL ?>/mis-pedidos"><i class="fas fa-shopping-bag"></i> Mis pedidos</a>
+                <a href="<?= BASE_URL ?>/favoritos"><i class="fas fa-heart"></i> Favoritos</a>
             <?php elseif ($rol_activo === 'Repartidor'): ?>
-                <a href="<?= BASE_URL ?>/dashboard-repartidor"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9881;</span> Entregas</a>
+                <a href="<?= BASE_URL ?>/dashboard-repartidor"><i class="fas fa-truck"></i> Entregas</a>
             <?php endif; ?>
-            <a href="<?= BASE_URL ?>/logout" style="margin-top: 40px;"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#8592;</span> Cerrar sesi&oacute;n</a>
+            <a href="<?= BASE_URL ?>/logout" style="margin-top: 40px;"><i class="fas fa-sign-out-alt"></i> Cerrar sesi&oacute;n</a>
         </nav>
     </div>
     
@@ -199,6 +204,10 @@
                 <button class="menu-btn" id="menuBtn">&#9776;</button>
             </div>
             <div style="display:flex;align-items:center;gap:0">
+                <a href="#" style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;color:var(--text-muted);text-decoration:none;transition:color .2s;margin-right:4px" title="Notificaciones" onclick="alert('Próximamente: centro de notificaciones');return false">
+                    <i class="fas fa-bell" style="font-size:15px"></i>
+                    <span style="position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:#9a5a5a;display:none"></span>
+                </a>
                 <button class="theme-toggle" id="themeToggle" title="Cambiar tema">&#9790;</button>
                 <div class="user-dropdown" id="userDropdown">
                 <div class="user-trigger" id="userTrigger">
@@ -406,6 +415,14 @@
                     <div class="stat-card"><h3>Pedidos</h3><div class="value"><?= $admin_stats['pedidos'] ?? 0 ?></div></div>
                 </div>
 
+                <!-- Margenes widget -->
+                <div class="stats-grid" style="margin-bottom:32px;grid-template-columns:repeat(4,1fr)">
+                    <div class="stat-card"><h3>Prod. con costo</h3><div class="value"><?= (int)($margen_widget['total_con_costo'] ?? 0) ?></div></div>
+                    <div class="stat-card"><h3>Margen promedio</h3><div class="value" style="color:<?= ($margen_widget['margen_promedio'] ?? 0) >= 30 ? '#6b8f71' : (($margen_widget['margen_promedio'] ?? 0) >= 10 ? '#9a8a4a' : '#9a5a5a') ?>"><?= number_format($margen_widget['margen_promedio'] ?? 0, 1) ?>%</div></div>
+                    <div class="stat-card"><h3>Ganancia total</h3><div class="value">Bs. <?= number_format($margen_widget['ganancia_total'] ?? 0, 2) ?></div></div>
+                    <div class="stat-card"><h3>Mejor margen</h3><div class="value" style="font-size:14px;line-height:1.3"><?= htmlspecialchars(!empty($margen_widget['mejor_producto']) ? substr($margen_widget['mejor_producto'], 0, 20) : '—') ?><?= !empty($margen_widget['mejor_producto']) ? '<br><span style="font-size:11px;color:#6b8f71">' . number_format($margen_widget['mejor_margen'] ?? 0, 1) . '%</span>' : '' ?></div></div>
+                </div>
+
                 <!-- Nav actions -->
                 <div class="section-header-row" style="margin-bottom:24px">
                     <a href="<?= BASE_URL ?>/admin/ventas" style="display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:var(--text);color:var(--bg);border-radius:4px;text-decoration:none;font-size:13px;font-weight:600">
@@ -559,7 +576,7 @@
     <span class="watermark"><img src="<?= BASE_URL ?>/assets/images/logo1.jpg" alt=""></span>
     
     <script>
-        (function() {
+        document.addEventListener('DOMContentLoaded', function() {
             var menuBtn = document.getElementById('menuBtn');
             var sidebar = document.getElementById('sidebar');
             var overlay = document.getElementById('overlay');
@@ -625,22 +642,24 @@
                         var delay = 30 + Math.random() * 30;
                         if (ch === ' ' || ch === ',') delay = 50;
                         setTimeout(typeChar, delay);
-                    } else if (fadeOut) {
+                    } else {
                         var cursor = document.createElement('span');
                         cursor.className = 'cursor';
                         el.appendChild(cursor);
-                        setTimeout(function() {
-                            cursor.style.display = 'none';
-                            el.classList.add('fade-out');
+                        if (fadeOut) {
                             setTimeout(function() {
-                                var wrap = document.getElementById('greetingWrap');
-                                if (wrap) {
-                                    wrap.style.maxHeight = '0';
-                                    wrap.style.marginBottom = '0';
-                                    wrap.style.padding = '0';
-                                }
-                            }, 800);
-                        }, 1800);
+                                cursor.style.display = 'none';
+                                el.classList.add('fade-out');
+                                setTimeout(function() {
+                                    var wrap = document.getElementById('greetingWrap');
+                                    if (wrap) {
+                                        wrap.style.maxHeight = '0';
+                                        wrap.style.marginBottom = '0';
+                                        wrap.style.padding = '0';
+                                    }
+                                }, 800);
+                            }, 1800);
+                        }
                     }
                 }
                 setTimeout(typeChar, 400);
@@ -649,10 +668,10 @@
             if (clienteGreeting) {
                 typeWriterGreeting(clienteGreeting, 'Descubre los mejores negocios bolivianos y apoya el talento local', false);
             } else if (greeting) {
-                var nombre = '<?= htmlspecialchars(($usuario['nombre'] ?? ''), ENT_QUOTES) ?>';
-                typeWriterGreeting(greeting, 'Hola, ' + nombre, true);
+                var frase = 'Potencia tu emprendimiento en el mundo digital';
+                typeWriterGreeting(greeting, frase, false);
             }
-        })();
+        });
     </script>
     <?php if ($rol_activo === 'Cliente'): ?>
     <script>

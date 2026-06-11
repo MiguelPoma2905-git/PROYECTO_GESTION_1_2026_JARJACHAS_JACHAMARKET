@@ -128,6 +128,7 @@ CREATE TABLE productos (
     imagen_blob MEDIUMBLOB NULL,
     imagen_mime VARCHAR(50) NULL,
     precio_base DECIMAL(10,2) NOT NULL,
+    precio_costo DECIMAL(10,2) DEFAULT NULL,
     stock INT DEFAULT 0,
     estado ENUM('Borrador', 'Publicado', 'Oculto') DEFAULT 'Borrador',
     creado_en DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -324,6 +325,23 @@ INSERT INTO categorias (nombre, slug) VALUES
 ('Tecnología', 'tecnologia'),
 ('Hogar', 'hogar');
 
+INSERT INTO categorias (id_padre, nombre, slug) VALUES
+(1, 'Ropa', 'ropa'),
+(1, 'Calzado', 'calzado'),
+(1, 'Accesorios', 'accesorios'),
+(2, 'Textiles', 'textiles'),
+(2, 'Cerámica', 'ceramica'),
+(2, 'Joyería Artesanal', 'joyeria-artesanal'),
+(3, 'Comida Rápida', 'comida-rapida'),
+(3, 'Repostería', 'reposteria'),
+(3, 'Bebidas', 'bebidas'),
+(4, 'Computación', 'computacion'),
+(4, 'Celulares', 'celulares'),
+(4, 'Audio', 'audio'),
+(5, 'Muebles', 'muebles'),
+(5, 'Decoración', 'decoracion'),
+(5, 'Cocina', 'cocina');
+
 -- ==============================
 -- 9. SUPER ADMINISTRADOR (crear via setup-admin.bat)
 -- ==============================
@@ -376,5 +394,12 @@ DELIMITER ;
 -- ==============================
 -- 13. VERIFICACIÓN
 -- ==============================
+-- Migración: agregar precio_costo a productos (si no existe en BD anterior)
+SET @exist = (SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'db_jacha' AND TABLE_NAME = 'productos' AND COLUMN_NAME = 'precio_costo');
+SET @sql = IF(@exist = 0, 'ALTER TABLE productos ADD COLUMN precio_costo DECIMAL(10,2) DEFAULT NULL AFTER precio_base', 'SELECT 1');
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
 SELECT '=== DB_JACHA Top_3 CREADA CON ÉXITO ===' AS mensaje;
 SHOW TABLES;

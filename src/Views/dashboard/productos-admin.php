@@ -65,6 +65,13 @@
         .btn-s { display:inline-flex; align-items:center; justify-content:center; gap:7px; padding:12px 22px; background:none; color:var(--text-muted); border:1px solid var(--border); border-radius:4px; font-size:13px; font-weight:500; cursor:pointer; transition:all .2s; font-family:inherit; text-decoration:none; }
         .btn-s:hover { border-color:var(--border-hi); color:var(--text); }
         .btn-full { width:100%; margin-top:16px; }
+        .v-row { display:flex; gap:8px; margin-bottom:10px; align-items:center; flex-wrap:wrap; }
+        .v-row input { padding:9px 12px; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:3px; font-size:12px; color:var(--text); font-family:inherit; transition:border-color .2s; }
+        .v-row input:focus { outline:none; border-color:rgba(255,255,255,0.25); }
+        .v-row .vs { flex:1.5; min-width:100px; }
+        .v-row .va { flex:1; min-width:70px; }
+        .v-row .vv { flex:1; min-width:70px; }
+        .v-row .vp { flex:0.7; min-width:60px; }
 
         .t-card { background:var(--card-bg); border:1px solid var(--border); border-radius:4px; padding:24px; margin-bottom:32px; overflow:hidden; }
         .t-card h2 { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:500; color:var(--text); margin-bottom:16px; }
@@ -159,14 +166,40 @@
                         <input type="text" name="nombre" required value="<?= htmlspecialchars($producto_editar['nombre'] ?? '') ?>" placeholder="Ej: Laptop Gamer Pro">
                     </div>
                     <div class="f-grp">
-                        <label>Precio (Bs) <span style="color:#9a5a5a">*</span></label>
+                        <label>Precio venta (Bs) <span style="color:#9a5a5a">*</span></label>
                         <input type="number" step="0.01" name="precio_base" required value="<?= $producto_editar['precio_base'] ?? '' ?>" placeholder="0.00">
+                    </div>
+                    <div class="f-grp">
+                        <label>Precio costo (Bs)</label>
+                        <input type="number" step="0.01" name="precio_costo" value="<?= $producto_editar['precio_costo'] ?? '' ?>" placeholder="0.00">
                     </div>
                 </div>
 
                 <div class="f-grp">
                     <label>Stock / Cantidad disponible</label>
                     <input type="number" name="stock" value="<?= $producto_editar['stock'] ?? 0 ?>" placeholder="0">
+                </div>
+                <div class="f-grp">
+                    <label><i class="fas fa-folder"></i> Categoría</label>
+                    <select name="id_categoria" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);font-family:Inter,sans-serif;font-size:14px;box-sizing:border-box">
+                        <option value="">— Sin categoría —</option>
+                        <?php
+                        function renderCatOpts($tree, $selectedId, $level = 0) {
+                            $html = '';
+                            foreach ($tree as $node) {
+                                $indent = str_repeat('&nbsp;&nbsp;&nbsp;', $level);
+                                $sel = $selectedId !== null && (int)$node['id_categoria'] === (int)$selectedId ? ' selected' : '';
+                                $prefix = $level > 0 ? $indent . '└ ' : '';
+                                $html .= '<option value="' . $node['id_categoria'] . '"' . $sel . '>' . $prefix . htmlspecialchars($node['nombre']) . '</option>';
+                                if (!empty($node['children'])) {
+                                    $html .= renderCatOpts($node['children'], $selectedId, $level + 1);
+                                }
+                            }
+                            return $html;
+                        }
+                        echo renderCatOpts($categorias ?? [], $selected_categoria ?? null);
+                        ?>
+                    </select>
                 </div>
 
                 <div class="f-grp">
@@ -192,6 +225,27 @@
                         <?php endforeach; ?>
                     </div>
                     <button type="button" class="a-add" id="addAttrBtn"><i class="fas fa-plus"></i> Agregar caracter&iacute;stica</button>
+                </div>
+
+                <div class="df" style="margin-top:20px">
+                    <h3><i class="fas fa-tags"></i> Variantes / SKU (opcional)</h3>
+                    <p style="font-size:11px;color:var(--text-dim);margin:-10px 0 14px">Agrega variantes por talla, color, etc. Cada variante necesita un SKU &uacute;nico.</p>
+                    <div id="variantesContainer">
+                        <?php if (!empty($variantes)): ?>
+                            <?php foreach ($variantes as $v): ?>
+                            <div class="v-row">
+                                <input type="text" class="vs" name="variante_sku[]" placeholder="SKU *" value="<?= htmlspecialchars($v['sku']) ?>">
+                                <input type="text" class="va" name="variante_atributo_1[]" placeholder="Atributo (ej: Talla)" value="<?= htmlspecialchars($v['atributo_1'] ?? '') ?>">
+                                <input type="text" class="vv" name="variante_valor_1[]" placeholder="Valor (ej: M)" value="<?= htmlspecialchars($v['valor_1'] ?? '') ?>">
+                                <input type="text" class="va" name="variante_atributo_2[]" placeholder="Atributo 2" value="<?= htmlspecialchars($v['atributo_2'] ?? '') ?>">
+                                <input type="text" class="vv" name="variante_valor_2[]" placeholder="Valor 2" value="<?= htmlspecialchars($v['valor_2'] ?? '') ?>">
+                                <input type="number" class="vp" name="variante_precio[]" placeholder="+Bs" step="0.01" value="<?= $v['precio_adicional'] ?? 0 ?>">
+                                <button type="button" class="a-rm" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+                            </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                    <button type="button" class="a-add" id="addVarBtn"><i class="fas fa-plus"></i> Agregar variante</button>
                 </div>
 
                 <div class="f-row">
@@ -228,7 +282,7 @@
             <div class="twrap">
                 <table class="dt">
                     <thead>
-                        <tr><th>Imagen</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr>
+                        <tr><th>Imagen</th><th>Nombre</th><th>Precio</th><th>Costo</th><th>Margen</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr>
                     </thead>
                     <tbody>
                         <?php foreach ($productos as $producto): ?>
@@ -236,6 +290,8 @@
                             <td><img src="<?= BASE_URL ?>/<?= $producto['imagen_url'] ?: 'assets/images/placeholder_producto.jpg' ?>" class="pimg" onerror="this.src='<?= BASE_URL ?>/assets/images/placeholder_producto.jpg'"></td>
                             <td><strong><?= htmlspecialchars($producto['nombre']) ?></strong><br><span style="font-size:11px;color:var(--text-dim)">ID: #<?= $producto['id_producto'] ?></span></td>
                             <td>Bs. <?= number_format($producto['precio_base'], 2) ?></td>
+                            <td><?= $producto['precio_costo'] ? 'Bs. ' . number_format($producto['precio_costo'], 2) : '<span style="color:var(--text-dim)">—</span>' ?></td>
+                            <td><?php if ($producto['precio_costo'] && $producto['precio_base'] > 0): $ganancia = $producto['precio_base'] - $producto['precio_costo']; $margen = ($ganancia / $producto['precio_base']) * 100; ?><span style="color:<?= $margen >= 30 ? '#6b8f71' : ($margen >= 10 ? '#9a8a4a' : '#9a5a5a') ?>"><?= number_format($margen, 1) ?>%</span><?php else: ?><span style="color:var(--text-dim)">—</span><?php endif; ?></td>
                             <td><?= $producto['stock'] ?? 0 ?></td>
                             <td><span class="sb sb-<?= $producto['estado'] ?>"><?= $producto['estado'] ?></span></td>
                             <td><div class="acts">
@@ -282,6 +338,23 @@
 
     var addBtn = document.getElementById('addAttrBtn');
     var container = document.getElementById('attributesContainer');
+
+    var addVarBtn = document.getElementById('addVarBtn');
+    var varContainer = document.getElementById('variantesContainer');
+    if (addVarBtn) {
+        addVarBtn.onclick = function() {
+            var row = document.createElement('div');
+            row.className = 'v-row';
+            row.innerHTML = '<input type="text" class="vs" name="variante_sku[]" placeholder="SKU *">'
+                + '<input type="text" class="va" name="variante_atributo_1[]" placeholder="Atributo">'
+                + '<input type="text" class="vv" name="variante_valor_1[]" placeholder="Valor">'
+                + '<input type="text" class="va" name="variante_atributo_2[]" placeholder="Atrib. 2">'
+                + '<input type="text" class="vv" name="variante_valor_2[]" placeholder="Valor 2">'
+                + '<input type="number" class="vp" name="variante_precio[]" placeholder="+Bs" step="0.01" value="0">'
+                + '<button type="button" class="a-rm" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>';
+            varContainer.appendChild(row);
+        };
+    }
     function addAttributeRow(nombre, valor) {
         nombre = nombre || '';
         valor = valor || '';

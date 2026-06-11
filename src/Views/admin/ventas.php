@@ -193,6 +193,42 @@
             <p style="font-size:12px;color:var(--text-dim);margin-top:8px">Crea un negocio, agrega productos y realiza una compra para ver ventas aqui.</p>
         </div></div>
     <?php endif; ?>
+
+    <!-- Márgenes por negocio -->
+    <div style="margin-top:48px">
+        <h2 style="font-family:Georgia,var(--font-serif);font-size:22px;font-weight:500;color:var(--text);margin-bottom:20px;display:flex;align-items:center;gap:10px">
+            <i class="fas fa-chart-pie" style="color:var(--text-muted)"></i> Márgenes por negocio
+        </h2>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Negocio</th><th>Productos</th><th>Con costo</th><th>Margen promedio</th><th>Ganancia total</th><th>Ingreso total</th></tr></thead>
+                <tbody>
+                <?php foreach ($margenes_negocio as $m): ?>
+                    <tr>
+                        <td><strong><?= htmlspecialchars($m['nombre_comercial']) ?></strong></td>
+                        <td><?= (int)$m['total_productos'] ?></td>
+                        <td><?= (int)$m['con_costo'] ?></td>
+                        <td>
+                            <span style="color:<?= $m['margen_promedio'] >= 30 ? '#6b8f71' : ($m['margen_promedio'] >= 10 ? '#9a8a4a' : '#9a5a5a') ?>;font-weight:600">
+                                <?= number_format($m['margen_promedio'], 1) ?>%
+                            </span>
+                        </td>
+                        <td>Bs. <?= number_format($m['ganancia_total'], 2) ?></td>
+                        <td>Bs. <?= number_format($m['ingreso_total'], 2) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php if (count($margenes_negocio) == 0): ?>
+        <div class="table-wrap"><div class="empty">
+            <i class="fas fa-chart-pie"></i>
+            <p>No hay datos de margenes</p>
+            <p style="font-size:12px;color:var(--text-dim);margin-top:8px">Registra precios de costo en los productos para ver margenes aqui.</p>
+        </div></div>
+        <?php endif; ?>
+    </div>
+
     </div>
 </div>
 

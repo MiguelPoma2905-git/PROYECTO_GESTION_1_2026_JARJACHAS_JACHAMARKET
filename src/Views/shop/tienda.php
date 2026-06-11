@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/assets/images/favicon.ico">
     <title><?= htmlspecialchars($emprendimiento['nombre_comercial']) ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,8 +54,32 @@ $themeFile = match($tid) {
         @keyframes slideOut { from{transform:translateX(0)} to{transform:translateX(100%)} }
     </style>
 <?php $themePart = 'css'; include "themes/{$themeFile}"; ?>
+    <style>
+        .cat-filter { display:flex;flex-wrap:wrap;gap:6px;padding:12px 32px;margin:0 auto;max-width:1200px;justify-content:center }
+        .cat-filter a { padding:6px 16px;border-radius:20px;font-size:12px;text-decoration:none;background:var(--tgl,rgba(0,0,0,0.04));color:var(--tt,inherit);transition:all .2s;font-weight:500;border:1px solid transparent }
+        .cat-filter a:hover { opacity:.8 }
+        .cat-filter a.active { background:var(--tp,#C0392B);color:#fff;border-color:var(--tp,#C0392B) }
+        @media(max-width:768px){ .cat-filter { padding:12px 16px;gap:4px } .cat-filter a { font-size:11px;padding:4px 12px } }
+    </style>
 </head>
 <body>
+<div class="cat-filter">
+    <a href="?id=<?= $emprendimiento['id_emprendimiento'] ?>" class="<?= !$categoria_seleccionada ? 'active' : '' ?>">Todos</a>
+    <?php
+    function renderCatFilters($tree, $selectedId, $emprendimientoId, $level = 0) {
+        $html = '';
+        foreach ($tree as $node) {
+            $sel = $selectedId && (int)$node['id_categoria'] === (int)$selectedId ? 'active' : '';
+            $html .= '<a href="?id=' . $emprendimientoId . '&categoria=' . $node['id_categoria'] . '" class="' . $sel . '">' . htmlspecialchars($node['nombre']) . '</a>';
+            if (!empty($node['children'])) {
+                $html .= renderCatFilters($node['children'], $selectedId, $emprendimientoId, $level + 1);
+            }
+        }
+        return $html;
+    }
+    echo renderCatFilters($categorias ?? [], $categoria_seleccionada, $emprendimiento['id_emprendimiento']);
+    ?>
+</div>
 <?php $themePart = 'html'; include "themes/{$themeFile}"; ?>
 
 <!-- Modal de compra rápida -->

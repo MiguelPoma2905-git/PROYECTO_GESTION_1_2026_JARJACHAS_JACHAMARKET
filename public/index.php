@@ -22,6 +22,9 @@ use App\Controllers\PedidoController;
 use App\Controllers\RepartidorController;
 use App\Controllers\AdminController;
 use App\Controllers\PerfilController;
+use App\Controllers\SucursalesController;
+use App\Controllers\InventarioController;
+use App\Controllers\CategoriaController;
 
 $router = new Router();
 
@@ -57,6 +60,7 @@ $router->get('/repartidores-admin', [DashboardController::class, 'repartidoresAd
 $router->post('/repartidores-admin/vincular', [DashboardController::class, 'repartidoresVincular']);
 $router->post('/repartidores-admin/desvincular', [DashboardController::class, 'repartidoresDesvincular']);
 $router->match(['GET', 'POST'], '/gestionar-negocios', [DashboardController::class, 'gestionarNegocios']);
+$router->get('/herramientas', [DashboardController::class, 'herramientas']);
 
 // Products
 $router->get('/tienda/{id}', [ProductoController::class, 'showTienda']);
@@ -91,6 +95,16 @@ $router->get('/admin/editar-usuario', [AdminController::class, 'editarUsuario'])
 $router->post('/admin/editar-usuario/guardar', [AdminController::class, 'editarUsuarioGuardar']);
 $router->get('/admin/ventas', [AdminController::class, 'ventas']);
 $router->post('/admin/seed-demo', [AdminController::class, 'seedDemo']);
+
+// Sucursales
+$router->match(['GET', 'POST'], '/sucursales', [SucursalesController::class, 'index']);
+
+// Inventario y Kardex
+$router->match(['GET', 'POST'], '/inventario', [InventarioController::class, 'index']);
+$router->get('/kardex', [InventarioController::class, 'kardex']);
+
+// Categorías
+$router->match(['GET', 'POST'], '/categorias', [CategoriaController::class, 'index']);
 
 // DB Demo
 $router->get('/db-demo', [HomeController::class, 'dbDemo']);

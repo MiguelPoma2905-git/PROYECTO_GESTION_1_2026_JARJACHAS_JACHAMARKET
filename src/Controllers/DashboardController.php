@@ -6,6 +6,7 @@ use App\Repositories\EmprendimientoRepository;
 use App\Repositories\UsuarioRepository;
 use App\Repositories\PlantillaRepository;
 use App\Repositories\PedidoRepository;
+use App\Repositories\ProductoRepository;
 
 class DashboardController extends Controller
 {
@@ -93,6 +94,19 @@ class DashboardController extends Controller
             ")->fetchAll();
         }
 
+        $margenWidget = [];
+        if ($esAdmin) {
+            $margenWidget = $db->query("
+                SELECT COUNT(*) as total_con_costo,
+                       COALESCE(AVG((precio_base - precio_costo) / precio_base * 100), 0) as margen_promedio,
+                       COALESCE(SUM(precio_base - precio_costo), 0) as ganancia_total,
+                       COALESCE(SUM(precio_base), 0) as ingreso_total,
+                       (SELECT nombre FROM productos WHERE precio_costo IS NOT NULL AND precio_base > 0 ORDER BY ((precio_base - precio_costo) / precio_base) DESC LIMIT 1) as mejor_producto,
+                       COALESCE((SELECT ((precio_base - precio_costo) / precio_base) * 100 FROM productos WHERE precio_costo IS NOT NULL AND precio_base > 0 ORDER BY ((precio_base - precio_costo) / precio_base) DESC LIMIT 1), 0) as mejor_margen
+                FROM productos WHERE precio_costo IS NOT NULL AND precio_base > 0
+            ")->fetch();
+        }
+
         $this->view('dashboard/principal', [
             'usuario' => $usuario,
             'avatar_usuario' => $avatarUsuario,
@@ -108,6 +122,7 @@ class DashboardController extends Controller
             'admin_stats' => $adminStats,
             'admin_usuarios' => $adminUsuarios,
             'admin_negocios' => $adminNegocios,
+            'margen_widget' => $margenWidget,
         ]);
     }
 
@@ -480,6 +495,61 @@ class DashboardController extends Controller
 
         $this->emprendimientoRepo->quitarRepartidor($idEmprendimiento, $idRepartidor);
         $this->redirect(BASE_URL . '/repartidores-admin?id_emprendimiento=' . $idEmprendimiento . '&success=Repartidor quitado del negocio');
+    }
+
+    public function herramientas(): void
+    {
+        $this->requireAuth();
+
+        $usuario = $_SESSION['usuario'];
+        $rolesNombres = $this->usuarioRepo->getRolesNombres($usuario['id']);
+        if (!in_array('Emprendedor', $rolesNombres)) {
+            $this->redirect(BASE_URL . '/dashboard');
+        }
+
+        $productoRepo = new ProductoRepository();
+        $misNegocios = $this->emprendimientoRepo->findByPropietario($usuario['id']);
+        $avatarUsuario = $this->usuarioRepo->getAvatar($usuario['id']);
+        $rolesUsuario = $this->usuarioRepo->getRoles($usuario['id']);
+        $inicial = strtoupper(substr($usuario['nombre'], 0, 1));
+        $esAdmin = in_array('Administrador', $rolesNombres);
+        $rolActivo = $_SESSION['rol_activo'] ?? $rolesNombres[0] ?? 'Cliente';
+
+        $productosPorNegocio = [];
+        $margenGlobal = ['total_ganancia' => 0, 'total_ingreso' => 0, 'total_costo' => 0];
+
+        foreach ($misNegocios as $negocio) {
+            $productos = $productoRepo->findByEmprendimiento($negocio['id_emprendimiento']);
+            $conMargen = [];
+            foreach ($productos as $p) {
+                $ganancia = null;
+                $margen = null;
+                if ($p['precio_costo'] && $p['precio_base'] > 0) {
+                    $ganancia = $p['precio_base'] - $p['precio_costo'];
+                    $margen = ($ganancia / $p['precio_base']) * 100;
+                    $margenGlobal['total_ganancia'] += $ganancia;
+                    $margenGlobal['total_ingreso'] += $p['precio_base'];
+                    $margenGlobal['total_costo'] += $p['precio_costo'];
+                }
+                $conMargen[] = $p + ['ganancia' => $ganancia, 'margen' => $margen];
+            }
+            $productosPorNegocio[] = [
+                'negocio' => $negocio,
+                'productos' => $conMargen
+            ];
+        }
+
+        $this->view('dashboard/herramientas', [
+            'usuario' => $usuario,
+            'avatar_usuario' => $avatarUsuario,
+            'roles_usuario' => $rolesUsuario,
+            'roles_nombres' => $rolesNombres,
+            'rol_activo' => $rolActivo,
+            'inicial' => $inicial,
+            'es_admin' => $esAdmin,
+            'productos_por_negocio' => $productosPorNegocio,
+            'margen_global' => $margenGlobal
+        ]);
     }
 
     public function gestionarNegocios(): void

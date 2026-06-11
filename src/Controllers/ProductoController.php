@@ -5,12 +5,18 @@ use App\Core\Controller;
 use App\Repositories\ProductoRepository;
 use App\Repositories\EmprendimientoRepository;
 use App\Repositories\UsuarioRepository;
+use App\Repositories\VarianteRepository;
+use App\Repositories\InventarioRepository;
+use App\Repositories\CategoriaRepository;
 
 class ProductoController extends Controller
 {
     private ProductoRepository $productoRepo;
     private EmprendimientoRepository $emprendimientoRepo;
     private UsuarioRepository $usuarioRepo;
+    private VarianteRepository $varianteRepo;
+    private InventarioRepository $inventarioRepo;
+    private CategoriaRepository $categoriaRepo;
 
     public function __construct()
     {
@@ -18,6 +24,9 @@ class ProductoController extends Controller
         $this->productoRepo = new ProductoRepository();
         $this->emprendimientoRepo = new EmprendimientoRepository();
         $this->usuarioRepo = new UsuarioRepository();
+        $this->varianteRepo = new VarianteRepository();
+        $this->inventarioRepo = new InventarioRepository();
+        $this->categoriaRepo = new CategoriaRepository();
     }
 
     public function showTienda(array $params = []): void
@@ -45,12 +54,23 @@ class ProductoController extends Controller
             $esPropietario = true;
         }
 
-        $productos = $this->productoRepo->findPublishedByEmprendimiento($idEmprendimiento);
+        $idCategoria = isset($_GET['categoria']) && $_GET['categoria'] !== '' ? (int)$_GET['categoria'] : null;
+        $allProductos = $this->productoRepo->findPublishedByEmprendimiento($idEmprendimiento);
+
+        if ($idCategoria) {
+            $productos = array_filter($allProductos, fn($p) => (int)($p['id_categoria'] ?? 0) === $idCategoria);
+        } else {
+            $productos = $allProductos;
+        }
+
         $sucursal = $this->emprendimientoRepo->findSucursalByEmprendimiento($idEmprendimiento);
+        $categorias = $this->categoriaRepo->getTree();
 
         $this->view('shop/tienda', [
             'emprendimiento' => $emprendimiento,
             'productos' => $productos,
+            'categorias' => $categorias,
+            'categoria_seleccionada' => $idCategoria,
             'es_propietario' => $esPropietario,
             'sucursal' => $sucursal
         ]);
@@ -93,9 +113,12 @@ class ProductoController extends Controller
             $idProducto = (int)($_POST['id_producto'] ?? 0);
             $nombre = trim($_POST['nombre'] ?? '');
             $precioBase = (float)($_POST['precio_base'] ?? 0);
+            $precioCosto = $_POST['precio_costo'] !== '' ? (float)($_POST['precio_costo'] ?? 0) : null;
             $descripcion = trim($_POST['descripcion'] ?? '');
             $estado = $_POST['estado'] ?? 'Borrador';
             $stock = (int)($_POST['stock'] ?? 0);
+
+            $idCategoria = $_POST['id_categoria'] !== '' ? (int)$_POST['id_categoria'] : null;
 
             $atributos = [];
             $attrNames = $_POST['attr_nombre'] ?? [];
@@ -134,42 +157,86 @@ class ProductoController extends Controller
                     $this->productoRepo->update($idProducto, $idEmprendimiento, [
                         'nombre' => $nombre,
                         'precio_base' => $precioBase,
+                        'precio_costo' => $precioCosto,
                         'descripcion' => $descripcion,
                         'atributos' => $atributosJson,
                         'estado' => $estado,
                         'stock' => $stock,
+                        'id_categoria' => $idCategoria,
                         'imagen_blob' => $imagenBlob,
                         'imagen_mime' => $imagenMime,
                         'eliminar_imagen' => $eliminarImagen
                     ]);
                 } else {
-                    $this->productoRepo->insert([
+                    $idProducto = $this->productoRepo->insert([
                         'nombre' => $nombre,
                         'precio_base' => $precioBase,
+                        'precio_costo' => $precioCosto,
                         'descripcion' => $descripcion,
                         'atributos' => $atributosJson,
                         'estado' => $estado,
                         'stock' => $stock,
+                        'id_categoria' => $idCategoria,
                         'imagen_blob' => $imagenBlob,
                         'imagen_mime' => $imagenMime
                     ], $idEmprendimiento);
                 }
-                $this->redirect(BASE_URL . '/productos?id_emprendimiento=' . $idEmprendimiento . '&success=1');
+
+                // Process variantes
+                $skuList = $_POST['variante_sku'] ?? [];
+                $attr1List = $_POST['variante_atributo_1'] ?? [];
+                $val1List = $_POST['variante_valor_1'] ?? [];
+                $attr2List = $_POST['variante_atributo_2'] ?? [];
+                $val2List = $_POST['variante_valor_2'] ?? [];
+                $precioAdicionalList = $_POST['variante_precio'] ?? [];
+
+                if (!empty($skuList) && is_array($skuList)) {
+                    $this->varianteRepo->deleteByProducto($idProducto);
+                    foreach ($skuList as $i => $sku) {
+                        $sku = trim($sku);
+                        if ($sku === '') continue;
+                        if ($this->varianteRepo->skuExists($sku)) {
+                            $error = "El SKU '$sku' ya existe en otro producto";
+                            break;
+                        }
+                        $vid = $this->varianteRepo->insert([
+                            'id_producto' => $idProducto,
+                            'sku' => $sku,
+                            'atributo_1' => trim($attr1List[$i] ?? ''),
+                            'valor_1' => trim($val1List[$i] ?? ''),
+                            'atributo_2' => trim($attr2List[$i] ?? ''),
+                            'valor_2' => trim($val2List[$i] ?? ''),
+                            'precio_adicional' => (float)($precioAdicionalList[$i] ?? 0),
+                        ]);
+                        if (!$error) {
+                            $this->inventarioRepo->autoCreateForNuevaVariante($vid, $idProducto);
+                        }
+                    }
+                }
+
+                if (!$error) {
+                    $this->redirect(BASE_URL . '/productos?id_emprendimiento=' . $idEmprendimiento . '&success=1');
+                }
             }
         }
 
         $productoEditar = null;
+        $variantesEdit = [];
         if (isset($_GET['edit']) && is_numeric($_GET['edit']) && $negocioSeleccionado) {
             $productoEditar = $this->productoRepo->findByIdAndEmprendimiento((int)$_GET['edit'], $idEmprendimiento);
             if ($productoEditar && $productoEditar['atributos']) {
                 $productoEditar['atributos_arr'] = json_decode($productoEditar['atributos'], true);
             }
+            $variantesEdit = $this->varianteRepo->findByProducto((int)$_GET['edit']);
         }
 
         if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id']) && $negocioSeleccionado) {
             $this->productoRepo->delete((int)$_GET['id'], $idEmprendimiento);
             $this->redirect(BASE_URL . '/productos?id_emprendimiento=' . $idEmprendimiento . '&deleted=1');
         }
+
+        $categorias = $this->categoriaRepo->getTree();
+        $selectedCatId = $productoEditar['id_categoria'] ?? null;
 
         $this->view('dashboard/productos-admin', [
             'usuario' => $usuario,
@@ -178,6 +245,9 @@ class ProductoController extends Controller
             'negocio_seleccionado' => $negocioSeleccionado,
             'productos' => $productos,
             'producto_editar' => $productoEditar,
+            'variantes' => $variantesEdit,
+            'categorias' => $categorias,
+            'selected_categoria' => $selectedCatId,
             'mensaje' => $mensaje,
             'error' => $error
         ]);

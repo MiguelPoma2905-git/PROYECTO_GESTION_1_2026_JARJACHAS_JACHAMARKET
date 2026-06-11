@@ -25,7 +25,7 @@ class ProductoRepository
         $stmt = $this->conn->prepare("
             SELECT id_producto, id_emprendimiento, id_categoria, nombre, descripcion_larga, atributos,
                    imagen_blob, imagen_mime,
-                   precio_base, stock, estado, creado_en, actualizado_en
+                   precio_base, precio_costo, stock, estado, creado_en, actualizado_en
             FROM productos WHERE id_emprendimiento = ? ORDER BY id_producto DESC
         ");
         $stmt->execute([$idEmprendimiento]);
@@ -37,7 +37,7 @@ class ProductoRepository
         $stmt = $this->conn->prepare("
             SELECT id_producto, id_emprendimiento, id_categoria, nombre, descripcion_larga, atributos,
                    imagen_blob, imagen_mime,
-                   precio_base, stock, estado, creado_en, actualizado_en
+                   precio_base, precio_costo, stock, estado, creado_en, actualizado_en
             FROM productos WHERE id_emprendimiento = ? AND estado = 'Publicado' ORDER BY id_producto DESC
         ");
         $stmt->execute([$idEmprendimiento]);
@@ -49,7 +49,7 @@ class ProductoRepository
         $stmt = $this->conn->prepare("
             SELECT id_producto, id_emprendimiento, id_categoria, nombre, descripcion_larga, atributos,
                    imagen_blob, imagen_mime,
-                   precio_base, stock, estado, creado_en, actualizado_en
+                   precio_base, precio_costo, stock, estado, creado_en, actualizado_en
             FROM productos WHERE id_producto = ?
         ");
         $stmt->execute([$id]);
@@ -62,7 +62,7 @@ class ProductoRepository
         $stmt = $this->conn->prepare("
             SELECT id_producto, id_emprendimiento, id_categoria, nombre, descripcion_larga, atributos,
                    imagen_blob, imagen_mime,
-                   precio_base, stock, estado, creado_en, actualizado_en
+                   precio_base, precio_costo, stock, estado, creado_en, actualizado_en
             FROM productos WHERE id_producto = ? AND id_emprendimiento = ?
         ");
         $stmt->execute([$id, $idEmprendimiento]);
@@ -73,22 +73,24 @@ class ProductoRepository
     public function insert(array $data, int $idEmprendimiento): int
     {
         $stmt = $this->conn->prepare("
-            INSERT INTO productos (id_emprendimiento, nombre, precio_base, descripcion_larga, atributos, estado, stock, imagen_blob, imagen_mime)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO productos (id_emprendimiento, nombre, precio_base, precio_costo, descripcion_larga, atributos, estado, stock, imagen_blob, imagen_mime, id_categoria)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         $stmt->execute([
             $idEmprendimiento, $data['nombre'], $data['precio_base'],
+            $data['precio_costo'] ?? null,
             $data['descripcion'] ?? null, $data['atributos'] ?? null,
             $data['estado'] ?? 'Borrador', $data['stock'] ?? 0,
-            $data['imagen_blob'] ?? null, $data['imagen_mime'] ?? null
+            $data['imagen_blob'] ?? null, $data['imagen_mime'] ?? null,
+            $data['id_categoria'] ?? null
         ]);
         return (int)$this->conn->lastInsertId();
     }
 
     public function update(int $id, int $idEmprendimiento, array $data): void
     {
-        $sql = "UPDATE productos SET nombre = ?, precio_base = ?, descripcion_larga = ?, atributos = ?, estado = ?, stock = ?";
-        $params = [$data['nombre'], $data['precio_base'], $data['descripcion'] ?? null, $data['atributos'] ?? null, $data['estado'] ?? 'Borrador', $data['stock'] ?? 0];
+        $sql = "UPDATE productos SET nombre = ?, precio_base = ?, precio_costo = ?, descripcion_larga = ?, atributos = ?, estado = ?, stock = ?, id_categoria = ?";
+        $params = [$data['nombre'], $data['precio_base'], $data['precio_costo'] ?? null, $data['descripcion'] ?? null, $data['atributos'] ?? null, $data['estado'] ?? 'Borrador', $data['stock'] ?? 0, $data['id_categoria'] ?? null];
 
         if (!empty($data['imagen_blob'])) {
             $sql .= ", imagen_blob = ?";

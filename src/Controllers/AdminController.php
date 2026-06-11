@@ -210,12 +210,26 @@ class AdminController extends Controller
             FROM pedidos
         ")->fetch();
 
+        $margenesNegocio = $db->query("
+            SELECT e.id_emprendimiento, e.nombre_comercial,
+                   COUNT(p.id_producto) as total_productos,
+                   COUNT(CASE WHEN p.precio_costo IS NOT NULL AND p.precio_base > 0 THEN 1 END) as con_costo,
+                   COALESCE(AVG(CASE WHEN p.precio_costo IS NOT NULL AND p.precio_base > 0 THEN (p.precio_base - p.precio_costo) / p.precio_base * 100 END), 0) as margen_promedio,
+                   COALESCE(SUM(CASE WHEN p.precio_costo IS NOT NULL THEN p.precio_base - p.precio_costo END), 0) as ganancia_total,
+                   COALESCE(SUM(p.precio_base), 0) as ingreso_total
+            FROM emprendimientos e
+            LEFT JOIN productos p ON e.id_emprendimiento = p.id_emprendimiento
+            GROUP BY e.id_emprendimiento, e.nombre_comercial
+            ORDER BY margen_promedio DESC
+        ")->fetchAll();
+
         $this->view('admin/ventas', [
             'pedidos' => $pedidos,
             'negocios' => $negocios,
             'negocio_filter' => $negocioFilter,
             'plantilla_filter' => $plantillaFilter,
-            'resumen' => $resumen
+            'resumen' => $resumen,
+            'margenes_negocio' => $margenesNegocio
         ]);
     }
 
