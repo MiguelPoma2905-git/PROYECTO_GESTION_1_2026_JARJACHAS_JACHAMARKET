@@ -33,9 +33,11 @@
         .table-wrap { background:var(--card-bg); border:1px solid var(--border); border-radius:4px; overflow:hidden; }
         table { width:100%; border-collapse:collapse; }
         thead th { text-align:left; padding:14px 20px; font-size:10px; font-weight:600; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.02); vertical-align:middle; }
+        [data-theme="light"] thead th { background:rgba(0,0,0,0.03); }
         tbody tr { border-bottom:1px solid var(--border); }
         tbody tr:last-child { border-bottom:none; }
         tbody tr:hover { background:rgba(255,255,255,0.015); }
+        [data-theme="light"] tbody tr:hover { background:rgba(0,0,0,0.03); }
         td { padding:14px 20px; font-size:13px; color:var(--text); vertical-align:middle; }
         .badge-pl { display:inline-block; padding:3px 10px; border-radius:3px; font-size:10px; font-weight:600; margin:2px; }
         .badge-pl.pagado, .badge-pl.completado { background:rgba(107,143,113,0.1); color:#6b8f71; }

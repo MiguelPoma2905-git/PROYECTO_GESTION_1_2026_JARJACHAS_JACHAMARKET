@@ -318,33 +318,14 @@ INSERT INTO plantillas (id_plantilla, nombre, descripcion, color_primario, color
 (11, 'FullFit',         'Deportes y fitness',                                         '#10B981', '#059669', '#F0FDF4', '#1A1A2E', 1),
 (12, 'HogarDulce',      'Decoración del hogar',                                       '#D4A574', '#8B6914', '#FFFBF5', '#3D2B1F', 1);
 
-INSERT INTO categorias (nombre, slug) VALUES
-('Moda', 'moda'),
-('Artesanía', 'artesania'),
-('Comida', 'comida'),
-('Tecnología', 'tecnologia'),
-('Hogar', 'hogar');
-
-INSERT INTO categorias (id_padre, nombre, slug) VALUES
-(1, 'Ropa', 'ropa'),
-(1, 'Calzado', 'calzado'),
-(1, 'Accesorios', 'accesorios'),
-(2, 'Textiles', 'textiles'),
-(2, 'Cerámica', 'ceramica'),
-(2, 'Joyería Artesanal', 'joyeria-artesanal'),
-(3, 'Comida Rápida', 'comida-rapida'),
-(3, 'Repostería', 'reposteria'),
-(3, 'Bebidas', 'bebidas'),
-(4, 'Computación', 'computacion'),
-(4, 'Celulares', 'celulares'),
-(4, 'Audio', 'audio'),
-(5, 'Muebles', 'muebles'),
-(5, 'Decoración', 'decoracion'),
-(5, 'Cocina', 'cocina');
-
 -- ==============================
--- 9. SUPER ADMINISTRADOR (crear via setup-admin.bat)
+-- 9. SUPER ADMINISTRADOR
 -- ==============================
+INSERT INTO usuarios (id_usuario, nombres, apellidos, email, password_hash, telefono, ubicacion, estado) VALUES
+(2, 'Miguel Angel', 'Poma Ramos', 'mikypramos2905@gmail.com', '$2y$10$5/HeRUwRsnnHfQOMexH24eyg.y0CFP9n8UaX1U/.LHPNRrwhEBx5.', '70118660', NULL, 'Activo');
+
+INSERT INTO usuario_roles (id_usuario, id_rol) VALUES
+(2, 1), (2, 2), (2, 3), (2, 4);
 -- ==============================
 -- 10. FUNCIÓN
 -- ==============================

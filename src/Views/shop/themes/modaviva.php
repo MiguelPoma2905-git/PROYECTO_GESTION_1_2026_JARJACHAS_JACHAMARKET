@@ -50,11 +50,11 @@
         position:relative; animation:t7FU .5s ease both;
     }
     .t7-card:hover { transform:translateY(-6px); box-shadow:0 12px 40px var(--tgl); border-color:color-mix(in srgb,var(--tp) 15%,transparent); }
-    .t7-card-img {
-        width:100%; height:240px; object-fit:cover;
-        background:linear-gradient(135deg,var(--tp),var(--ts));
-        opacity:0.1; display:block; transition:transform .5s;
-    }
+        .t7-card-img {
+            width:100%; height:240px; object-fit:cover;
+            background:linear-gradient(135deg,var(--tp),var(--ts));
+            display:block; transition:transform .5s;
+        }
     .t7-card:hover .t7-card-img { transform:scale(1.04); }
     .t7-wish { position:absolute; top:12px; right:12px; background:rgba(255,255,255,0.85); backdrop-filter:blur(4px); width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--tt); opacity:0.5; font-size:15px; transition:all .2s; border:none; z-index:2; }
     .t7-wish:hover { opacity:1; color:var(--tp); }

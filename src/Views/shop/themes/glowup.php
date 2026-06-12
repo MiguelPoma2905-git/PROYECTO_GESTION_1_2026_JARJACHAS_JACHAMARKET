@@ -49,11 +49,11 @@
     .t10-card::before { content:''; position:absolute; inset:-1px; border-radius:21px; background:linear-gradient(135deg,rgba(212,175,55,0.15),rgba(123,45,142,0.15),rgba(212,175,55,0.05)); opacity:0; transition:opacity .4s; pointer-events:none; z-index:-1; }
     .t10-card:hover { transform:translateY(-8px); box-shadow:0 20px 60px rgba(0,0,0,0.3), 0 0 30px var(--tgl); border-color:rgba(155,89,182,0.2); }
     .t10-card:hover::before { opacity:1; }
-    .t10-card-img {
-        width:100%; height:220px; object-fit:cover;
-        background:linear-gradient(135deg,var(--tp),var(--ts)); opacity:0.15;
-        display:block; transition:transform .6s;
-    }
+        .t10-card-img {
+            width:100%; height:220px; object-fit:cover;
+            background:linear-gradient(135deg,var(--tp),var(--ts));
+            display:block; transition:transform .6s;
+        }
     .t10-card:hover .t10-card-img { transform:scale(1.05); }
     .t10-card-body { padding:22px 22px 24px; flex:1; display:flex; flex-direction:column; }
     .t10-card-body h3 { font-size:15px; font-weight:600; color:var(--tt); margin-bottom:2px; line-height:1.3; }

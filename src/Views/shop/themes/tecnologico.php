@@ -88,11 +88,11 @@
         border-color:transparent;
     }
     .t4-card:hover::before { opacity:1; }
-    .t4-card-img {
-        width:100%; height:210px; object-fit:cover;
-        background:linear-gradient(135deg,var(--tp),var(--ts));
-        opacity:0.12; display:block; transition:transform .5s;
-    }
+        .t4-card-img {
+            width:100%; height:210px; object-fit:cover;
+            background:linear-gradient(135deg,var(--tp),var(--ts));
+            display:block; transition:transform .5s;
+        }
     .t4-card:hover .t4-card-img { transform:scale(1.05); }
     .t4-card-body { padding:22px 24px 24px; flex:1; display:flex; flex-direction:column; }
     .t4-card-cat {

@@ -31,9 +31,11 @@
         .table-wrap { overflow-x:auto; }
         table.kdx { width:100%; border-collapse:collapse; }
         .kdx th { text-align:left; padding:14px 16px; font-size:10px; font-weight:600; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.02); white-space:nowrap; }
+        [data-theme="light"] .kdx th { background:rgba(0,0,0,0.03); }
         .kdx td { padding:14px 16px; font-size:13px; color:var(--text); border-bottom:1px solid var(--border); vertical-align:middle; }
         .kdx tbody tr:last-child td { border-bottom:none; }
         .kdx tbody tr:hover { background:rgba(255,255,255,0.015); }
+        [data-theme="light"] .kdx tbody tr:hover { background:rgba(0,0,0,0.03); }
         .badge-tipo { display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:600; }
         .badge-tipo.Ingreso_Compra, .badge-tipo.Ingreso { background:rgba(107,143,113,0.1);color:#6b8f71; }
         .badge-tipo.Salida_Venta, .badge-tipo.Salida { background:rgba(154,90,90,0.1);color:#9a5a5a; }

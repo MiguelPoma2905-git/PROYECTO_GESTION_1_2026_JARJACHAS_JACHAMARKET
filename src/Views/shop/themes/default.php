@@ -49,11 +49,11 @@
     }
     [data-theme="dark"] .g-card { background:var(--tgl); border-color:rgba(255,255,255,0.04); }
     .g-card:hover { transform:translateY(-8px); box-shadow:0 16px 48px rgba(0,0,0,0.1); border-color:color-mix(in srgb,var(--tp) 20%,transparent); }
-    .g-card-img {
-        position:relative; overflow:hidden; height:230px;
-        background:linear-gradient(135deg,var(--tp) 0%,var(--ts) 100%);
-        opacity:0.15; flex-shrink:0;
-    }
+        .g-card-img {
+            position:relative; overflow:hidden; height:230px;
+            background:linear-gradient(135deg,var(--tp) 0%,var(--ts) 100%);
+            flex-shrink:0;
+        }
     .g-card-img img { width:100%; height:100%; object-fit:cover; transition:transform .5s; display:block; }
     .g-card:hover .g-card-img img { transform:scale(1.06); }
     .g-card-brand {

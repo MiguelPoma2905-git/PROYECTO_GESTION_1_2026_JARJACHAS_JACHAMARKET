@@ -70,7 +70,6 @@
             <?php if ($rol_activo === 'Cliente'): ?>
             <a href="<?= BASE_URL ?>/mis-estadisticas" class="active"> Mis estadísticas</a>
             <a href="<?= BASE_URL ?>/mis-pedidos"> Mis pedidos</a>
-            <a href="<?= BASE_URL ?>/favoritos"> Favoritos</a>
             <?php endif; ?>
             <?php if ($es_admin): ?>
             <a href="<?= BASE_URL ?>/admin" style="color: #3498DB;"> Administración</a>

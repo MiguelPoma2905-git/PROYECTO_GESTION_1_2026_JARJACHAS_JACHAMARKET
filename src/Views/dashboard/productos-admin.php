@@ -78,9 +78,11 @@
         .twrap { overflow-x:auto; }
         table.dt { width:100%; border-collapse:collapse; }
         .dt th { text-align:left; padding:14px 16px; font-size:10px; font-weight:600; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.02); white-space:nowrap; }
+        [data-theme="light"] .dt th { background:rgba(0,0,0,0.03); }
         .dt td { padding:14px 16px; font-size:13px; color:var(--text); border-bottom:1px solid var(--border); vertical-align:middle; }
         .dt tbody tr:last-child td { border-bottom:none; }
         .dt tbody tr:hover { background:rgba(255,255,255,0.015); }
+        [data-theme="light"] .dt tbody tr:hover { background:rgba(0,0,0,0.03); }
         .dt .pimg { width:44px; height:44px; border-radius:3px; object-fit:cover; display:block; background:var(--card-bg); border:1px solid var(--border); }
 
         .sb { display:inline-block; padding:3px 10px; border-radius:3px; font-size:10px; font-weight:600; }

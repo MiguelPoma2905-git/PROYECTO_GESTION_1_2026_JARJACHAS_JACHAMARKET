@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=6">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         [data-theme="light"] .btn-hero-primary { background:#1a1a2e;color:#fff !important;box-shadow:0 4px 24px rgba(26,26,46,0.2); }
         [data-theme="light"] .btn-hero-primary:hover { background:#2a2a4e;box-shadow:0 8px 40px rgba(26,26,46,0.25); }
@@ -16,43 +17,60 @@
         .hero-featured .section-title { font-size:48px;margin-bottom:12px; }
         .hero-featured .section-desc { font-size:15px;margin-bottom:48px; }
         .feat-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:28px; }
-        .feat-card { background:var(--card-bg);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:all .5s cubic-bezier(.4,0,.2,1);position:relative;animation:featUp .6s ease both; }
+        .feat-card { background:var(--card-bg);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .5s cubic-bezier(.4,0,.2,1);position:relative;animation:featUp .6s ease both; }
         .feat-card:nth-child(1){animation-delay:0.05s}
         .feat-card:nth-child(2){animation-delay:0.10s}
         .feat-card:nth-child(3){animation-delay:0.15s}
         .feat-card:nth-child(4){animation-delay:0.20s}
         .feat-card:nth-child(5){animation-delay:0.25s}
         .feat-card:nth-child(6){animation-delay:0.30s}
-        .feat-card { overflow:hidden; }
-        .feat-card:hover { transform:translateY(-10px);border-color:rgba(255,255,255,0.08);box-shadow:0 30px 80px rgba(0,0,0,0.3); }
-        [data-theme="light"] .feat-card:hover { border-color:rgba(0,0,0,0.08);box-shadow:0 30px 80px rgba(0,0,0,0.06); }
-        .feat-card::before { content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,var(--card-bg));z-index:1;pointer-events:none; }
-        .feat-glow { position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,0.06) 0%,transparent 60%);z-index:0;pointer-events:none;animation:glowDrift 6s ease-in-out infinite; }
-        .feat-card:nth-child(2) .feat-glow { animation-delay:1.5s; }
-        .feat-card:nth-child(3) .feat-glow { animation-delay:3s; }
-        .feat-card:nth-child(4) .feat-glow { animation-delay:4.5s; }
-        @keyframes glowDrift { 0%,100%{transform:translate(0,0) scale(1);opacity:0.5} 33%{transform:translate(10%,10%) scale(1.1);opacity:0.8} 66%{transform:translate(-5%,5%) scale(0.9);opacity:0.4} }
-        .feat-card-img { width:100%;height:200px;object-fit:cover;display:block;transition:transform .6s;background:var(--surface2);position:relative;z-index:0; }
-        .feat-card:hover .feat-card-img { transform:scale(1.06); }
-        .feat-card-body { position:relative;z-index:2;padding:28px;margin-top:-60px; }
-        .feat-card-tag { display:inline-block;padding:5px 16px;border-radius:4px;font-size:12px;font-weight:500;letter-spacing:0.5px;margin-bottom:12px;font-family:'Cormorant Garamond',Georgia,serif; }
-        .feat-card-body h3 { font-size:20px;font-weight:600;color:var(--text);margin-bottom:8px;font-family:'Cormorant Garamond',Georgia,serif; }
+        .feat-card:hover { transform:translateY(-6px);box-shadow:0 24px 48px rgba(0,0,0,0.25);border-color:rgba(255,255,255,0.1); }
+        [data-theme="light"] .feat-card:hover { box-shadow:0 24px 48px rgba(0,0,0,0.08);border-color:rgba(0,0,0,0.1); }
+        .feat-card-img { width:100%;height:200px;object-fit:cover;display:block;transition:transform .6s;background:var(--surface2); }
+        .feat-card:hover .feat-card-img { transform:scale(1.05); }
+        .feat-card-body { padding:20px 24px 24px; }
+        .feat-card-tag { display:inline-block;padding:4px 14px;border-radius:4px;font-size:11px;font-weight:500;letter-spacing:0.5px;margin-bottom:10px;font-family:'Cormorant Garamond',Georgia,serif; }
+        .feat-card-body h3 { font-size:20px;font-weight:600;color:var(--text);margin-bottom:6px;font-family:'Cormorant Garamond',Georgia,serif; }
         .feat-card-body p { font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:16px; }
-        .feat-card::after { content:'';position:absolute;top:-30%;left:-30%;width:160%;height:160%;background:radial-gradient(circle,rgba(255,255,255,0.08) 0%,transparent 50%);pointer-events:none;z-index:0;opacity:0;transition:opacity .6s; }
-        .feat-card:hover::after { opacity:1; }
         [data-theme="dark"] .feat-card-img { filter:brightness(0.85) contrast(1.1); }
         [data-theme="dark"] .feat-card:hover .feat-card-img { filter:brightness(1) contrast(1.1); }
         .feat-card-btn { display:inline-flex;align-items:center;gap:8px;padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;transition:all .3s; }
-        .feat-card-btn:hover { transform:translateY(-2px); }
+        .feat-card-btn:hover { transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.2); }
         .feat-empty { text-align:center;padding:80px;color:var(--text-dim);grid-column:1/-1; }
         @keyframes featUp { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
         @media(max-width:1024px){ .feat-grid{grid-template-columns:repeat(2,1fr)} .hero-featured{padding:60px 32px} }
         @media(max-width:768px){ .feat-grid{grid-template-columns:1fr} .hero-featured{padding:40px 20px} .feat-card-img{height:220px} }
 
+        .feat-list { display:grid;grid-template-columns:1fr 1fr;gap:32px;margin:0 -48px;padding:0; }
+        .feat-card-h { background:var(--card-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:all .5s cubic-bezier(.4,0,.2,1);position:relative;animation:featUp .6s ease both; }
+        .feat-card-h:nth-child(1){animation-delay:0.05s}
+        .feat-card-h:nth-child(2){animation-delay:0.10s}
+        .feat-card-h:nth-child(3){animation-delay:0.15s}
+        .feat-card-h:nth-child(4){animation-delay:0.20s}
+        .feat-card-h:hover { transform:translateY(-8px);border-color:rgba(255,255,255,0.1);box-shadow:0 24px 72px rgba(0,0,0,0.25); }
+        [data-theme="light"] .feat-card-h:hover { border-color:rgba(0,0,0,0.08);box-shadow:0 24px 72px rgba(0,0,0,0.06); }
+        .feat-card-h::before { content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,var(--card-bg));z-index:1;pointer-events:none; }
+        .feat-card-h-body { position:relative;z-index:2;padding:52px 56px 20px; }
+        .feat-card-h-body .feat-card-tag { display:inline-block;padding:6px 22px;border-radius:4px;font-size:13px;font-weight:500;letter-spacing:0.5px;font-family:'Cormorant Garamond',Georgia,serif;margin-bottom:8px; }
+        .feat-card-h-body h3 { font-family:'Cormorant Garamond',Georgia,serif;font-size:38px;font-weight:600;color:var(--text);margin:0 0 12px;line-height:1.15; }
+        .feat-card-h-body p { font-size:16px;color:var(--text-muted);line-height:1.8;margin:0;max-width:720px; }
+        .feat-card-h-img { position:relative;z-index:0;line-height:0;overflow:hidden; }
+        .feat-card-h-img img { width:100%;height:380px;object-fit:cover;display:block;transition:transform .6s; }
+        .feat-card-h:hover .feat-card-h-img img { transform:scale(1.05); }
+        [data-theme="dark"] .feat-card-h-img img { filter:brightness(0.8) contrast(1.15); }
+        [data-theme="dark"] .feat-card-h:hover .feat-card-h-img img { filter:brightness(1) contrast(1.15); }
+        @media(max-width:768px){
+          .feat-list{max-width:100%;gap:28px;}
+          .feat-card-h-body{padding:36px 24px 16px;}
+          .feat-card-h-body h3{font-size:28px;}
+          .feat-card-h-body p{font-size:15px;}
+          .feat-card-h-img img{height:220px;}
+        }
+
         .hero-featured.hero-bg { position:relative;background:transparent;z-index:0; }
-        .hero-featured.hero-bg::before { content:'';position:absolute;inset:0;background:url('<?= BASE_URL ?>/assets/images/fondo_extra.jpg') center/cover no-repeat fixed;z-index:-2; }
-        .hero-featured.hero-bg::after { content:'';position:absolute;inset:0;background:rgba(0,0,0,0.6);z-index:-1; }
-        [data-theme="light"] .hero-featured.hero-bg::after { background:rgba(255,255,255,0.5); }
+        .hero-featured.hero-bg::before { content:'';position:absolute;inset:0;background:url('<?= BASE_URL ?>/assets/images/fondo_extra.jpg') center/cover no-repeat fixed;z-index:-2;filter:saturate(1.1) brightness(0.9); }
+        .hero-featured.hero-bg::after { content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.35) 50%,rgba(0,0,0,0.75) 100%);z-index:-1; }
+        [data-theme="light"] .hero-featured.hero-bg::after { background:linear-gradient(135deg,rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.3) 50%,rgba(255,255,255,0.7) 100%); }
         .hero-featured.hero-bg .section-header { text-align:center;padding:60px 0 20px; }
         .hero-featured.hero-bg .section-title { color:#fff; }
         [data-theme="light"] .hero-featured.hero-bg .section-title { color:#1a1a2e; }
@@ -60,9 +78,9 @@
         [data-theme="light"] .hero-featured.hero-bg .section-desc { color:rgba(0,0,0,0.6); }
         .hero-featured.hero-bg .section-label { color:rgba(255,255,255,0.6); }
         [data-theme="light"] .hero-featured.hero-bg .section-label { color:rgba(0,0,0,0.5); }
-        .hero-featured.hero-bg .feat-card { background:var(--card-bg);border:1px solid var(--border); }
-        .hero-featured.hero-bg .feat-card:hover { border-color:rgba(255,255,255,0.15); }
-        [data-theme="light"] .hero-featured.hero-bg .feat-card:hover { border-color:rgba(0,0,0,0.1); }
+        .hero-featured.hero-bg .feat-card { background:var(--card-bg);border:1px solid var(--border);backdrop-filter:blur(2px); }
+        .hero-featured.hero-bg .feat-card:hover { border-color:rgba(255,255,255,0.15);box-shadow:0 24px 48px rgba(0,0,0,0.35); }
+        [data-theme="light"] .hero-featured.hero-bg .feat-card:hover { border-color:rgba(0,0,0,0.1);box-shadow:0 24px 48px rgba(0,0,0,0.08); }
 
         .hero-greeting { font-family:'Cormorant Garamond',Georgia,serif;font-size:54px;font-weight:500;color:var(--text);line-height:1.15;margin-bottom:12px;min-height:1.2em }
         .hero-greeting .glow-char { display:inline-block;animation:heroGlow 2.5s ease-in-out infinite;text-shadow:0 0 8px rgba(255,255,255,0.2),0 0 25px rgba(255,255,255,0.3),0 0 50px rgba(255,255,255,0.15),0 0 100px rgba(255,255,255,0.08) }
@@ -147,44 +165,48 @@
         <section class="hero-featured" style="padding-top:60px">
             <div class="section-header" style="margin-bottom:40px">
                 <div class="section-label">Ventajas</div>
-                <h2 class="section-title">¿Por qué usar Jacha?</h2>
-                <p class="section-desc">Todo lo que necesitas para llevar tu emprendimiento al siguiente nivel</p>
+                <h2 class="section-title">Todo lo que necesitas para triunfar</h2>
+                <p class="section-desc">Lleva tu emprendimiento al siguiente nivel con nuestras herramientas</p>
             </div>
-            <div class="feat-grid" style="grid-template-columns:repeat(4,1fr)">
-                    <div class="feat-card" style="animation-delay:0.05s;cursor:default">
-                    <div class="feat-glow"></div>
-                    <img src="<?= BASE_URL ?>/assets/images/features/producto_destacado_01.jpg" alt="Plantillas" class="feat-card-img" onerror="this.style.display='none'">
-                    <div class="feat-card-body">
+            <div class="feat-list">
+                <div class="feat-card-h">
+                    <div class="feat-card-h-body">
                         <span class="feat-card-tag" style="background:#A8E6CF;color:#2D7A5E">Plantilla</span>
                         <h3>Elige tu plantilla</h3>
                         <p>Selecciona entre m&uacute;ltiples dise&ntilde;os profesionales y personaliza colores para reflejar tu marca.</p>
                     </div>
+                    <div class="feat-card-h-img">
+                        <img src="<?= BASE_URL ?>/assets/images/features/producto_destacado_01.jpg" alt="Plantillas">
+                    </div>
                 </div>
-                <div class="feat-card" style="animation-delay:0.10s;cursor:default">
-                    <div class="feat-glow"></div>
-                    <img src="<?= BASE_URL ?>/assets/images/features/producto_destacado_02.jpg" alt="Vende" class="feat-card-img" onerror="this.style.display='none'">
-                    <div class="feat-card-body">
+                <div class="feat-card-h">
+                    <div class="feat-card-h-body">
                         <span class="feat-card-tag" style="background:#B3D9F7;color:#2C6B9E">Vende</span>
                         <h3>Publica productos</h3>
                         <p>Llega a clientes de todo Bolivia sin complicaciones.</p>
                     </div>
+                    <div class="feat-card-h-img">
+                        <img src="<?= BASE_URL ?>/assets/images/features/producto_destacado_02.jpg" alt="Vende">
+                    </div>
                 </div>
-                <div class="feat-card" style="animation-delay:0.15s;cursor:default">
-                    <div class="feat-glow"></div>
-                    <img src="<?= BASE_URL ?>/assets/images/features/producto_destacado_03.jpg" alt="Gestiona" class="feat-card-img" onerror="this.style.display='none'">
-                    <div class="feat-card-body">
+                <div class="feat-card-h">
+                    <div class="feat-card-h-body">
                         <span class="feat-card-tag" style="background:#FCE4BD;color:#8D6B2B">Pedidos</span>
                         <h3>Gestiona pedidos</h3>
                         <p>Administra ventas y asigna repartidores para cada entrega.</p>
                     </div>
+                    <div class="feat-card-h-img">
+                        <img src="<?= BASE_URL ?>/assets/images/features/producto_destacado_03.jpg" alt="Gestiona">
+                    </div>
                 </div>
-                <div class="feat-card" style="animation-delay:0.20s;cursor:default">
-                    <div class="feat-glow"></div>
-                    <img src="<?= BASE_URL ?>/assets/images/features/producto_destacado_04.jpg" alt="Crece" class="feat-card-img" onerror="this.style.display='none'">
-                    <div class="feat-card-body">
+                <div class="feat-card-h">
+                    <div class="feat-card-h-body">
                         <span class="feat-card-tag" style="background:#D4C5F9;color:#5E3A87">Crece</span>
                         <h3>Expande tu negocio</h3>
                         <p>Analiza ventas y haz crecer tu presencia digital.</p>
+                    </div>
+                    <div class="feat-card-h-img">
+                        <img src="<?= BASE_URL ?>/assets/images/features/producto_destacado_04.jpg" alt="Crece">
                     </div>
                 </div>
             </div>
@@ -221,13 +243,51 @@
     </main>
 
     <footer class="footer">
-        <img src="<?= BASE_URL ?>/assets/images/logo_empresa.png" alt="Jacha" class="footer-logo" style="height:28px;width:auto">
-        <p class="footer-copy">© 2026 Jacha Marketplace - Potenciando emprendimientos bolivianos</p>
+        <div class="footer-inner">
+            <div class="footer-col footer-brand-col">
+                <img src="<?= BASE_URL ?>/assets/images/logo_empresa.png" alt="Jacha" class="footer-logo">
+                <p class="footer-desc">Plataforma que conecta el talento boliviano con clientes de todo el pa&iacute;s.</p>
+                <div class="footer-social">
+                    <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="footer-col footer-contact-col">
+                <h4>Contacto</h4>
+                <p><i class="fas fa-envelope"></i> contacto@jachamarketplace.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> La Paz &middot; Bolivia</p>
+                <p><i class="fas fa-phone"></i> +591 7XXX-XXXX</p>
+            </div>
+            <div class="footer-col footer-proyecto-col">
+                <h4>Proyecto Universitario</h4>
+                <p><i class="fas fa-graduation-cap"></i> <strong>Unifranz</strong></p>
+                <p class="footer-copy">&copy; 2026 Jacha Marketplace</p>
+                <p class="footer-legal">Potenciando emprendimientos bolivianos</p>
+            </div>
+        </div>
     </footer>
     <style>
-        .footer-logo { filter:brightness(0) invert(1); }
-        [data-theme="light"] .footer-logo { filter:none; }
+        .footer-logo { filter:brightness(0) invert(1);height:32px;width:auto;display:block;margin-bottom:16px; }
+        [data-theme="light"] .footer-logo { filter:brightness(0); }
         [data-theme="dark"] .footer-logo { filter:brightness(0) invert(1); }
+        .footer-inner { max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:40px;text-align:left;padding:0 48px; }
+        .footer-col h4 { font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;font-weight:600;color:var(--text);margin:0 0 16px; }
+        .footer-desc { font-size:13px;color:var(--text-muted);line-height:1.6;margin:0 0 20px;max-width:300px; }
+        .footer-contact-col p,.footer-proyecto-col p { font-size:13px;color:var(--text-muted);margin:0 0 10px;display:flex;align-items:center;gap:8px; }
+        .footer-contact-col p i,.footer-proyecto-col p i { width:16px;color:var(--text-dim);font-size:14px; }
+        .footer-contact-col p i.fa-map-marker-alt,.footer-contact-col p i.fa-phone { color:var(--text-dim); }
+        .footer-proyecto-col strong { color:var(--text);font-weight:600; }
+        .footer-social { display:flex;gap:12px; }
+        .social-link { display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--surface2);color:var(--text);font-size:17px;transition:all .3s;text-decoration:none; }
+        .social-link:hover { transform:translateY(-3px); }
+        .social-link .fa-instagram { color:#E4405F; }
+        .social-link .fa-facebook-f { color:#1877F2; }
+        .social-link .fa-whatsapp { color:#25D366; }
+        .footer-legal { font-size:11px;color:var(--text-dim);margin-top:4px; }
+        .footer-copy { font-size:12px;color:var(--text-dim);margin:0; }
+        @media(max-width:900px){ .footer-inner{grid-template-columns:1fr 1fr;gap:32px;} .footer-brand-col{grid-column:1/-1;} }
+        @media(max-width:480px){ .footer-inner{grid-template-columns:1fr;gap:28px;padding:0 20px;} }
     </style>
 
     <span class="watermark"><img src="<?= BASE_URL ?>/assets/images/logo1.jpg" alt=""></span>

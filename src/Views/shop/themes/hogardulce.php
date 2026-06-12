@@ -42,11 +42,11 @@
         position:relative; animation:t12FU .5s ease both;
     }
     .t12-card:hover { transform:translateY(-8px); box-shadow:0 16px 48px var(--tgl); }
-    .t12-card-img {
-        width:100%; height:220px; object-fit:cover;
-        background:linear-gradient(135deg,var(--tp),var(--ts));
-        opacity:0.12; display:block; transition:transform .5s;
-    }
+        .t12-card-img {
+            width:100%; height:220px; object-fit:cover;
+            background:linear-gradient(135deg,var(--tp),var(--ts));
+            display:block; transition:transform .5s;
+        }
     .t12-card:hover .t12-card-img { transform:scale(1.04); }
     .t12-card-body { padding:20px 22px 22px; flex:1; display:flex; flex-direction:column; }
     .t12-card-body h3 { font-size:16px; font-weight:600; color:var(--tt); margin-bottom:4px; line-height:1.3; }

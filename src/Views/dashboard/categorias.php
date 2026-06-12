@@ -32,7 +32,7 @@
         .form-group input:focus,.form-group select:focus { outline:none;border-color:var(--accent) }
         .form-actions { display:flex;gap:8px;margin-top:16px }
         .form-actions .btn { padding:8px 20px;border:none;border-radius:var(--radius);cursor:pointer;font-family:Inter,sans-serif;font-size:14px;transition:opacity .2s }
-        .form-actions .btn-primary { background:var(--accent);color:#fff }
+        .form-actions .btn-primary { background:var(--text);color:var(--bg) }
         .form-actions .btn-primary:hover { opacity:.85 }
         .form-actions .btn-secondary { background:var(--hover-bg);color:var(--text) }
         .form-actions .btn-secondary:hover { opacity:.8 }

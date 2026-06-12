@@ -175,14 +175,14 @@
         .portada-upload .portada-preview .remove-portada:hover { background:rgba(200,50,50,0.8); }
         .btn-submit {
             width: 100%; padding: 14px;
-            background: #555;
-            color: #fff; border: none; border-radius: 4px;
+            background: var(--text);
+            color: var(--bg); border: none; border-radius: 4px;
             font-size: 14px; font-weight: 600; cursor: pointer;
-            transition: background .2s; font-family: inherit;
+            transition: opacity .2s; font-family: inherit;
             display: flex; align-items: center; justify-content: center; gap: 8px;
             margin-top: 4px;
         }
-        .btn-submit:hover { background: #666; }
+        .btn-submit:hover { opacity: 0.85; }
         .error-msg {
             background: rgba(200,50,50,0.1);
             border: 1px solid rgba(200,50,50,0.15);
@@ -275,7 +275,7 @@
                         <h4><i class="fas fa-font"></i> Tipograf&iacute;a</h4>
                         <div class="font-display" style="font-family:'<?= $fontName ?>',sans-serif">Aa</div>
                         <div class="font-sub"><?= $fontName ?> &middot; <?= $fontDesc ?></div>
-                        <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.05)">
+                        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border,rgba(255,255,255,0.05))">
                             <div style="font-size:11px;color:var(--text-muted,#888);line-height:1.6">
                                 <strong style="color:var(--text,#f0f0f0)">Modo:</strong>
                                 <?= $modeLabel ?>

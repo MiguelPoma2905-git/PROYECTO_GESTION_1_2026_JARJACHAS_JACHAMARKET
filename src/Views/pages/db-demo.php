@@ -83,7 +83,7 @@
                     </select>
                     <button type="submit" class="btn-search">Buscar</button>
                     <?php if (!empty($busqueda) || !empty($filtro_precio)): ?>
-                        <a href="<?= BASE_URL ?>/db-demo" class="btn-search" style="background: #333;">Limpiar</a>
+                        <a href="<?= BASE_URL ?>/db-demo" class="btn-search" style="background: var(--surface3);">Limpiar</a>
                     <?php endif; ?>
                 </form>
                 

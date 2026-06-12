@@ -45,7 +45,7 @@ $themeFile = match($tid) {
         .modal-btn:disabled { opacity:.5;cursor:not-allowed;transform:none; }
         .modal-close { position:absolute;top:16px;right:20px;background:none;border:none;color:rgba(255,255,255,0.3);font-size:20px;cursor:pointer; }
         .modal-close:hover { color:#fff; }
-        .notif { position:fixed;top:24px;right:24px;z-index:99999;background:rgba(0,0,0,0.9);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 24px;color:#fff;font-size:13px;display:none;animation:fU .3s ease;max-width:360px; }
+        .notif { position:fixed;top:24px;right:24px;z-index:99999;background:var(--card-bg);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:12px;padding:16px 24px;color:var(--text);font-size:13px;display:none;animation:fU .3s ease;max-width:360px;box-shadow:var(--shadow-md); }
         .notif.success { border-left:3px solid #4caf50; }
         .notif.error { border-left:3px solid #e74c3c; }
         .notif.show { display:block; }

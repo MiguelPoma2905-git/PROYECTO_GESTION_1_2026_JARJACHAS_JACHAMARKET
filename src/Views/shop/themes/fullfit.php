@@ -43,11 +43,11 @@
         position:relative; animation:t11FU .5s ease both;
     }
     .t11-card:hover { transform:translateY(-6px); border-color:rgba(34,197,94,0.2); box-shadow:0 16px 48px rgba(0,0,0,0.3); }
-    .t11-card-img {
-        width:100%; height:220px; object-fit:cover;
-        background:linear-gradient(135deg,var(--tp),var(--ts)); opacity:0.1;
-        display:block; transition:transform .5s;
-    }
+        .t11-card-img {
+            width:100%; height:220px; object-fit:cover;
+            background:linear-gradient(135deg,var(--tp),var(--ts));
+            display:block; transition:transform .5s;
+        }
     .t11-card:hover .t11-card-img { transform:scale(1.04); }
     .t11-card-body { padding:20px 22px 22px; flex:1; display:flex; flex-direction:column; }
     .t11-card-body h3 { font-size:15px; font-weight:700; color:var(--tt); margin-bottom:2px; line-height:1.3; text-transform:uppercase; letter-spacing:.5px; }

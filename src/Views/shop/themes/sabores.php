@@ -44,11 +44,11 @@
         position:relative; animation:t8FU .5s ease both;
     }
     .t8-card:hover { transform:translateY(-6px); box-shadow:0 16px 48px var(--tgl); }
-    .t8-card-img {
-        width:100%; height:200px; object-fit:cover;
-        background:linear-gradient(135deg,var(--tp),var(--ts));
-        opacity:0.12; display:block; transition:transform .5s;
-    }
+        .t8-card-img {
+            width:100%; height:200px; object-fit:cover;
+            background:linear-gradient(135deg,var(--tp),var(--ts));
+            display:block; transition:transform .5s;
+        }
     .t8-card:hover .t8-card-img { transform:scale(1.04); }
     .t8-card-body { padding:20px 22px 22px; flex:1; display:flex; flex-direction:column; }
     .t8-card-body h3 { font-size:16px; font-weight:700; color:var(--tt); margin-bottom:2px; line-height:1.3; }

@@ -33,9 +33,11 @@
         .table-wrap { overflow-x:auto; }
         table.invt { width:100%; border-collapse:collapse; }
         .invt th { text-align:left; padding:14px 16px; font-size:10px; font-weight:600; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.02); white-space:nowrap; }
+        [data-theme="light"] .invt th { background:rgba(0,0,0,0.03); }
         .invt td { padding:14px 16px; font-size:13px; color:var(--text); border-bottom:1px solid var(--border); vertical-align:middle; }
         .invt tbody tr:last-child td { border-bottom:none; }
         .invt tbody tr:hover { background:rgba(255,255,255,0.015); }
+        [data-theme="light"] .invt tbody tr:hover { background:rgba(0,0,0,0.03); }
         .stock-alerta { color:#9a5a5a; font-weight:600; }
         .stock-ok { color:#6b8f71; }
         .stock-cero { color:var(--text-dim); font-style:italic; }

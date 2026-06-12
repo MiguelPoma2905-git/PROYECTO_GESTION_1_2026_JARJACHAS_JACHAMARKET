@@ -43,9 +43,11 @@
         .admin-table { width:100%; border-collapse:collapse; }
         .admin-table th, .admin-table td { vertical-align:middle; }
         .admin-table th { text-align:left; padding:14px 20px; font-size:10px; font-weight:600; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.02); }
+        [data-theme="light"] .admin-table th { background:rgba(0,0,0,0.03); }
         .admin-table td { padding:14px 20px; font-size:13px; color:var(--text); border-bottom:1px solid var(--border); }
         .admin-table tbody tr:last-child td { border-bottom:none; }
         .admin-table tbody tr:hover { background:rgba(255,255,255,0.015); }
+        [data-theme="light"] .admin-table tbody tr:hover { background:rgba(0,0,0,0.03); }
         @media(max-width:768px){
             .emprendedor-cards{grid-template-columns:1fr;}
             .mini-grid{max-width:100%;}
@@ -188,7 +190,6 @@
             <?php elseif ($rol_activo === 'Cliente'): ?>
                 <a href="<?= BASE_URL ?>/mis-estadisticas"><i class="fas fa-chart-pie"></i> Mis estad&iacute;sticas</a>
                 <a href="<?= BASE_URL ?>/mis-pedidos"><i class="fas fa-shopping-bag"></i> Mis pedidos</a>
-                <a href="<?= BASE_URL ?>/favoritos"><i class="fas fa-heart"></i> Favoritos</a>
             <?php elseif ($rol_activo === 'Repartidor'): ?>
                 <a href="<?= BASE_URL ?>/dashboard-repartidor"><i class="fas fa-truck"></i> Entregas</a>
             <?php endif; ?>
@@ -251,7 +252,7 @@
         
         <div class="dash-container">
             <?php if ($success): ?>
-            <div style="background: rgba(255,255,255,0.05); border-left: 3px solid #fff; padding: 14px 18px; border-radius: 4px; margin-bottom: 20px; font-size: 13px; color: #fff;">
+            <div style="background: var(--surface3); border-left: 3px solid var(--text); padding: 14px 18px; border-radius: 4px; margin-bottom: 20px; font-size: 13px; color: var(--text);">
                 ✓ &iexcl;Negocio creado exitosamente! Ahora puedes verlo en "Mis negocios".
             </div>
             <?php endif; ?>

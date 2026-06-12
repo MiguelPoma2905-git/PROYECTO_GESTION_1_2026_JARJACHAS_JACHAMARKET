@@ -36,9 +36,11 @@
         .btn-danger:hover { background:rgba(154,90,90,0.15); }
         .suc-table { width:100%; border-collapse:collapse; }
         .suc-table th { text-align:left; padding:14px 20px; font-size:10px; font-weight:600; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.02); }
+        [data-theme="light"] .suc-table th { background:rgba(0,0,0,0.03); }
         .suc-table td { padding:14px 20px; font-size:13px; color:var(--text); border-bottom:1px solid var(--border); vertical-align:middle; }
         .suc-table tbody tr:last-child td { border-bottom:none; }
         .suc-table tbody tr:hover { background:rgba(255,255,255,0.015); }
+        [data-theme="light"] .suc-table tbody tr:hover { background:rgba(0,0,0,0.03); }
         .badge-ok { display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:600;background:rgba(107,143,113,0.1);color:#6b8f71; }
         .empty-state { text-align:center;padding:60px 20px;color:var(--text-dim); }
         .empty-state i { font-size:36px;margin-bottom:12px;opacity:0.3;color:var(--text-muted); }
