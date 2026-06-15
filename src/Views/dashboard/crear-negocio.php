@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=6">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=9">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
@@ -21,18 +21,18 @@
         }
         .page-wrap { max-width: 1100px; margin: 0 auto; }
 
-        .top-bar {
+        .create-nav {
             display: flex; align-items: center; justify-content: space-between;
             margin-bottom: 28px;
         }
-        .top-bar .logo img { height: 30px; width: auto; opacity: 0.7; }
-        [data-theme="light"] .top-bar .logo img { filter: brightness(0); }
-        .top-bar .back-link {
+        .create-nav .logo img { height: 30px; width: auto; opacity: 0.7; }
+        [data-theme="light"] .create-nav .logo img { filter: brightness(0); }
+        .create-nav .back-link {
             font-size: 13px; color: var(--text-muted, #888);
             text-decoration: none; display: flex; align-items: center; gap: 6px;
             transition: color .2s;
         }
-        .top-bar .back-link:hover { color: var(--text, #f0f0f0); }
+        .create-nav .back-link:hover { color: var(--text, #f0f0f0); }
 
         .main-grid {
             display: grid;
@@ -201,9 +201,22 @@
         }
     </style>
 </head>
-<body>
+<body class="dashboard-body">
+<?php $current_page = 'crear-negocio'; ?>
+<?php include __DIR__ . '/../partials/sidebar.php'; ?>
+
+<div class="main-content">
+    <div class="top-bar">
+        <div style="display:flex;align-items:center;gap:8px">
+            <button class="menu-btn" id="menuBtn">&#9776;</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:0">
+            <button class="theme-toggle" id="themeToggle" title="Cambiar tema">&#9790;</button>
+        </div>
+    </div>
+
     <div class="page-wrap">
-        <div class="top-bar">
+        <div class="create-nav">
             <a href="<?= BASE_URL ?>" class="logo">
                 <img src="<?= BASE_URL ?>/assets/images/logo_empresa.png" alt="Jacha">
             </a>
@@ -453,5 +466,24 @@
             </div>
         </div>
     </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var menuBtn = document.getElementById('menuBtn');
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('overlay');
+    if (menuBtn && sidebar && overlay) {
+        menuBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        });
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        });
+    }
+});
+</script>
 </body>
 </html>

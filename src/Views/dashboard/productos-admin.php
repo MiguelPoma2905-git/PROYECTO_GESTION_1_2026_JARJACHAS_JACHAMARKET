@@ -7,7 +7,7 @@
     <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/assets/images/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=6">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=9">
     <style>
         body { font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
         .wrap { max-width:1400px; margin:0 auto; padding:40px 32px; }
@@ -17,9 +17,6 @@
         .page-hdr-left .sub { font-size:13px; color:var(--text-muted); }
         .page-hdr-left .back { color:var(--text-muted); text-decoration:none; font-size:12px; display:inline-flex; align-items:center; gap:5px; margin-bottom:10px; transition:color .2s; }
         .page-hdr-left .back:hover { color:var(--text); }
-        .theme-tog { background:none; border:1px solid var(--border); color:var(--text-muted); width:36px; height:36px; border-radius:4px; cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center; transition:all .2s; flex-shrink:0; }
-        .theme-tog:hover { border-color:var(--text); color:var(--text); }
-
         .msg { border-radius:3px; padding:12px 16px; margin-bottom:20px; font-size:13px; display:flex; align-items:center; gap:8px; }
         .msg-success { background:rgba(107,143,113,0.1); border:1px solid rgba(107,143,113,0.15); color:#6b8f71; }
         .msg-error { background:rgba(154,90,90,0.1); border:1px solid rgba(154,90,90,0.15); color:#9a5a5a; }
@@ -112,16 +109,28 @@
         }
     </style>
 </head>
-<body>
-<div class="wrap">
-    <div class="page-hdr">
-        <div class="page-hdr-left">
-            <a href="<?= BASE_URL ?>/dashboard" class="back"><i class="fas fa-arrow-left"></i> Volver al dashboard</a>
-            <h1>Gestionar Productos</h1>
-            <div class="sub">Administra el cat&aacute;logo de tus negocios</div>
+<body class="dashboard-body">
+<?php $current_page = 'productos'; ?>
+<?php include __DIR__ . '/../partials/sidebar.php'; ?>
+
+<div class="main-content">
+    <div class="top-bar">
+        <div style="display:flex;align-items:center;gap:8px">
+            <button class="menu-btn" id="menuBtn">&#9776;</button>
         </div>
-        <button class="theme-tog" id="themeToggle" title="Cambiar tema"><i class="fas fa-moon"></i></button>
+        <div style="display:flex;align-items:center;gap:0">
+            <button class="theme-toggle" id="themeToggle" title="Cambiar tema"><i class="fas fa-moon"></i></button>
+        </div>
     </div>
+
+    <div class="wrap">
+        <div class="page-hdr">
+            <div class="page-hdr-left">
+                <a href="<?= BASE_URL ?>/dashboard" class="back"><i class="fas fa-arrow-left"></i> Volver al dashboard</a>
+                <h1>Gestionar Productos</h1>
+                <div class="sub">Administra el cat&aacute;logo de tus negocios</div>
+            </div>
+        </div>
 
     <?php if ($mensaje): ?>
     <div class="msg msg-success"><i class="fas fa-check-circle"></i> <?= htmlspecialchars($mensaje) ?></div>
@@ -314,6 +323,7 @@
         </div>
     <?php endif; ?>
 </div>
+</div>
 
 <span class="wm"><img src="<?= BASE_URL ?>/assets/images/logo1.jpg" alt=""></span>
 
@@ -400,6 +410,20 @@
             document.documentElement.setAttribute('data-theme', nt);
             localStorage.setItem('jacha_theme', nt);
             tt.innerHTML = nt === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+    }
+
+    var menuBtn = document.getElementById('menuBtn');
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('overlay');
+    if (menuBtn && sidebar && overlay) {
+        menuBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        });
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
         });
     }
 })();

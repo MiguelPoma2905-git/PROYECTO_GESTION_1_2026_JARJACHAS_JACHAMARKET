@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=6">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=9">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:'DM Sans',system-ui,sans-serif; background:var(--bg,#0d0d0d); color:var(--text,#f0f0f0); min-height:100vh; }
@@ -78,7 +78,19 @@
         @media (max-width:768px) { .plantillas-grid { grid-template-columns:1fr; gap:20px; } .container { padding:24px 16px; } .page-title h1 { font-size:34px; } .plantilla-img-wrap { height:200px; } .color-swatch .swatch-label { display:none; } }
     </style>
 </head>
-<body>
+<body class="dashboard-body">
+<?php $current_page = 'plantillas-disponibles'; ?>
+<?php include __DIR__ . '/../dashboard/../partials/sidebar.php'; ?>
+
+<div class="main-content">
+    <div class="top-bar">
+        <div style="display:flex;align-items:center;gap:8px">
+            <button class="menu-btn" id="menuBtn">&#9776;</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:0">
+            <button class="theme-toggle" id="themeToggle2" title="Cambiar tema">&#9790;</button>
+        </div>
+    </div>
     <div class="container">
         <div class="header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:48px;">
             <a href="<?= BASE_URL ?>/"><img src="<?= BASE_URL ?>/assets/images/logo_empresa.png" alt="Jacha" class="logo-img" style="height:28px;width:auto;opacity:0.7;"></a>
@@ -135,6 +147,7 @@
             </div>
         <?php endif; ?>
     </div>
+</div>
 
     <div class="modal-overlay" id="authModal">
         <div class="modal-box">
@@ -153,14 +166,33 @@
     var theme = localStorage.getItem('jacha_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', theme);
     var toggle = document.getElementById('themeToggle');
-    if (toggle) {
-        toggle.innerHTML = theme === 'dark' ? '\u2600' : '\u263E';
-        toggle.addEventListener('click', function() {
-            var t = document.documentElement.getAttribute('data-theme');
-            var n = t === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', n);
-            localStorage.setItem('jacha_theme', n);
-            toggle.innerHTML = n === 'dark' ? '\u2600' : '\u263E';
+    var toggle2 = document.getElementById('themeToggle2');
+    function updateThemeUI(t, btn) { if (btn) btn.innerHTML = t === 'dark' ? '\u2600' : '\u263E'; }
+    updateThemeUI(theme, toggle);
+    updateThemeUI(theme, toggle2);
+    [toggle, toggle2].forEach(function(btn) {
+        if (btn) {
+            btn.addEventListener('click', function() {
+                var t = document.documentElement.getAttribute('data-theme');
+                var n = t === 'light' ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', n);
+                localStorage.setItem('jacha_theme', n);
+                updateThemeUI(n, toggle);
+                updateThemeUI(n, toggle2);
+            });
+        }
+    });
+    var menuBtn = document.getElementById('menuBtn');
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('overlay');
+    if (menuBtn && sidebar && overlay) {
+        menuBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        });
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
         });
     }
 })();
