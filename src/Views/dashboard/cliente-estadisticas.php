@@ -12,21 +12,21 @@
         .est-header { margin-bottom:28px; }
         .est-title { font-family:Georgia,var(--font-serif);font-size:24px;font-weight:400;color:var(--text);margin:0; }
         .est-subtitle { font-size:13px;color:var(--text-muted);margin-top:4px; }
-        .est-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px; }
-        .est-card { background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:20px 18px;transition:all .25s var(--ease);position:relative;overflow:hidden; }
-        .est-card:hover { border-color:var(--border-hi);transform:translateY(-2px);box-shadow:var(--shadow-md); }
-        .est-card-icon { width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:12px; }
-        .est-card .est-val { font-family:Georgia,var(--font-serif);font-size:26px;font-weight:500;color:var(--text);line-height:1.2; }
-        .est-card .est-val small { font-size:14px;font-weight:400;color:var(--text-muted);font-family:var(--font-sans); }
-        .est-card .est-lbl { font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.4px;margin-top:4px; }
-        .est-section-title { font-family:Georgia,var(--font-serif);font-size:18px;font-weight:400;color:var(--text);margin:0 0 14px; }
+        .est-state-row { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px; }
+        .est-state-card { background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:18px;text-align:center;transition:all 0.25s; }
+        .est-state-card:hover { border-color:var(--border-hi);transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.06); }
+        .est-state-card .num { font-family:Georgia,var(--font-serif);font-size:28px;font-weight:500;color:var(--text); }
+        .est-state-card .lbl { font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.4px;margin-top:2px; }
+        .est-state-card .bar { height:4px;border-radius:2px;margin-top:10px;background:var(--border);overflow:hidden; }
+        .est-state-card .bar-fill { height:100%;border-radius:2px;transition:width .6s var(--ease); }
+        .est-section-title { font-family:Georgia,var(--font-serif);font-size:18px;font-weight:400;color:var(--text);margin:0 0 14px;display:flex;align-items:center;gap:8px; }
         .pedidos-table-wrap { background:var(--card-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:28px; }
         .pedidos-table { width:100%;border-collapse:collapse; }
-        .pedidos-table th { padding:12px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;background:var(--surface2);border-bottom:1px solid var(--border); }
-        .pedidos-table td { padding:12px 16px;font-size:13px;color:var(--text);border-bottom:1px solid var(--border); }
+        .pedidos-table th { padding:12px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;background:var(--surface2);border-bottom:2px solid var(--border); }
+        .pedidos-table td { padding:10px 14px;font-size:13px;color:var(--text);border-bottom:1px solid var(--border); }
         .pedidos-table tr:last-child td { border-bottom:none; }
-        .pedidos-table tr:hover td { background:var(--glow); }
-        .est-badge { display:inline-block;padding:2px 10px;border-radius:20px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px; }
+        .pedidos-table tr:hover td { background:var(--hover-surface); }
+        .est-badge { display:inline-block;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px; }
         .est-badge.entregado { background:#27AE6015;color:#27AE60; }
         .est-badge.en-proceso { background:#F39C1215;color:#F39C12; }
         .est-badge.cancelado { background:#E74C3C15;color:#E74C3C; }
@@ -35,21 +35,11 @@
         .est-empty p { font-size:14px; }
         .pedidos-table .codigo { font-family:monospace;font-size:12px;color:var(--text-muted); }
         .pedidos-table .monto { font-weight:600;font-family:Georgia,var(--font-serif); }
-        .est-state-row { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px; }
-        .est-state-card { background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:18px;text-align:center; }
-        .est-state-card .num { font-family:Georgia,var(--font-serif);font-size:28px;font-weight:500;color:var(--text); }
-        .est-state-card .lbl { font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.4px;margin-top:2px; }
-        .est-state-card .bar { height:4px;border-radius:2px;margin-top:10px;background:var(--border);overflow:hidden; }
-        .est-state-card .bar-fill { height:100%;border-radius:2px;transition:width .6s var(--ease); }
-        @media(max-width:900px){ .est-grid{grid-template-columns:repeat(2,1fr);} }
+        @media(max-width:900px){ .est-state-row{grid-template-columns:repeat(2,1fr);} }
         @media(max-width:600px){
-            .est-grid{grid-template-columns:1fr;gap:10px;}
             .est-state-row{grid-template-columns:1fr;}
             .pedidos-table th,.pedidos-table td{padding:8px 10px;font-size:12px;}
             .pedidos-table td:nth-child(4),.pedidos-table th:nth-child(4){display:none;}
-            .est-card{padding:16px;}
-            .est-card .est-val{font-size:22px;}
-            .est-card-icon{width:32px;height:32px;font-size:13px;margin-bottom:8px;}
             .est-title{font-size:20px;}
             .est-section-title{font-size:16px;}
         }
@@ -60,21 +50,22 @@
 </head>
 <body class="dashboard-body">
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <a href="<?= BASE_URL ?>/" class="logo-link" style="display:flex;align-items:center;gap:10px;">
-                <img src="<?= BASE_URL ?>/assets/images/logo_empresa.png" alt="Jacha" style="height:30px;width:auto;opacity:0.85;">
+        <div class="sidebar-brand">
+            <a href="<?= BASE_URL ?>/">
+                <img src="<?= BASE_URL ?>/assets/images/logo_empresa.png" alt="JachaMarket">
             </a>
         </div>
         <nav class="sidebar-nav">
-            <a href="<?= BASE_URL ?>/dashboard"> Dashboard</a>
-            <?php if ($rol_activo === 'Cliente'): ?>
-            <a href="<?= BASE_URL ?>/mis-estadisticas" class="active"> Mis estadísticas</a>
-            <a href="<?= BASE_URL ?>/mis-pedidos"> Mis pedidos</a>
-            <?php endif; ?>
+            <div class="s-label">Navegaci&oacute;n</div>
+            <a href="<?= BASE_URL ?>/dashboard"><i class="fas fa-th-large"></i> Dashboard</a>
+            <a href="<?= BASE_URL ?>/mis-estadisticas" class="active"><i class="fas fa-chart-pie"></i> Mis estad&iacute;sticas</a>
+            <a href="<?= BASE_URL ?>/mis-pedidos"><i class="fas fa-shopping-bag"></i> Mis pedidos</a>
             <?php if ($es_admin): ?>
-            <a href="<?= BASE_URL ?>/admin" style="color: #3498DB;"> Administración</a>
+            <a href="<?= BASE_URL ?>/admin"><i class="fas fa-shield-alt"></i> Administraci&oacute;n</a>
             <?php endif; ?>
-            <a href="<?= BASE_URL ?>/logout" style="margin-top:40px;"> Cerrar sesión</a>
+            <div class="sidebar-footer" style="margin-top:auto;padding:8px 10px;border-top:1px solid var(--border)">
+                <a href="<?= BASE_URL ?>/logout" class="s-logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesi&oacute;n</a>
+            </div>
         </nav>
     </div>
 
@@ -85,7 +76,7 @@
             <div class="top-bar-left">
                 <button class="menu-btn" id="sidebarToggle">&#9776;</button>
             </div>
-            <div style="display:flex;align-items:center;gap:10px;">
+            <div class="top-bar-right">
                 <button class="theme-toggle" id="themeToggle" title="Cambiar tema">&#9790;</button>
                 <div class="user-dropdown" id="userDropdown">
                     <div class="user-trigger" id="userTrigger">
@@ -97,30 +88,30 @@
                                 <?= $inicial ?>
                             <?php endif; ?>
                         </div>
-                        <span style="font-size:8px;color:var(--text-dim);line-height:1;">▼</span>
+                        <span class="dropdown-arrow">&#9660;</span>
                     </div>
                     <div class="dropdown-menu">
                         <?php if (count($roles_usuario) > 1): ?>
-                        <div style="padding:8px 16px 4px;font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border)">Elegir rol</div>
+                        <div class="dropdown-header">Cambiar rol</div>
                             <?php foreach ($roles_usuario as $rol):
                                 $color_rol = match($rol['nombre_rol']) {
-                                    'Cliente' => '#3498DB',
-                                    'Emprendedor' => '#2ECC71',
-                                    'Repartidor' => '#F39C12',
-                                    'Administrador' => '#E74C3C',
+                                    'Cliente' => '#4facfe',
+                                    'Emprendedor' => '#2ecc71',
+                                    'Repartidor' => '#f39c12',
+                                    'Administrador' => '#e74c3c',
                                     default => '#888'
                                 };
                             ?>
-                            <a href="<?= BASE_URL ?>/dashboard?cambiar_rol=<?= $rol['nombre_rol'] ?>" class="dropdown-item <?= $rol['nombre_rol'] === $rol_activo ? 'active-role' : '' ?>">
+                            <a href="<?= BASE_URL ?>/dashboard?cambiar_rol=<?= $rol['nombre_rol'] ?>" class="dropdown-item<?= $rol['nombre_rol'] === $rol_activo ? ' active-role' : '' ?>">
                                 <span class="role-dot" style="background:<?= $color_rol ?>"></span>
                                 <?= htmlspecialchars($rol['nombre_rol']) ?>
-                                <?php if ($rol['nombre_rol'] === $rol_activo): ?><span style="margin-left:auto;font-size:10px;opacity:0.6">✓</span><?php endif; ?>
+                                <?php if ($rol['nombre_rol'] === $rol_activo): ?><span class="check-mark">&#10003;</span><?php endif; ?>
                             </a>
                             <?php endforeach; ?>
-                            <div style="border-top:1px solid var(--border);margin:4px 0"></div>
+                        <div class="dropdown-divider"></div>
                         <?php endif; ?>
-                        <a href="<?= BASE_URL ?>/perfil" class="dropdown-item">Mi Perfil</a>
-                        <a href="<?= BASE_URL ?>/logout" class="dropdown-item" style="color:#E74C3C">Cerrar sesión</a>
+                        <a href="<?= BASE_URL ?>/perfil" class="dropdown-item"><i class="fas fa-user"></i> Mi Perfil</a>
+                        <a href="<?= BASE_URL ?>/logout" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesi&oacute;n</a>
                     </div>
                 </div>
             </div>
@@ -132,26 +123,38 @@
                 <p class="est-subtitle">Resumen de tu actividad en Jacha Marketplace</p>
             </div>
 
-            <div class="est-grid">
-                <div class="est-card">
-                    <div class="est-card-icon" style="background:#3498DB15;color:#3498DB;"><i class="fas fa-shopping-bag"></i></div>
-                    <div class="est-val"><?= $stats['total_pedidos'] ?? 0 ?></div>
-                    <div class="est-lbl">Pedidos totales</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <i class="fas fa-shopping-bag" style="color:#3498DB"></i>
+                        <h3>Pedidos totales</h3>
+                    </div>
+                    <div class="value"><?= $stats['total_pedidos'] ?? 0 ?></div>
+                    <div class="stat-sub">realizados en la plataforma</div>
                 </div>
-                <div class="est-card">
-                    <div class="est-card-icon" style="background:#27AE6015;color:#27AE60;"><i class="fas fa-check-circle"></i></div>
-                    <div class="est-val"><?= $stats['entregados'] ?? 0 ?></div>
-                    <div class="est-lbl">Entregados</div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <i class="fas fa-check-circle" style="color:#27AE60"></i>
+                        <h3>Entregados</h3>
+                    </div>
+                    <div class="value"><?= $stats['entregados'] ?? 0 ?></div>
+                    <div class="stat-sub">pedidos recibidos</div>
                 </div>
-                <div class="est-card">
-                    <div class="est-card-icon" style="background:#F39C1215;color:#F39C12;"><i class="fas fa-spinner"></i></div>
-                    <div class="est-val"><?= $stats['en_proceso'] ?? 0 ?></div>
-                    <div class="est-lbl">En proceso</div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <i class="fas fa-spinner" style="color:#F39C12"></i>
+                        <h3>En proceso</h3>
+                    </div>
+                    <div class="value"><?= $stats['en_proceso'] ?? 0 ?></div>
+                    <div class="stat-sub">pendientes de entrega</div>
                 </div>
-                <div class="est-card">
-                    <div class="est-card-icon" style="background:#8E44AD15;color:#8E44AD;"><i class="fas fa-dollar-sign"></i></div>
-                    <div class="est-val">Bs. <?= number_format($stats['total_gastado'] ?? 0, 2) ?></div>
-                    <div class="est-lbl">Total gastado</div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <i class="fas fa-dollar-sign" style="color:#8E44AD"></i>
+                        <h3>Total gastado</h3>
+                    </div>
+                    <div class="value">Bs. <?= number_format($stats['total_gastado'] ?? 0, 2) ?></div>
+                    <div class="stat-sub">en todos tus pedidos</div>
                 </div>
             </div>
 
@@ -228,6 +231,7 @@
 
     <script>
         (function(){
+            // Sidebar toggle
             var toggle = document.getElementById('sidebarToggle');
             var sidebar = document.getElementById('sidebar');
             var overlay = document.getElementById('overlay');
@@ -248,18 +252,20 @@
                 });
             }
 
+            // User dropdown
             var userTrigger = document.getElementById('userTrigger');
             var userDropdown = document.getElementById('userDropdown');
             if (userTrigger && userDropdown) {
                 userTrigger.addEventListener('click', function(e) {
                     e.stopPropagation();
-                    userDropdown.classList.toggle('open');
+                    userDropdown.classList.toggle('active');
                 });
                 document.addEventListener('click', function() {
-                    userDropdown.classList.remove('open');
+                    userDropdown.classList.remove('active');
                 });
             }
 
+            // Theme toggle
             var themeToggle = document.getElementById('themeToggle');
             var html = document.documentElement;
             if (themeToggle) {
@@ -270,6 +276,16 @@
                     var next = current === 'dark' ? 'light' : 'dark';
                     html.setAttribute('data-theme', next);
                     localStorage.setItem('jacha_theme', next);
+                });
+            }
+
+            // Menu button fallback
+            var menuBtn = document.getElementById('menuBtn');
+            if (menuBtn && !toggle) {
+                menuBtn.addEventListener('click', function() {
+                    var s = document.getElementById('sidebar');
+                    var o = document.getElementById('overlay');
+                    if (s) { s.classList.toggle('open'); if (o) o.classList.toggle('active'); }
                 });
             }
         })();

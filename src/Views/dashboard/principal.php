@@ -7,247 +7,121 @@
     <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/assets/images/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=4">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=5">
     <style>
-        .stat-card, .negocio-card, .btn-create, .btn-visitar, .btn-admin { border-radius:4px !important; }
-        .negocio-tag { border-radius:3px !important; }
-        .btn-create { border-radius:4px !important; }
         .greeting-wrap { overflow:hidden; transition:all 0.6s ease; }
-        .greeting-text { font-family:Georgia,var(--font-serif);font-size:26px;font-weight:400;color:var(--text);margin-bottom:20px;min-height:1.2em; }
+        .greeting-text { font-family:Georgia,var(--font-serif);font-size:22px;font-weight:400;color:var(--text);margin-bottom:12px;min-height:1.2em; }
         .greeting-text .glow-char { display:inline-block;animation:glowPulseWhite 2.5s ease-in-out infinite;text-shadow:0 0 8px rgba(255,255,255,0.15),0 0 20px rgba(255,255,255,0.25),0 0 40px rgba(255,255,255,0.15),0 0 80px rgba(255,255,255,0.08); }
         .greeting-text .cursor { display:inline-block;width:3px;height:1.1em;background:var(--text);margin-left:3px;animation:blink 0.8s step-end infinite;vertical-align:text-bottom; }
         .greeting-text.fade-out { opacity:0;transform:translateY(-12px);transition:all 0.8s ease; }
-        @keyframes glowPulse { 0%,100%{text-shadow:0 0 20px rgba(255,255,255,0.15)} 50%{text-shadow:0 0 40px rgba(255,255,255,0.35)} }
         @keyframes glowPulseWhite { 0%,100%{text-shadow:0 0 8px rgba(255,255,255,0.15),0 0 20px rgba(255,255,255,0.25),0 0 40px rgba(255,255,255,0.15),0 0 80px rgba(255,255,255,0.08)} 50%{text-shadow:0 0 12px rgba(255,255,255,0.3),0 0 30px rgba(255,255,255,0.4),0 0 60px rgba(255,255,255,0.2),0 0 120px rgba(255,255,255,0.1)} }
         @keyframes blink { 50%{opacity:0} }
-        .stat-card .value { text-shadow:0 0 30px rgba(255,255,255,0.05); }
-        .mini-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;max-width:720px;margin-left:auto;margin-right:auto; }
-        .mini-card { background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:20px;text-align:center; }
-        .mini-card .num { font-size:26px;font-weight:600;color:var(--text);font-family:Georgia,var(--font-serif); }
-        .mini-card .lbl { font-size:11px;color:var(--text-muted);margin-top:6px;text-transform:uppercase;letter-spacing:0.5px; }
-        .emprendedor-cards { display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:8px; }
-        .emp-card { background:var(--card-bg);border:1px solid var(--border);border-radius:4px;overflow:hidden;display:flex;flex-direction:column; }
-        .emp-card-img { width:100%;height:140px;object-fit:cover;display:block;border-bottom:1px solid var(--border);background:var(--card-bg); }
-        .emp-card-body { padding:24px;flex:1;display:flex;flex-direction:column; }
-        .emp-card-name { font-size:17px;font-weight:600;color:var(--text);font-family:Georgia,var(--font-serif);margin-bottom:4px; }
-        .emp-card-desc { font-size:12px;color:var(--text-dim);line-height:1.5;margin-bottom:16px;flex:1; }
-        .emp-card-meta { display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px; }
-        .emp-tag { display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:3px;font-size:10px;font-weight:500;background:rgba(128,128,128,0.06);color:var(--text-muted); }
-        .emp-tag i { font-size:10px; }
-        .emp-card-actions { display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px; }
-        .emp-btn { display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:3px;font-size:11px;font-weight:500;text-decoration:none;transition:all .15s;cursor:pointer;border:none;font-family:var(--font-sans); }
-        .emp-btn:hover { opacity:0.8; }
-        .emp-btn-primary { background:var(--text);color:var(--bg); }
-        .emp-btn-outline { background:transparent;border:1px solid var(--border);color:var(--text-muted); }
-        .emp-btn-outline:hover { border-color:var(--border-hi);color:var(--text); }
-        .admin-table { width:100%; border-collapse:collapse; }
-        .admin-table th, .admin-table td { vertical-align:middle; }
-        .admin-table th { text-align:left; padding:14px 20px; font-size:10px; font-weight:600; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.02); }
-        [data-theme="light"] .admin-table th { background:rgba(0,0,0,0.03); }
-        .admin-table td { padding:14px 20px; font-size:13px; color:var(--text); border-bottom:1px solid var(--border); }
-        .admin-table tbody tr:last-child td { border-bottom:none; }
-        .admin-table tbody tr:hover { background:rgba(255,255,255,0.015); }
-        [data-theme="light"] .admin-table tbody tr:hover { background:rgba(0,0,0,0.03); }
-        @media(max-width:768px){
-            .emprendedor-cards{grid-template-columns:1fr;}
-            .mini-grid{max-width:100%;}
-        }
-        .activity-list { background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:16px;margin-bottom:24px; }
-        .activity-item { display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-muted); }
-        .activity-item:last-child { border-bottom:none; }
-        .activity-dot { width:8px;height:8px;border-radius:50%;flex-shrink:0; }
-        .activity-item strong { color:var(--text);font-weight:500; }
-        .btn-square { display:inline-block;padding:10px 22px;background:var(--text);color:var(--bg);border-radius:4px;text-decoration:none;font-size:13px;font-weight:600; }
-        .btn-square:hover { }
         [data-theme="dark"] .greeting-text .glow-char { text-shadow:0 0 8px rgba(255,255,255,0.2),0 0 25px rgba(255,255,255,0.3),0 0 50px rgba(255,255,255,0.15),0 0 100px rgba(255,255,255,0.08); }
         [data-theme="light"] .greeting-text .glow-char { text-shadow:0 0 6px rgba(255,255,255,0.5),0 0 16px rgba(255,255,255,0.3),0 0 30px rgba(255,255,255,0.15); }
-        [data-theme="dark"] .cliente-greeting .glow-char { text-shadow:0 0 8px rgba(255,255,255,0.2),0 0 25px rgba(255,255,255,0.3),0 0 50px rgba(255,255,255,0.15),0 0 100px rgba(255,255,255,0.08); }
-        [data-theme="light"] .cliente-greeting .glow-char { text-shadow:0 0 6px rgba(255,255,255,0.5),0 0 16px rgba(255,255,255,0.3),0 0 30px rgba(255,255,255,0.15); }
         [data-theme="light"] .sidebar-header img { filter:brightness(0); }
-        .cliente-header { margin-bottom:24px; }
-        .cliente-greeting { font-family:Georgia,var(--font-serif);font-size:26px;font-weight:400;color:var(--text);min-height:2em; }
-        .cliente-greeting .glow-char { display:inline-block;animation:glowPulseWhite 2.5s ease-in-out infinite;text-shadow:0 0 8px rgba(255,255,255,0.15),0 0 20px rgba(255,255,255,0.25),0 0 40px rgba(255,255,255,0.15),0 0 80px rgba(255,255,255,0.08); }
-        .cliente-greeting .cursor { display:inline-block;width:3px;height:1.1em;background:var(--text);margin-left:3px;animation:blink 0.8s step-end infinite;vertical-align:text-bottom; }
-        .cliente-toolbar { margin-bottom:28px; }
-        .cliente-search { display:flex;align-items:center;gap:10px;background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:0 14px;margin-bottom:14px; }
-        .cliente-search:focus-within { border-color:var(--border-hi); }
-        .cliente-search i { color:var(--text-dim);font-size:14px; }
-        .cliente-search input { width:100%;background:none;border:none;padding:12px 0;font-size:14px;color:var(--text);outline:none;font-family:var(--font-sans); }
-        .cliente-search input::placeholder { color:var(--text-dim); }
-        .cliente-view-actions { display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap; }
-        .cliente-filtros { display:flex;gap:6px;flex-wrap:wrap; }
-        .filter-btn { padding:6px 16px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font-sans); }
-        .filter-btn:hover { border-color:var(--border-hi);color:var(--text);background:var(--glow); }
-        .filter-btn.active { background:var(--text);color:var(--bg);border-color:var(--text); }
-        .view-toggle { display:flex;gap:4px;background:var(--card-bg);border:1px solid var(--border);border-radius:3px;padding:3px; }
-        .view-btn { width:32px;height:28px;border:none;border-radius:3px;background:transparent;color:var(--text-dim);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center; }
-        .view-btn:hover { color:var(--text-muted); }
-        .view-btn.active { background:var(--surface3);color:var(--text); }
-        .negocios-container { width:100%; }
-        .negocios-grid.blocks-view { display:grid;grid-template-columns:repeat(3,1fr);gap:20px; }
-        .negocios-grid.list-view { display:flex;flex-direction:column;gap:12px; }
-        .negocios-grid.list-view .negocio-card { display:flex;flex-direction:row;overflow:hidden;border-radius:4px;border:1px solid var(--border);background:var(--card-bg); }
-        .negocios-grid.list-view .negocio-card:hover { border-color:var(--border-hi); }
-        .negocios-grid.list-view .negocio-link { display:flex;flex-direction:row;text-decoration:none;color:inherit;width:100%; }
-        .negocios-grid.list-view .negocio-portada,
-        .negocios-grid.list-view .negocio-preview { width:200px;min-height:150px;flex-shrink:0;border-radius:0;margin:0; }
-        .negocios-grid.list-view .negocio-preview .negocio-mockup { padding:12px; }
-        .negocios-grid.list-view .negocio-info { flex:1;padding:16px 20px;display:flex;flex-direction:column;justify-content:center; }
-        .negocios-grid.list-view .negocio-info h3 { font-size:17px;margin-bottom:4px; }
-        .negocios-grid.list-view .negocio-info p { font-size:13px;margin-bottom:8px; }
-        .negocio-card .negocio-link { text-decoration:none;color:inherit;display:block; }
-        .negocio-portada { width:100%;height:160px;background-size:cover;background-position:center;border-bottom:1px solid var(--border); }
-        .negocios-grid.blocks-view .negocio-card { cursor:pointer;background:var(--card-bg);border:1px solid var(--border);border-radius:4px;overflow:hidden; }
-        .negocios-grid.blocks-view .negocio-card:hover { border-color:var(--border-hi); }
-        .negocios-grid.hero-view { display:flex;flex-direction:column;gap:20px; }
-        .negocios-grid.hero-view .negocio-card { border-radius:4px;overflow:hidden;border:1px solid var(--border);background:var(--card-bg);position:relative; }
-        .negocios-grid.hero-view .negocio-card:hover { border-color:var(--border-hi); }
-        .negocios-grid.hero-view .negocio-link { position:relative; }
-        .negocios-grid.hero-view .negocio-portada,
-        .negocios-grid.hero-view .negocio-preview { width:100%;height:360px;border-radius:0;margin:0;border-bottom:none;position:relative; }
-        .negocios-grid.hero-view .negocio-preview { display:flex;align-items:center;justify-content:center; }
-        .negocios-grid.hero-view .negocio-preview .negocio-mockup { display:none; }
-        .negocios-grid.hero-view .negocio-info { position:absolute;bottom:0;left:0;right:0;padding:50px 28px 24px;background:linear-gradient(transparent,rgba(0,0,0,0.75)); }
-        .negocios-grid.hero-view .negocio-info h3 { font-size:26px;color:#fff;margin-bottom:4px;text-shadow:0 2px 8px rgba(0,0,0,0.3); }
-        .negocios-grid.hero-view .negocio-info p { font-size:14px;color:rgba(255,255,255,0.85);margin-bottom:12px;text-shadow:0 1px 4px rgba(0,0,0,0.2); }
-        .negocios-grid.hero-view .negocio-badges { display:flex;gap:8px;flex-wrap:wrap; }
-        .negocios-grid.hero-view .negocio-tag { background:rgba(255,255,255,0.18) !important;color:#fff !important;font-size:11px;padding:4px 16px;backdrop-filter:blur(4px); }
-        [data-theme="light"] .negocios-grid.hero-view .negocio-info { background:linear-gradient(transparent,rgba(0,0,0,0.7)); }
-        .negocios-grid.blocks-view .negocio-info { padding:16px 18px; }
-        .negocios-grid.blocks-view .negocio-info h3 { font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px; }
-        .negocios-grid.blocks-view .negocio-info p { font-size:12px;color:var(--text-muted);margin-bottom:10px;line-height:1.5; }
-        .negocios-grid.blocks-view .negocio-badges { display:flex;gap:6px;flex-wrap:wrap; }
-        .negocios-grid.blocks-view .negocio-tag { font-size:10px;padding:3px 10px;border-radius:3px;display:inline-block; }
-        .negocios-grid .negocio-item.hidden { display:none !important; }
-        .negocios-grid.list-view .negocio-item.hidden { display:none !important; }
-        .negocios-grid.hero-view .negocio-item.hidden { display:none !important; }
-        .empty-state { grid-column:1/-1; }
-        @media(max-width:900px){
-            .perfil-grid{grid-template-columns:1fr;}
-            .emprendedor-cards{grid-template-columns:1fr;}
-            .mini-grid{max-width:100%;}
-        }
-        @media(max-width:768px){
-            .negocios-grid.blocks-view { grid-template-columns:1fr; }
-            .negocios-grid.list-view .negocio-portada,
-            .negocios-grid.list-view .negocio-preview { width:120px;min-height:120px; }
-            .negocios-grid.list-view .negocio-info { padding:12px 14px; }
-            .negocios-grid.hero-view .negocio-portada,
-            .negocios-grid.hero-view .negocio-preview { height:240px; }
-            .negocios-grid.hero-view .negocio-info { padding:36px 18px 16px; }
-            .negocios-grid.hero-view .negocio-info h3 { font-size:20px; }
-            .negocios-grid.hero-view .negocio-info p { font-size:13px; }
-            .cliente-view-actions { flex-direction:column;align-items:stretch; }
-            .cliente-filtros { justify-content:center; }
-            .view-toggle { align-self:flex-end; }
-            .cliente-greeting { font-size:20px; }
-            .cliente-header { margin-bottom:16px; }
-            .cliente-toolbar { margin-bottom:20px; }
-            #admin-usuarios > div:last-child, #admin-negocios > div:last-child { overflow-x:auto; }
-            .admin-table th, .admin-table td { padding:10px 12px; white-space:nowrap; }
-            .stats-grid { grid-template-columns:repeat(2,1fr); }
-        }
-        @media(max-width:480px){
-            .admin-table td > div { flex-direction:column; }
-        }
-        @media(max-width:480px){
-            .negocios-grid.hero-view .negocio-portada,
-            .negocios-grid.hero-view .negocio-preview { height:200px; }
-            .negocios-grid.hero-view .negocio-info { padding:28px 14px 12px; }
-            .negocios-grid.hero-view .negocio-info h3 { font-size:17px; }
-            .negocios-grid.hero-view .negocio-info p { font-size:12px; }
-            .cliente-greeting { font-size:17px; }
-            .cliente-search input { font-size:13px; }
-            .filter-btn { font-size:11px;padding:5px 12px; }
-        }
     </style>
 </head>
 <body class="dashboard-body">
 
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <a href="<?= BASE_URL ?>/" class="logo-link" style="display:flex;align-items:center;gap:10px;">
-                <img src="<?= BASE_URL ?>/assets/images/logo_empresa.png" alt="Jacha" style="height:30px;width:auto;opacity:0.85;">
+        <div class="sidebar-brand">
+            <a href="<?= BASE_URL ?>/">
+                <img src="<?= BASE_URL ?>/assets/images/logo_empresa.png" alt="JachaMarket">
             </a>
         </div>
-        
+        <!-- Navigation -->
         <nav class="sidebar-nav">
+            <div class="s-label">Navegación</div>
             <a href="<?= BASE_URL ?>/dashboard" class="active"><i class="fas fa-th-large"></i> Dashboard</a>
+
             <?php if ($rol_activo === 'Administrador'): ?>
-                <a href="#admin-usuarios"><i class="fas fa-users"></i> Usuarios</a>
-                <a href="#admin-negocios"><i class="fas fa-store"></i> Negocios</a>
-                <a href="<?= BASE_URL ?>/admin/ventas"><i class="fas fa-chart-bar"></i> Ventas</a>
+            <div class="s-label">Administración</div>
+            <a href="#admin-usuarios"><i class="fas fa-users"></i> Usuarios</a>
+            <a href="#admin-negocios"><i class="fas fa-store"></i> Negocios</a>
+            <a href="<?= BASE_URL ?>/admin/ventas"><i class="fas fa-chart-bar"></i> Ventas</a>
+
             <?php elseif ($rol_activo === 'Emprendedor'): ?>
-                <a href="<?= BASE_URL ?>/productos"><i class="fas fa-cube"></i> Productos</a>
-                <a href="<?= BASE_URL ?>/categorias"><i class="fas fa-folder"></i> Categorías</a>
-                <a href="<?= BASE_URL ?>/gestionar-negocios"><i class="fas fa-store-alt"></i> Gestionar negocios</a>
-                <a href="<?= BASE_URL ?>/repartidores-admin"><i class="fas fa-truck"></i> Repartidores</a>
-                <a href="<?= BASE_URL ?>/plantillas-disponibles"><i class="fas fa-plus-circle"></i> Nuevo negocio</a>
-                <a href="<?= BASE_URL ?>/herramientas" style="margin-top:24px;border-top:1px solid var(--border);padding-top:16px;"><i class="fas fa-tools"></i> Herramientas</a>
-                <a href="<?= BASE_URL ?>/sucursales"><i class="fas fa-code-branch"></i> Sucursales</a>
-                <a href="<?= BASE_URL ?>/inventario"><i class="fas fa-boxes"></i> Inventario</a>
-                <a href="<?= BASE_URL ?>/kardex"><i class="fas fa-history"></i> Kardex</a>
+            <div class="s-label">Gestión</div>
+            <a href="<?= BASE_URL ?>/gestionar-negocios"><i class="fas fa-store-alt"></i> Mis negocios</a>
+            <a href="<?= BASE_URL ?>/productos"><i class="fas fa-cube"></i> Productos</a>
+            <a href="<?= BASE_URL ?>/categorias"><i class="fas fa-folder"></i> Categorías</a>
+            <a href="<?= BASE_URL ?>/inventario"><i class="fas fa-boxes"></i> Inventario</a>
+            <a href="<?= BASE_URL ?>/kardex"><i class="fas fa-history"></i> Kardex</a>
+            <a href="<?= BASE_URL ?>/sucursales"><i class="fas fa-code-branch"></i> Sucursales</a>
+            <div class="s-label">Operaciones</div>
+            <a href="<?= BASE_URL ?>/repartidores-admin"><i class="fas fa-truck"></i> Repartidores</a>
+            <a href="<?= BASE_URL ?>/plantillas-disponibles"><i class="fas fa-plus-circle"></i> Nuevo negocio</a>
+            <a href="<?= BASE_URL ?>/herramientas"><i class="fas fa-tools"></i> Herramientas</a>
+
             <?php elseif ($rol_activo === 'Cliente'): ?>
-                <a href="<?= BASE_URL ?>/mis-estadisticas"><i class="fas fa-chart-pie"></i> Mis estad&iacute;sticas</a>
-                <a href="<?= BASE_URL ?>/mis-pedidos"><i class="fas fa-shopping-bag"></i> Mis pedidos</a>
+            <div class="s-label">Mi cuenta</div>
+            <a href="<?= BASE_URL ?>/mis-estadisticas"><i class="fas fa-chart-pie"></i> Mis estadísticas</a>
+            <a href="<?= BASE_URL ?>/mis-pedidos"><i class="fas fa-shopping-bag"></i> Mis pedidos</a>
+
             <?php elseif ($rol_activo === 'Repartidor'): ?>
-                <a href="<?= BASE_URL ?>/dashboard-repartidor"><i class="fas fa-truck"></i> Entregas</a>
+            <div class="s-label">Entregas</div>
+            <a href="<?= BASE_URL ?>/dashboard-repartidor"><i class="fas fa-truck"></i> Entregas</a>
             <?php endif; ?>
-            <a href="<?= BASE_URL ?>/logout" style="margin-top: 40px;"><i class="fas fa-sign-out-alt"></i> Cerrar sesi&oacute;n</a>
         </nav>
+
+        <!-- Footer -->
+        <div class="sidebar-footer">
+            <a href="<?= BASE_URL ?>/logout" class="s-logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+        </div>
     </div>
     
     <div class="overlay" id="overlay"></div>
     
     <div class="main-content">
-         <div class="top-bar">
-            <div style="display:flex;align-items:center;gap:8px">
+        <!-- Top Bar Premium -->
+        <div class="top-bar">
+            <div class="top-bar-left">
                 <button class="menu-btn" id="menuBtn">&#9776;</button>
             </div>
-            <div style="display:flex;align-items:center;gap:0">
-                <a href="#" style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;color:var(--text-muted);text-decoration:none;transition:color .2s;margin-right:4px" title="Notificaciones" onclick="alert('Próximamente: centro de notificaciones');return false">
-                    <i class="fas fa-bell" style="font-size:15px"></i>
-                    <span style="position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:#9a5a5a;display:none"></span>
-                </a>
+            <div class="top-bar-right">
+                <button class="notif-btn" id="notifBtn" title="Notificaciones">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-badge" id="notifBadge">3</span>
+                </button>
                 <button class="theme-toggle" id="themeToggle" title="Cambiar tema">&#9790;</button>
                 <div class="user-dropdown" id="userDropdown">
-                <div class="user-trigger" id="userTrigger">
-                    <span class="user-name"><?= htmlspecialchars($usuario['nombre']) ?></span>
-                    <div class="user-avatar">
-                        <?php if ($avatar_usuario): ?>
-                            <img src="<?= BASE_URL ?>/<?= $avatar_usuario ?>" alt="Avatar">
-                        <?php else: ?>
-                            <?= $inicial ?>
-                        <?php endif; ?>
+                    <div class="user-trigger" id="userTrigger">
+                        <span class="user-name"><?= htmlspecialchars($usuario['nombre']) ?></span>
+                        <div class="user-avatar">
+                            <?php if ($avatar_usuario): ?>
+                                <img src="<?= BASE_URL ?>/<?= $avatar_usuario ?>" alt="Avatar">
+                            <?php else: ?>
+                                <?= $inicial ?>
+                            <?php endif; ?>
+                        </div>
+                        <span class="dropdown-arrow">&#9660;</span>
                     </div>
-                    <span style="font-size:8px;color:var(--text-dim);line-height:1;">▼</span>
-                </div>
-                <div class="dropdown-menu">
-                    <?php if (count($roles_usuario) > 1): ?>
-                    <div style="padding:8px 16px 4px;font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border)">Elegir rol</div>
-                        <?php foreach ($roles_usuario as $rol):
-                            $color_rol = match($rol['nombre_rol']) {
-                                'Cliente' => '#3498DB',
-                                'Emprendedor' => '#2ECC71',
-                                'Repartidor' => '#F39C12',
-                                'Administrador' => '#E74C3C',
-                                default => '#888'
-                            };
-                            $display_name = $rol['nombre_rol'] === 'Emprendedor' ? 'Vendedor' : $rol['nombre_rol'];
-                        ?>
-                        <a href="<?= BASE_URL ?>/dashboard?cambiar_rol=<?= $rol['nombre_rol'] ?>" class="dropdown-item" style="<?= $rol_activo === $rol['nombre_rol'] ? 'color:var(--text);font-weight:600' : '' ?>">
-                            <span style="width:8px;height:8px;border-radius:50%;display:inline-block;background:<?= $color_rol ?>"></span>
-                            <?= $display_name ?>
-                            <?php if ($rol_activo === $rol['nombre_rol']): ?><span style="margin-left:auto;font-size:10px">✓</span><?php endif; ?>
-                        </a>
-                        <?php endforeach; ?>
-                    <div style="border-top:1px solid var(--border);margin:4px 0"></div>
-                    <?php endif; ?>
-                    <a href="<?= BASE_URL ?>/perfil" class="dropdown-item">Mi Perfil</a>
-                    <a href="<?= BASE_URL ?>/logout" class="dropdown-item logout">Cerrar sesi&oacute;n</a>
+                    <div class="dropdown-menu">
+                        <?php if (count($roles_usuario) > 1): ?>
+                        <div class="dropdown-header">Cambiar rol</div>
+                            <?php foreach ($roles_usuario as $rol):
+                                $color_rol = match($rol['nombre_rol']) {
+                                    'Cliente' => '#4facfe',
+                                    'Emprendedor' => '#2ecc71',
+                                    'Repartidor' => '#f39c12',
+                                    'Administrador' => '#e74c3c',
+                                    default => '#888'
+                                };
+                                $display_name = $rol['nombre_rol'] === 'Emprendedor' ? 'Vendedor' : $rol['nombre_rol'];
+                            ?>
+                            <a href="<?= BASE_URL ?>/dashboard?cambiar_rol=<?= $rol['nombre_rol'] ?>" class="dropdown-item<?= $rol_activo === $rol['nombre_rol'] ? ' active-role' : '' ?>">
+                                <span class="role-dot" style="background:<?= $color_rol ?>"></span>
+                                <?= $display_name ?>
+                                <?php if ($rol_activo === $rol['nombre_rol']): ?><span class="check-mark">&#10003;</span><?php endif; ?>
+                            </a>
+                            <?php endforeach; ?>
+                        <div class="dropdown-divider"></div>
+                        <?php endif; ?>
+                        <a href="<?= BASE_URL ?>/perfil" class="dropdown-item"><i class="fas fa-user"></i> Mi Perfil</a>
+                        <a href="<?= BASE_URL ?>/logout" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesi&oacute;n</a>
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
         
         <div class="dash-container">
@@ -263,18 +137,63 @@
             
             <?php if ($rol_activo !== 'Cliente' && $rol_activo !== 'Administrador'): ?>
             <div class="stats-grid">
-                <div class="stat-card"><h3>Negocios activos</h3><div class="value"><?= $stats['total_negocios'] ?></div></div>
-                <div class="stat-card"><h3>Usuarios</h3><div class="value"><?= $stats['total_usuarios'] ?></div></div>
-                <div class="stat-card"><h3>Productos</h3><div class="value"><?= $stats['total_productos'] ?></div></div>
-                <div class="stat-card"><h3>Valoraci&oacute;n</h3><div class="value">4.8</div></div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <i class="fas fa-store"></i>
+                        <h3>Negocios activos</h3>
+                    </div>
+                    <div class="value"><?= $stats['total_negocios'] ?></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <i class="fas fa-users"></i>
+                        <h3>Usuarios</h3>
+                    </div>
+                    <div class="value"><?= $stats['total_usuarios'] ?></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <i class="fas fa-cube"></i>
+                        <h3>Productos</h3>
+                    </div>
+                    <div class="value"><?= $stats['total_productos'] ?></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <i class="fas fa-star"></i>
+                        <h3>Valoraci&oacute;n</h3>
+                    </div>
+                    <div class="value">4.8</div>
+                </div>
             </div>
             <?php endif; ?>
             
             <?php if ($rol_activo === 'Emprendedor'): ?>
-                <div class="mini-grid">
-                    <div class="mini-card"><div class="num"><?= count($mis_negocios) ?></div><div class="lbl">Mis negocios</div></div>
-                    <div class="mini-card"><div class="num"><?= $stats['total_productos'] ?></div><div class="lbl">Productos totales</div></div>
-                    <div class="mini-card"><div class="num"><?= $stats['total_usuarios'] ?></div><div class="lbl">Usuarios en plataforma</div></div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <i class="fas fa-store-alt"></i>
+                            <h3>Mis negocios</h3>
+                        </div>
+                        <div class="value"><?= count($mis_negocios) ?></div>
+                        <div class="stat-sub">emprendimientos propios</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <i class="fas fa-boxes"></i>
+                            <h3>Productos totales</h3>
+                        </div>
+                        <div class="value"><?= $stats['total_productos'] ?></div>
+                        <div class="stat-sub">en todos tus negocios</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <i class="fas fa-users"></i>
+                            <h3>Usuarios plataforma</h3>
+                        </div>
+                        <div class="value"><?= $stats['total_usuarios'] ?></div>
+                        <div class="stat-sub">registrados en el sistema</div>
+                    </div>
                 </div>
                 <div class="section-header-row">
                     <h2>Mis negocios</h2>
@@ -396,65 +315,162 @@
                 $repStats = (new \App\Repositories\PedidoRepository())->getStatsRepartidor((int)$usuario['id']);
             ?>
                 <div class="stats-grid" style="max-width:800px;margin-left:auto;margin-right:auto">
-                    <div class="stat-card"><h3>Pedidos hoy</h3><div class="value"><?= $repStats['entregas_hoy'] ?? 0 ?></div></div>
-                    <div class="stat-card"><h3>Ganancias hoy</h3><div class="value">Bs. <?= number_format($repStats['ganancias_hoy'] ?? 0, 2) ?></div></div>
-                    <div class="stat-card"><h3>Activos</h3><div class="value"><?= $repStats['activos'] ?? 0 ?></div></div>
-                    <div class="stat-card"><h3>Entregas totales</h3><div class="value"><?= $repStats['entregas_totales'] ?? 0 ?></div></div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <i class="fas fa-shopping-bag"></i>
+                            <h3>Pedidos hoy</h3>
+                        </div>
+                        <div class="value"><?= $repStats['entregas_hoy'] ?? 0 ?></div>
+                        <div class="stat-sub">entregas completadas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <i class="fas fa-coins"></i>
+                            <h3>Ganancias hoy</h3>
+                        </div>
+                        <div class="value">Bs. <?= number_format($repStats['ganancias_hoy'] ?? 0, 2) ?></div>
+                        <div class="stat-sub">ingresos del d&iacute;a</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <i class="fas fa-motorcycle"></i>
+                            <h3>Activos</h3>
+                        </div>
+                        <div class="value"><?= $repStats['activos'] ?? 0 ?></div>
+                        <div class="stat-sub">entregas en curso</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <i class="fas fa-history"></i>
+                            <h3>Entregas totales</h3>
+                        </div>
+                        <div class="value"><?= $repStats['entregas_totales'] ?? 0 ?></div>
+                        <div class="stat-sub">historial completo</div>
+                    </div>
                 </div>
-                <div style="text-align:center;margin-top:24px">
-                    <a href="<?= BASE_URL ?>/dashboard-repartidor" style="display:inline-flex;align-items:center;gap:10px;padding:14px 36px;background:var(--text);color:var(--bg);border-radius:4px;text-decoration:none;font-size:14px;font-weight:600">
+                <div style="text-align:center;margin-top:28px">
+                    <a href="<?= BASE_URL ?>/dashboard-repartidor" style="display:inline-flex;align-items:center;gap:10px;padding:14px 36px;background:var(--text);color:var(--bg);border-radius:10px;text-decoration:none;font-size:14px;font-weight:600;transition:all 0.2s">
                         <i class="fas fa-motorcycle"></i> Ir a panel de entregas <i class="fas fa-arrow-right" style="font-size:11px"></i>
                     </a>
                 </div>
 
             <?php elseif ($rol_activo === 'Administrador'): ?>
-                <!-- Statistics -->
-                <div class="stats-grid" style="margin-bottom:32px">
-                    <div class="stat-card"><h3>Usuarios</h3><div class="value"><?= $admin_stats['usuarios'] ?? 0 ?></div></div>
-                    <div class="stat-card"><h3>Negocios</h3><div class="value"><?= $admin_stats['negocios'] ?? 0 ?></div></div>
-                    <div class="stat-card"><h3>Productos</h3><div class="value"><?= $admin_stats['productos'] ?? 0 ?></div></div>
-                    <div class="stat-card"><h3>Pedidos</h3><div class="value"><?= $admin_stats['pedidos'] ?? 0 ?></div></div>
+                <!-- Metrics Row 1: Platform scale -->
+                <div class="stats-grid">
+                    <div class="stat-card card-earnings">
+                        <div class="stat-header">
+                            <i class="fas fa-crown"></i>
+                            <h3>Ganancia total</h3>
+                        </div>
+                        <div class="value">Bs. <?= number_format($margen_widget['ganancia_total'] ?? 0, 2) ?></div>
+                        <div class="stat-sub">beneficio neto acumulado</div>
+                    </div>
+                    <div class="stat-card card-users">
+                        <div class="stat-header">
+                            <i class="fas fa-users"></i>
+                            <h3>Usuarios totales</h3>
+                        </div>
+                        <div class="value"><?= $admin_stats['usuarios'] ?? 0 ?></div>
+                        <div class="stat-sub">registrados en la plataforma</div>
+                    </div>
+                    <div class="stat-card card-businesses">
+                        <div class="stat-header">
+                            <i class="fas fa-store"></i>
+                            <h3>Negocios activos</h3>
+                        </div>
+                        <div class="value"><?= $admin_stats['negocios'] ?? 0 ?></div>
+                        <div class="stat-sub">emprendimientos registrados</div>
+                    </div>
+                    <div class="stat-card card-orders">
+                        <div class="stat-header">
+                            <i class="fas fa-shopping-bag"></i>
+                            <h3>Pedidos</h3>
+                        </div>
+                        <div class="value"><?= $admin_stats['pedidos'] ?? 0 ?></div>
+                        <div class="stat-sub">realizados en la plataforma</div>
+                    </div>
                 </div>
 
-                <!-- Margenes widget -->
-                <div class="stats-grid" style="margin-bottom:32px;grid-template-columns:repeat(4,1fr)">
-                    <div class="stat-card"><h3>Prod. con costo</h3><div class="value"><?= (int)($margen_widget['total_con_costo'] ?? 0) ?></div></div>
-                    <div class="stat-card"><h3>Margen promedio</h3><div class="value" style="color:<?= ($margen_widget['margen_promedio'] ?? 0) >= 30 ? '#6b8f71' : (($margen_widget['margen_promedio'] ?? 0) >= 10 ? '#9a8a4a' : '#9a5a5a') ?>"><?= number_format($margen_widget['margen_promedio'] ?? 0, 1) ?>%</div></div>
-                    <div class="stat-card"><h3>Ganancia total</h3><div class="value">Bs. <?= number_format($margen_widget['ganancia_total'] ?? 0, 2) ?></div></div>
-                    <div class="stat-card"><h3>Mejor margen</h3><div class="value" style="font-size:14px;line-height:1.3"><?= htmlspecialchars(!empty($margen_widget['mejor_producto']) ? substr($margen_widget['mejor_producto'], 0, 20) : '—') ?><?= !empty($margen_widget['mejor_producto']) ? '<br><span style="font-size:11px;color:#6b8f71">' . number_format($margen_widget['mejor_margen'] ?? 0, 1) . '%</span>' : '' ?></div></div>
+                <!-- Metrics Row 2: Product details & profitability -->
+                <div class="stats-grid">
+                    <div class="stat-card card-margin">
+                        <div class="stat-header">
+                            <i class="fas fa-trophy"></i>
+                            <h3>Mejor margen</h3>
+                        </div>
+                        <div class="value">
+                            <?php if (!empty($margen_widget['mejor_producto'])): ?>
+                                <?= htmlspecialchars(substr($margen_widget['mejor_producto'], 0, 22)) ?>
+                                <span><?= number_format($margen_widget['mejor_margen'] ?? 0, 1) ?>% de margen</span>
+                            <?php else: ?>
+                                <span style="font-family:var(--font-sans);font-size:12px;font-weight:400;opacity:0.5">Sin datos</span>
+                            <?php endif; ?>
+                        </div>
+                        <div class="stat-sub">producto más rentable</div>
+                    </div>
+                    <div class="stat-card card-avgmargin">
+                        <div class="stat-header">
+                            <i class="fas fa-percent" style="color:<?= ($margen_widget['margen_promedio'] ?? 0) >= 30 ? '#6b8f71' : (($margen_widget['margen_promedio'] ?? 0) >= 10 ? '#b8a050' : '#c97c6b') ?>"></i>
+                            <h3>Margen promedio</h3>
+                        </div>
+                        <div class="value" style="color:<?= ($margen_widget['margen_promedio'] ?? 0) >= 30 ? '#6b8f71' : (($margen_widget['margen_promedio'] ?? 0) >= 10 ? '#b8a050' : '#c97c6b') ?>"><?= number_format($margen_widget['margen_promedio'] ?? 0, 1) ?>%</div>
+                        <div class="stat-sub">rentabilidad promedio</div>
+                    </div>
+                    <div class="stat-card card-products">
+                        <div class="stat-header">
+                            <i class="fas fa-cube"></i>
+                            <h3>Productos</h3>
+                        </div>
+                        <div class="value"><?= $admin_stats['productos'] ?? 0 ?></div>
+                        <div class="stat-sub">en catálogo</div>
+                    </div>
+                    <div class="stat-card card-cost">
+                        <div class="stat-header">
+                            <i class="fas fa-coins"></i>
+                            <h3>Productos con costo</h3>
+                        </div>
+                        <div class="value"><?= (int)($margen_widget['total_con_costo'] ?? 0) ?></div>
+                        <div class="stat-sub">con precio_costo registrado</div>
+                    </div>
                 </div>
 
                 <!-- Nav actions -->
-                <div class="section-header-row" style="margin-bottom:24px">
-                    <a href="<?= BASE_URL ?>/admin/ventas" style="display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:var(--text);color:var(--bg);border-radius:4px;text-decoration:none;font-size:13px;font-weight:600">
-                        <i class="fas fa-chart-line"></i> Ver Ventas
-                    </a>
-                    <form method="POST" action="<?= BASE_URL ?>/admin/seed-demo" style="margin:0">
-                        <button type="submit" style="display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:var(--text);color:var(--bg);border-radius:4px;border:none;font-size:13px;font-weight:600;cursor:pointer">
-                            <i class="fas fa-database"></i> Cargar Datos Base
-                        </button>
-                    </form>
+                <div class="section-header-row">
+                    <div style="display:flex;gap:12px;flex-wrap:wrap">
+                        <a href="<?= BASE_URL ?>/admin/ventas" style="display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:var(--text);color:var(--bg);border-radius:10px;text-decoration:none;font-size:13px;font-weight:600;transition:all 0.2s">
+                            <i class="fas fa-chart-line"></i> Ver Ventas
+                        </a>
+                        <form method="POST" action="<?= BASE_URL ?>/admin/seed-demo" style="margin:0">
+                            <button type="submit" style="display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:var(--surface2);color:var(--text);border-radius:10px;border:1px solid var(--border);font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s">
+                                <i class="fas fa-database"></i> Cargar Datos Base
+                            </button>
+                        </form>
+                    </div>
                 </div>
 
                 <!-- Messages -->
                 <?php if (isset($_SESSION['admin_msg'])): ?>
-                    <div style="background:rgba(107,143,113,0.1);border-left:3px solid #6b8f71;padding:14px 18px;border-radius:4px;margin-bottom:24px;font-size:13px;color:#6b8f71;display:flex;align-items:center;gap:10px">
-                        <i class="fas fa-check-circle"></i> <?= htmlspecialchars($_SESSION['admin_msg']) ?><?php unset($_SESSION['admin_msg']); ?>
+                    <div class="msg-glass msg-success">
+                        <i class="fas fa-check-circle"></i>
+                        <?= htmlspecialchars($_SESSION['admin_msg']) ?><?php unset($_SESSION['admin_msg']); ?>
+                        <button class="msg-close" onclick="this.parentElement.remove()">&times;</button>
                     </div>
                 <?php endif; ?>
                 <?php if (isset($_SESSION['admin_error'])): ?>
-                    <div style="background:rgba(154,90,90,0.1);border-left:3px solid #9a5a5a;padding:14px 18px;border-radius:4px;margin-bottom:24px;font-size:13px;color:#9a5a5a;display:flex;align-items:center;gap:10px">
-                        <i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($_SESSION['admin_error']) ?><?php unset($_SESSION['admin_error']); ?>
+                    <div class="msg-glass msg-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <?= htmlspecialchars($_SESSION['admin_error']) ?><?php unset($_SESSION['admin_error']); ?>
+                        <button class="msg-close" onclick="this.parentElement.remove()">&times;</button>
                     </div>
                 <?php endif; ?>
 
                 <!-- Users -->
-                <div id="admin-usuarios" style="margin-bottom:40px">
+                <div id="admin-usuarios" style="margin-bottom:24px;animation:fadeInUp 0.6s var(--ease) both">
                     <div class="section-header-row">
                         <h2>Usuarios</h2>
-                        <span style="font-size:12px;color:var(--text-dim);background:var(--card-bg);padding:4px 12px;border-radius:3px;border:1px solid var(--border)"><?= count($admin_usuarios) ?> registrados</span>
+                        <span style="font-size:10px;color:var(--text-dim);background:var(--card-bg);padding:3px 12px;border-radius:6px;border:1px solid var(--border)"><?= count($admin_usuarios) ?> registrados</span>
                     </div>
-                    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:4px;overflow-x:auto">
+                    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;overflow-x:auto">
                         <table class="admin-table">
                             <thead>
                                 <tr>
@@ -475,26 +491,26 @@
                                     <td>
                                         <?php foreach (explode(',', $u['roles'] ?? '') as $rol):
                                             $rc = trim($rol);
-                                            $colorRol = $rc === 'Administrador' ? '#7a7a8a' : ($rc === 'Emprendedor' ? '#6b8f71' : ($rc === 'Cliente' ? '#8a8a6a' : '#7b7f8f'));
+                                            $colorRol = $rc === 'Administrador' ? '#7a7a8a' : ($rc === 'Emprendedor' ? '#6b8f71' : ($rc === 'Cliente' ? '#4facfe' : '#f39c12'));
                                         ?>
-                                            <span style="display:inline-block;padding:3px 10px;border-radius:3px;font-size:10px;font-weight:600;background:rgba(128,128,128,0.08);color:var(--text-muted);margin:2px 3px"><?= htmlspecialchars($rc) ?></span>
+                                            <span style="display:inline-block;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:600;background:<?= $colorRol ?>15;color:<?= $colorRol ?>;margin:2px 3px"><?= htmlspecialchars($rc) ?></span>
                                         <?php endforeach; ?>
                                     </td>
                                     <td>
                                         <?php $est = $u['estado'] ?? 'Activo'; ?>
-                                        <span style="display:inline-flex;align-items:center;gap:6px">
-                                            <span style="width:8px;height:8px;border-radius:50%;background:<?= strtolower($est) === 'activo' ? '#6b8f71' : (strtolower($est) === 'inactivo' ? '#9a5a5a' : '#9a8a4a') ?>"></span>
+                                        <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px">
+                                            <span style="width:7px;height:7px;border-radius:50%;background:<?= strtolower($est) === 'activo' ? '#6b8f71' : (strtolower($est) === 'inactivo' ? '#e74c3c' : '#f39c12') ?>"></span>
                                             <?= $est ?>
                                         </span>
                                     </td>
                                     <td>
                                         <div style="display:flex;gap:6px;flex-wrap:wrap">
-                                            <a href="<?= BASE_URL ?>/admin/editar-usuario?id=<?= $u['id_usuario'] ?>" style="display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:3px;font-size:11px;font-weight:600;background:var(--surface2);color:var(--text);text-decoration:none">
+                                            <a href="<?= BASE_URL ?>/admin/editar-usuario?id=<?= $u['id_usuario'] ?>" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:11px;font-weight:500;background:var(--surface2);color:var(--text);text-decoration:none;border:1px solid var(--border);transition:all 0.2s">
                                                 <i class="fas fa-pen" style="font-size:10px"></i> Editar
                                             </a>
                                             <?php if ($u['email'] !== 'mikypramos2905@gmail.com'): ?>
                                             <form method="POST" action="<?= BASE_URL ?>/admin/eliminar-usuario" onsubmit="return confirm('Eliminar usuario <?= htmlspecialchars($u['nombres']) ?>?');" style="margin:0">
-                                                <button type="submit" style="display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:3px;font-size:11px;font-weight:600;background:rgba(154,90,90,0.08);color:#9a5a5a;border:1px solid rgba(154,90,90,0.15);cursor:pointer">
+                                                <button type="submit" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:11px;font-weight:500;background:rgba(231,76,60,0.08);color:#e74c3c;border:1px solid rgba(231,76,60,0.15);cursor:pointer;transition:all 0.2s">
                                                     <i class="fas fa-trash" style="font-size:10px"></i> Eliminar
                                                 </button>
                                             </form>
@@ -509,12 +525,12 @@
                 </div>
 
                 <!-- Businesses -->
-                <div id="admin-negocios" style="margin-bottom:40px">
+                <div id="admin-negocios" style="margin-bottom:40px;animation:fadeInUp 0.6s var(--ease) both;animation-delay:0.1s">
                     <div class="section-header-row">
                         <h2>Negocios</h2>
-                        <span style="font-size:12px;color:var(--text-dim);background:var(--card-bg);padding:4px 12px;border-radius:3px;border:1px solid var(--border)"><?= count($admin_negocios) ?> registrados</span>
+                        <span style="font-size:11px;color:var(--text-dim);background:var(--card-bg);padding:4px 14px;border-radius:20px;border:1px solid var(--border)"><?= count($admin_negocios) ?> registrados</span>
                     </div>
-                    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:4px;overflow-x:auto">
+                    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:14px;overflow-x:auto">
                         <table class="admin-table">
                             <thead>
                                 <tr>
@@ -522,7 +538,7 @@
                                     <th>Nombre comercial</th>
                                     <th>Propietario</th>
                                     <th>Estado</th>
-                                    <th>Accion</th>
+                                    <th>Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -533,15 +549,15 @@
                                     <td style="color:var(--text-muted);font-size:12px"><?= htmlspecialchars($n['propietario_email']) ?></td>
                                     <td>
                                         <?php $estN = $n['estado'] ?? 'Pendiente'; ?>
-                                        <span style="display:inline-flex;align-items:center;gap:6px">
-                                            <span style="width:8px;height:8px;border-radius:50%;background:<?= strtolower($estN) === 'aprobado' ? '#6b8f71' : (strtolower($estN) === 'pendiente' ? '#9a8a4a' : '#9a5a5a') ?>"></span>
+                                        <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px">
+                                            <span style="width:7px;height:7px;border-radius:50%;background:<?= strtolower($estN) === 'aprobado' ? '#6b8f71' : (strtolower($estN) === 'pendiente' ? '#f39c12' : '#e74c3c') ?>"></span>
                                             <?= $estN ?>
                                         </span>
                                     </td>
                                     <td>
                                         <form method="POST" action="<?= BASE_URL ?>/admin/eliminar-negocio" onsubmit="return confirm('Eliminar negocio <?= htmlspecialchars($n['nombre_comercial']) ?>?');" style="margin:0">
                                             <input type="hidden" name="id" value="<?= $n['id_emprendimiento'] ?>">
-                                            <button type="submit" style="display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:3px;font-size:11px;font-weight:600;background:rgba(154,90,90,0.08);color:#9a5a5a;border:1px solid rgba(154,90,90,0.15);cursor:pointer">
+                                            <button type="submit" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:11px;font-weight:500;background:rgba(231,76,60,0.08);color:#e74c3c;border:1px solid rgba(231,76,60,0.15);cursor:pointer;transition:all 0.2s">
                                                 <i class="fas fa-trash" style="font-size:10px"></i> Eliminar
                                             </button>
                                         </form>
@@ -554,17 +570,22 @@
                 </div>
 
                 <!-- Reset -->
-                <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:32px;margin-bottom:32px">
-                    <h3 style="font-family:Georgia,var(--font-serif);font-size:22px;font-weight:500;color:var(--text);margin-bottom:6px">
-                        <i class="fas fa-exclamation-triangle" style="color:#9a5a5a;margin-right:10px"></i>Reiniciar base de datos
-                    </h3>
-                    <p style="font-size:13px;color:var(--text-dim);margin-bottom:20px;line-height:1.6">
-                        Esto eliminara TODOS los datos (negocios, productos, pedidos, usuarios no-admin) y reconstruira la base de datos desde cero. El super administrador se mantendra. <strong style="color:#9a5a5a">Esta accion no se puede deshacer.</strong>
-                    </p>
-                    <form method="POST" action="<?= BASE_URL ?>/admin/reiniciar-bd" onsubmit="return confirm('ESTAS ABSOLUTAMENTE SEGURO? Se borraran todos los datos. Escribe RESET para confirmar.');">
+                <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:32px;animation:fadeInUp 0.6s var(--ease) both;animation-delay:0.2s">
+                    <div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap">
+                        <div style="flex:1;min-width:200px">
+                            <h3 style="font-family:Georgia,var(--font-serif);font-size:20px;font-weight:500;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:10px">
+                                <span style="width:32px;height:32px;border-radius:8px;background:rgba(231,76,60,0.1);color:#e74c3c;display:flex;align-items:center;justify-content:center;font-size:16px"><i class="fas fa-exclamation-triangle"></i></span>
+                                Reiniciar base de datos
+                            </h3>
+                            <p style="font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:0">
+                                Esto eliminará TODOS los datos (negocios, productos, pedidos, usuarios no-admin) y reconstruirá la base de datos desde cero. El super administrador se mantendrá. <strong style="color:#e74c3c">Esta acción no se puede deshacer.</strong>
+                            </p>
+                        </div>
+                    </div>
+                    <form method="POST" action="<?= BASE_URL ?>/admin/reiniciar-bd" onsubmit="return confirm('ESTAS ABSOLUTAMENTE SEGURO? Se borrarán todos los datos. Escribe RESET para confirmar.');" style="margin-top:20px">
                         <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-                            <input type="text" name="confirmar" placeholder="Escribe RESET para confirmar" required style="background:var(--card-bg);border:1px solid var(--border);border-radius:3px;padding:12px 16px;color:var(--text);font-size:13px;width:200px;outline:none">
-                            <button type="submit" style="display:inline-flex;align-items:center;gap:8px;background:rgba(154,90,90,0.08);color:#9a5a5a;border:1px solid rgba(154,90,90,0.15);padding:12px 28px;border-radius:3px;font-size:13px;font-weight:600;cursor:pointer">
+                            <input type="text" name="confirmar" placeholder="Escribe RESET para confirmar" required style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;padding:12px 16px;color:var(--text);font-size:13px;width:100%;max-width:240px;outline:none;transition:border 0.2s">
+                            <button type="submit" style="display:inline-flex;align-items:center;gap:8px;background:rgba(231,76,60,0.1);color:#e74c3c;border:1px solid rgba(231,76,60,0.2);padding:12px 24px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s">
                                 <i class="fas fa-radiation"></i> Reiniciar base de datos
                             </button>
                         </div>
@@ -574,10 +595,61 @@
         </div>
     </div>
     
+    <!-- Notification Panel -->
+    <div class="notif-panel-overlay" id="notifOverlay"></div>
+    <div class="notif-panel" id="notifPanel">
+        <div class="notif-panel-header">
+            <h3><i class="fas fa-bell" style="font-size:16px;margin-right:8px;opacity:0.6"></i>Notificaciones</h3>
+            <button class="notif-panel-close" id="notifClose">&times;</button>
+        </div>
+        <div class="notif-panel-body">
+            <?php
+            $notifications = [];
+            $notifColors = [
+                'user' => ['color' => '#7eb8da', 'icon' => 'fa-user-plus'],
+                'store' => ['color' => '#b8a9d4', 'icon' => 'fa-store'],
+                'product' => ['color' => '#d4a8b8', 'icon' => 'fa-cube'],
+                'order' => ['color' => '#8fc4b8', 'icon' => 'fa-shopping-bag'],
+                'margin' => ['color' => '#d4c078', 'icon' => 'fa-crown'],
+                'system' => ['color' => '#a8b4d4', 'icon' => 'fa-shield'],
+            ];
+            $items = [
+                ['type' => 'user', 'title' => 'Nuevo usuario registrado', 'desc' => 'Un nuevo emprendedor se unió a la plataforma', 'time' => 'Hace 2 horas'],
+                ['type' => 'store', 'title' => 'Nuevo negocio creado', 'desc' => 'Un emprendedor abrió una nueva tienda online', 'time' => 'Hace 5 horas'],
+                ['type' => 'order', 'title' => 'Nuevo pedido recibido', 'desc' => 'Un cliente realizó una compra en la plataforma', 'time' => 'Hace 8 horas'],
+                ['type' => 'product', 'title' => 'Producto destacado', 'desc' => 'Se agregaron nuevos productos al catálogo', 'time' => 'Hace 1 día'],
+                ['type' => 'margin', 'title' => 'Margen de ganancia actualizado', 'desc' => 'El margen promedio de la plataforma se ha recalculado', 'time' => 'Hace 2 días'],
+                ['type' => 'system', 'title' => 'Sistema optimizado', 'desc' => 'Se aplicaron mejoras de rendimiento en la base de datos', 'time' => 'Hace 3 días'],
+            ];
+            $notifCount = count($items);
+            ?>
+            <?php if ($notifCount > 0): ?>
+                <?php foreach ($items as $i => $item):
+                    $c = $notifColors[$item['type']] ?? $notifColors['system'];
+                ?>
+                <div class="notif-item" style="animation-delay:<?= $i * 0.05 ?>s">
+                    <i class="fas <?= $c['icon'] ?>" style="color:<?= $c['color'] ?>"></i>
+                    <div class="notif-item-content">
+                        <div class="notif-item-title"><?= $item['title'] ?></div>
+                        <div class="notif-item-desc"><?= $item['desc'] ?></div>
+                        <div class="notif-item-time"><?= $item['time'] ?></div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="notif-empty">
+                    <i class="fas fa-bell"></i>
+                    <p>No hay notificaciones nuevas</p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
     <span class="watermark"><img src="<?= BASE_URL ?>/assets/images/logo1.jpg" alt=""></span>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Menu & Sidebar
             var menuBtn = document.getElementById('menuBtn');
             var sidebar = document.getElementById('sidebar');
             var overlay = document.getElementById('overlay');
@@ -598,6 +670,7 @@
                 });
             });
             
+            // User dropdown
             var userDropdown = document.getElementById('userDropdown');
             var userTrigger = document.getElementById('userTrigger');
             if (userTrigger) {
@@ -605,6 +678,7 @@
                 document.addEventListener('click', function() { userDropdown.classList.remove('active'); });
             }
 
+            // Theme toggle
             var themeToggle = document.getElementById('themeToggle');
             var currentTheme = localStorage.getItem('jacha_theme') || 'dark';
             document.documentElement.setAttribute('data-theme', currentTheme);
@@ -619,11 +693,32 @@
                 });
             }
 
-            // Typewriter greeting - different per role
+            // Notification panel
+            var notifBtn = document.getElementById('notifBtn');
+            var notifPanel = document.getElementById('notifPanel');
+            var notifOverlay = document.getElementById('notifOverlay');
+            var notifClose = document.getElementById('notifClose');
+            var notifBadge = document.getElementById('notifBadge');
+            if (notifBtn && notifPanel) {
+                notifBtn.addEventListener('click', function() {
+                    notifPanel.classList.add('open');
+                    notifOverlay.classList.add('active');
+                    if (notifBadge) { notifBadge.classList.remove('show', 'pulse'); }
+                });
+                function closeNotif() {
+                    notifPanel.classList.remove('open');
+                    notifOverlay.classList.remove('active');
+                }
+                if (notifClose) notifClose.addEventListener('click', closeNotif);
+                if (notifOverlay) notifOverlay.addEventListener('click', closeNotif);
+            }
+            if (notifBadge) { notifBadge.classList.add('show', 'pulse'); }
+
+            // Typewriter greeting with 3-second auto-collapse
             var greeting = document.getElementById('greetingText');
             var clienteGreeting = document.getElementById('clienteGreeting');
             
-            function typeWriterGreeting(el, text, fadeOut) {
+            function typeWriterGreeting(el, text, isAdmin) {
                 if (!el) return;
                 el.innerHTML = '';
                 el.style.whiteSpace = 'pre-wrap';
@@ -640,14 +735,15 @@
                             el.appendChild(span);
                         }
                         i++;
-                        var delay = 30 + Math.random() * 30;
-                        if (ch === ' ' || ch === ',') delay = 50;
+                        var delay = 25 + Math.random() * 25;
+                        if (ch === ' ' || ch === ',') delay = 40;
                         setTimeout(typeChar, delay);
                     } else {
                         var cursor = document.createElement('span');
                         cursor.className = 'cursor';
                         el.appendChild(cursor);
-                        if (fadeOut) {
+                        if (isAdmin) {
+                            // After typing finishes, wait 3 seconds then collapse
                             setTimeout(function() {
                                 cursor.style.display = 'none';
                                 el.classList.add('fade-out');
@@ -657,20 +753,20 @@
                                         wrap.style.maxHeight = '0';
                                         wrap.style.marginBottom = '0';
                                         wrap.style.padding = '0';
+                                        wrap.style.opacity = '0';
                                     }
                                 }, 800);
-                            }, 1800);
+                            }, 3000);
                         }
                     }
                 }
-                setTimeout(typeChar, 400);
+                setTimeout(typeChar, 300);
             }
             
             if (clienteGreeting) {
                 typeWriterGreeting(clienteGreeting, 'Descubre los mejores negocios bolivianos y apoya el talento local', false);
             } else if (greeting) {
-                var frase = 'Potencia tu emprendimiento en el mundo digital';
-                typeWriterGreeting(greeting, frase, false);
+                typeWriterGreeting(greeting, 'Potencia tu emprendimiento en el mundo digital', true);
             }
         });
     </script>
