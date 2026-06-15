@@ -7,7 +7,7 @@
     <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/assets/images/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=4">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=9">
     <style>
         /* Pedido cards - repartidor style matching the new design */
         .rep-section-title {
@@ -199,7 +199,7 @@
             </div>
 
             <div class="stats-grid">
-                <div class="stat-card">
+                <div class="stat-card card-orders">
                     <div class="stat-header">
                         <i class="fas fa-shopping-bag"></i>
                         <h3>Pedidos hoy</h3>
@@ -207,7 +207,7 @@
                     <div class="value"><?= $stats['entregas_hoy'] ?? 0 ?></div>
                     <div class="stat-sub">entregas completadas</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card card-earnings">
                     <div class="stat-header">
                         <i class="fas fa-coins"></i>
                         <h3>Ganancias hoy</h3>
@@ -215,7 +215,7 @@
                     <div class="value">Bs. <?= number_format($stats['ganancias_hoy'] ?? 0, 2) ?></div>
                     <div class="stat-sub"><?= $stats['entregas_totales'] ?? 0 ?> entregas totales</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card card-margin">
                     <div class="stat-header">
                         <i class="fas fa-motorcycle"></i>
                         <h3>Activos</h3>
@@ -223,7 +223,7 @@
                     <div class="value"><?= $stats['activos'] ?? 0 ?></div>
                     <div class="stat-sub">entregas en curso</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card card-cost">
                     <div class="stat-header">
                         <i class="fas fa-history"></i>
                         <h3>Ganancias totales</h3>

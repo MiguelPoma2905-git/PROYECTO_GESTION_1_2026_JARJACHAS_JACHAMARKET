@@ -7,17 +7,20 @@
     <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/assets/images/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=5">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=9">
     <style>
         .greeting-wrap { overflow:hidden; transition:all 0.6s ease; }
         .greeting-text { font-family:Georgia,var(--font-serif);font-size:22px;font-weight:400;color:var(--text);margin-bottom:12px;min-height:1.2em; }
-        .greeting-text .glow-char { display:inline-block;animation:glowPulseWhite 2.5s ease-in-out infinite;text-shadow:0 0 8px rgba(255,255,255,0.15),0 0 20px rgba(255,255,255,0.25),0 0 40px rgba(255,255,255,0.15),0 0 80px rgba(255,255,255,0.08); }
-        .greeting-text .cursor { display:inline-block;width:3px;height:1.1em;background:var(--text);margin-left:3px;animation:blink 0.8s step-end infinite;vertical-align:text-bottom; }
+        .greeting-text .glow-char, .cliente-greeting .glow-char { animation:glowPulseWhite 2.5s ease-in-out infinite;text-shadow:0 0 8px rgba(79,172,254,0.08),0 0 24px rgba(79,172,254,0.12),0 0 48px rgba(79,172,254,0.06); }
+        .cliente-greeting .glow-char { text-shadow:0 0 12px rgba(79,172,254,0.1),0 0 32px rgba(79,172,254,0.15),0 0 64px rgba(79,172,254,0.08),0 0 120px rgba(79,172,254,0.04); }
+        .greeting-text .cursor, .cliente-greeting .cursor { display:inline-block;width:3px;height:1.1em;background:var(--text);margin-left:3px;animation:blink 0.8s step-end infinite;vertical-align:text-bottom; }
         .greeting-text.fade-out { opacity:0;transform:translateY(-12px);transition:all 0.8s ease; }
-        @keyframes glowPulseWhite { 0%,100%{text-shadow:0 0 8px rgba(255,255,255,0.15),0 0 20px rgba(255,255,255,0.25),0 0 40px rgba(255,255,255,0.15),0 0 80px rgba(255,255,255,0.08)} 50%{text-shadow:0 0 12px rgba(255,255,255,0.3),0 0 30px rgba(255,255,255,0.4),0 0 60px rgba(255,255,255,0.2),0 0 120px rgba(255,255,255,0.1)} }
+        @keyframes glowPulseWhite { 0%,100%{text-shadow:0 0 8px rgba(79,172,254,0.08),0 0 24px rgba(79,172,254,0.12),0 0 48px rgba(79,172,254,0.06)} 50%{text-shadow:0 0 16px rgba(79,172,254,0.2),0 0 40px rgba(79,172,254,0.25),0 0 80px rgba(79,172,254,0.12),0 0 140px rgba(79,172,254,0.06)} }
         @keyframes blink { 50%{opacity:0} }
-        [data-theme="dark"] .greeting-text .glow-char { text-shadow:0 0 8px rgba(255,255,255,0.2),0 0 25px rgba(255,255,255,0.3),0 0 50px rgba(255,255,255,0.15),0 0 100px rgba(255,255,255,0.08); }
-        [data-theme="light"] .greeting-text .glow-char { text-shadow:0 0 6px rgba(255,255,255,0.5),0 0 16px rgba(255,255,255,0.3),0 0 30px rgba(255,255,255,0.15); }
+        [data-theme="dark"] .cliente-greeting .glow-char { text-shadow:0 0 12px rgba(79,172,254,0.15),0 0 36px rgba(79,172,254,0.2),0 0 72px rgba(79,172,254,0.1),0 0 140px rgba(79,172,254,0.05); }
+        [data-theme="light"] .cliente-greeting .glow-char { text-shadow:0 0 8px rgba(79,172,254,0.15),0 0 24px rgba(79,172,254,0.1),0 0 48px rgba(79,172,254,0.05); }
+        [data-theme="dark"] .greeting-text .glow-char { text-shadow:0 0 8px rgba(255,255,255,0.15),0 0 24px rgba(255,255,255,0.2),0 0 48px rgba(255,255,255,0.1); }
+        [data-theme="light"] .greeting-text .glow-char { text-shadow:0 0 6px rgba(255,255,255,0.4),0 0 16px rgba(255,255,255,0.2); }
         [data-theme="light"] .sidebar-header img { filter:brightness(0); }
     </style>
 </head>
@@ -137,28 +140,28 @@
             
             <?php if ($rol_activo !== 'Cliente' && $rol_activo !== 'Administrador'): ?>
             <div class="stats-grid">
-                <div class="stat-card">
+                <div class="stat-card card-businesses">
                     <div class="stat-header">
                         <i class="fas fa-store"></i>
                         <h3>Negocios activos</h3>
                     </div>
                     <div class="value"><?= $stats['total_negocios'] ?></div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card card-users">
                     <div class="stat-header">
                         <i class="fas fa-users"></i>
                         <h3>Usuarios</h3>
                     </div>
                     <div class="value"><?= $stats['total_usuarios'] ?></div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card card-products">
                     <div class="stat-header">
                         <i class="fas fa-cube"></i>
                         <h3>Productos</h3>
                     </div>
                     <div class="value"><?= $stats['total_productos'] ?></div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card card-earnings">
                     <div class="stat-header">
                         <i class="fas fa-star"></i>
                         <h3>Valoraci&oacute;n</h3>
@@ -170,7 +173,7 @@
             
             <?php if ($rol_activo === 'Emprendedor'): ?>
                 <div class="stats-grid">
-                    <div class="stat-card">
+                    <div class="stat-card card-businesses">
                         <div class="stat-header">
                             <i class="fas fa-store-alt"></i>
                             <h3>Mis negocios</h3>
@@ -178,7 +181,7 @@
                         <div class="value"><?= count($mis_negocios) ?></div>
                         <div class="stat-sub">emprendimientos propios</div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card card-products">
                         <div class="stat-header">
                             <i class="fas fa-boxes"></i>
                             <h3>Productos totales</h3>
@@ -186,7 +189,7 @@
                         <div class="value"><?= $stats['total_productos'] ?></div>
                         <div class="stat-sub">en todos tus negocios</div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card card-users">
                         <div class="stat-header">
                             <i class="fas fa-users"></i>
                             <h3>Usuarios plataforma</h3>
@@ -236,25 +239,31 @@
                 <?php endif; ?>
                 
             <?php elseif ($rol_activo === 'Cliente'): ?>
-                <div class="cliente-header">
-                    <div class="cliente-greeting" id="clienteGreeting"></div>
-                </div>
-                <div class="cliente-toolbar">
-                    <div class="cliente-search">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="searchInput" placeholder="Buscar negocios por nombre..." oninput="filtrarNegocios()">
-                    </div>
-                    <div class="cliente-view-actions">
-                        <div class="cliente-filtros" id="filtrosContainer">
-                            <button class="filter-btn active" data-filter="all">Todos</button>
-                            <button class="filter-btn" data-filter="recientes">Visitas Recientemente</button>
-                            <button class="filter-btn" data-filter="valorados">Mejor valorados</button>
-                            <button class="filter-btn" data-filter="nuevos">Nuevos</button>
+                <div class="cliente-hero">
+                    <div class="cliente-hero-glow"></div>
+                    <div class="cliente-hero-glow-2"></div>
+                    <div class="cliente-hero-content">
+
+                        <div class="cliente-greeting" id="clienteGreeting"></div>
+                        <p class="cliente-subtitle">Explora tiendas, descubre productos únicos y apoya el talento local</p>
+                        <div class="cliente-search-wrap">
+                            <div class="cliente-search">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="searchInput" placeholder="Busca tu pr\u00f3xima tienda favorita..." oninput="filtrarNegocios()">
+                            </div>
                         </div>
-                        <div class="view-toggle">
-                            <button class="view-btn active" data-view="blocks" title="Vista bloques"><i class="fas fa-th-large"></i></button>
-                            <button class="view-btn" data-view="list" title="Vista lista"><i class="fas fa-list"></i></button>
-                            <button class="view-btn" data-view="hero" title="Vista heroica"><i class="fas fa-image"></i></button>
+                        <div class="cliente-toolbar">
+                            <div class="cliente-filtros" id="filtrosContainer">
+                                <button class="filter-btn active" data-filter="all">Todos</button>
+                                <button class="filter-btn" data-filter="recientes">Visitas Recientemente</button>
+                                <button class="filter-btn" data-filter="valorados">Mejor valorados</button>
+                                <button class="filter-btn" data-filter="nuevos">Nuevos</button>
+                            </div>
+                            <div class="view-toggle">
+                                <button class="view-btn active" data-view="blocks" title="Vista bloques"><i class="fas fa-th-large"></i></button>
+                                <button class="view-btn" data-view="list" title="Vista lista"><i class="fas fa-list"></i></button>
+                                <button class="view-btn" data-view="hero" title="Vista heroica"><i class="fas fa-image"></i></button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -269,7 +278,8 @@
                                 $tipografia = $negocio['tipografia'] ?? 'Inter';
                                 $telefono = $negocio['telefono'] ?? '';
                             ?>
-                            <div class="negocio-card negocio-item" data-nombre="<?= htmlspecialchars(strtolower($negocio['nombre_comercial'])) ?>" data-id="<?= $negocio['id_emprendimiento'] ?>" data-count="<?= $negocio['total_productos'] ?>">
+                            <div class="negocio-card negocio-item" style="--card-color:<?= $np ?>" data-nombre="<?= htmlspecialchars(strtolower($negocio['nombre_comercial'])) ?>" data-id="<?= $negocio['id_emprendimiento'] ?>" data-count="<?= $negocio['total_productos'] ?>">
+                                <div class="negocio-accent" style="background:<?= $np ?>"></div>
                                 <a href="<?= BASE_URL ?>/tienda/<?= $negocio['id_emprendimiento'] ?>" class="negocio-link">
                                     <?php if ($portada): ?>
                                     <div class="negocio-portada" style="background-image:url('<?= BASE_URL ?>/<?= $portada ?>')"></div>
@@ -302,10 +312,15 @@
                             </div>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <div class="empty-state" style="text-align:center;padding:60px 20px;color:var(--text-dim);grid-column:1/-1;background:var(--card-bg);border:1px solid var(--border);border-radius:4px">
-                                <i class="fas fa-store" style="font-size:40px;margin-bottom:12px;opacity:0.25;color:var(--text-muted)"></i>
-                                <p style="font-size:15px;margin-bottom:6px">No hay negocios disponibles a&uacute;n</p>
-                                <p style="font-size:12px;color:var(--text-muted)">Vuelve m&aacute;s tarde para descubrir nuevas tiendas</p>
+                            <div class="cliente-empty">
+                                <div class="cliente-empty-glow"></div>
+                                <div class="cliente-empty-content">
+                                    <div class="cliente-empty-icon">
+                                        <i class="fas fa-store"></i>
+                                    </div>
+                                    <h3>A&uacute;n no hay negocios disponibles</h3>
+                                    <p>Estamos sumando nuevos emprendimientos para ti. Vuelve pronto para descubrir tiendas &uacute;nicas.</p>
+                                </div>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -315,7 +330,7 @@
                 $repStats = (new \App\Repositories\PedidoRepository())->getStatsRepartidor((int)$usuario['id']);
             ?>
                 <div class="stats-grid" style="max-width:800px;margin-left:auto;margin-right:auto">
-                    <div class="stat-card">
+                    <div class="stat-card card-orders">
                         <div class="stat-header">
                             <i class="fas fa-shopping-bag"></i>
                             <h3>Pedidos hoy</h3>
@@ -323,7 +338,7 @@
                         <div class="value"><?= $repStats['entregas_hoy'] ?? 0 ?></div>
                         <div class="stat-sub">entregas completadas</div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card card-earnings">
                         <div class="stat-header">
                             <i class="fas fa-coins"></i>
                             <h3>Ganancias hoy</h3>
@@ -331,7 +346,7 @@
                         <div class="value">Bs. <?= number_format($repStats['ganancias_hoy'] ?? 0, 2) ?></div>
                         <div class="stat-sub">ingresos del d&iacute;a</div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card card-margin">
                         <div class="stat-header">
                             <i class="fas fa-motorcycle"></i>
                             <h3>Activos</h3>
@@ -339,7 +354,7 @@
                         <div class="value"><?= $repStats['activos'] ?? 0 ?></div>
                         <div class="stat-sub">entregas en curso</div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card card-cost">
                         <div class="stat-header">
                             <i class="fas fa-history"></i>
                             <h3>Entregas totales</h3>
@@ -764,7 +779,7 @@
             }
             
             if (clienteGreeting) {
-                typeWriterGreeting(clienteGreeting, 'Descubre los mejores negocios bolivianos y apoya el talento local', false);
+                typeWriterGreeting(clienteGreeting, 'Descubre el talento boliviano. Encuentra tu pr\u00f3ximo lugar favorito.', false);
             } else if (greeting) {
                 typeWriterGreeting(greeting, 'Potencia tu emprendimiento en el mundo digital', true);
             }

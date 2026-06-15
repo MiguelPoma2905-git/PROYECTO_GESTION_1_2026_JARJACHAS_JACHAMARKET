@@ -7,7 +7,7 @@
     <title>Mis Estadísticas - Jacha Marketplace</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=4">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=9">
     <style>
         .est-header { margin-bottom:28px; }
         .est-title { font-family:Georgia,var(--font-serif);font-size:24px;font-weight:400;color:var(--text);margin:0; }
@@ -124,33 +124,33 @@
             </div>
 
             <div class="stats-grid">
-                <div class="stat-card">
+                <div class="stat-card card-pedidos">
                     <div class="stat-header">
-                        <i class="fas fa-shopping-bag" style="color:#3498DB"></i>
+                        <i class="fas fa-shopping-bag"></i>
                         <h3>Pedidos totales</h3>
                     </div>
                     <div class="value"><?= $stats['total_pedidos'] ?? 0 ?></div>
                     <div class="stat-sub">realizados en la plataforma</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card card-entregados">
                     <div class="stat-header">
-                        <i class="fas fa-check-circle" style="color:#27AE60"></i>
+                        <i class="fas fa-check-circle"></i>
                         <h3>Entregados</h3>
                     </div>
                     <div class="value"><?= $stats['entregados'] ?? 0 ?></div>
                     <div class="stat-sub">pedidos recibidos</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card card-proceso">
                     <div class="stat-header">
-                        <i class="fas fa-spinner" style="color:#F39C12"></i>
+                        <i class="fas fa-spinner"></i>
                         <h3>En proceso</h3>
                     </div>
                     <div class="value"><?= $stats['en_proceso'] ?? 0 ?></div>
                     <div class="stat-sub">pendientes de entrega</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card card-gastado">
                     <div class="stat-header">
-                        <i class="fas fa-dollar-sign" style="color:#8E44AD"></i>
+                        <i class="fas fa-dollar-sign"></i>
                         <h3>Total gastado</h3>
                     </div>
                     <div class="value">Bs. <?= number_format($stats['total_gastado'] ?? 0, 2) ?></div>
