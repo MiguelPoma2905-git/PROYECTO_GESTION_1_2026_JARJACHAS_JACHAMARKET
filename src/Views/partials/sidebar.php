@@ -1,5 +1,6 @@
 <?php
 $current_page = $current_page ?? 'dashboard';
+$rol_activo = $rol_activo ?? '';
 ?>
 <div class="sidebar" id="sidebar">
     <div class="sidebar-brand">
