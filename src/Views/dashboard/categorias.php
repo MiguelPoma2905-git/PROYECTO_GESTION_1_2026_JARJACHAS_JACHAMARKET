@@ -7,7 +7,7 @@
     <title>Categorías - Jacha Marketplace</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=4">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=9">
     <style>
         :root { --radius: 4px; }
         .cat-layout { display:grid;grid-template-columns:1fr 400px;gap:24px;align-items:start;margin-top:16px }
@@ -64,27 +64,15 @@
     </style>
 </head>
 <body>
-<div class="sidebar">
-    <div class="logo"><a href="<?= BASE_URL ?>/dashboard">JACHA</a></div>
-    <a href="<?= BASE_URL ?>/dashboard"><i class="fas fa-th-large"></i> Principal</a>
-    <?php if ($es_admin): ?>
-    <a href="<?= BASE_URL ?>/admin"><i class="fas fa-shield-alt"></i> Administración</a>
-    <?php endif; ?>
-    <a href="<?= BASE_URL ?>/productos"><i class="fas fa-cube"></i> Productos</a>
-    <a href="<?= BASE_URL ?>/categorias" class="active"><i class="fas fa-folder"></i> Categorías</a>
-    <a href="<?= BASE_URL ?>/sucursales"><i class="fas fa-code-branch"></i> Sucursales</a>
-    <a href="<?= BASE_URL ?>/inventario"><i class="fas fa-boxes"></i> Inventario</a>
-    <a href="<?= BASE_URL ?>/kardex"><i class="fas fa-history"></i> Kardex</a>
-    <?php if ($es_admin): ?>
-    <a href="<?= BASE_URL ?>/plantillas"><i class="fas fa-paint-brush"></i> Plantillas</a>
-    <?php endif; ?>
-    <a href="<?= BASE_URL ?>/herramientas" style="margin-top:24px;border-top:1px solid var(--border);padding-top:16px;"><i class="fas fa-tools"></i> Herramientas</a>
-    <a href="<?= BASE_URL ?>/logout" style="margin-top:8px;"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
-</div>
+<?php $current_page = 'categorias'; ?>
+<?php include __DIR__ . '/../partials/sidebar.php'; ?>
 
 <div class="main-content">
     <div class="top-bar">
-        <h2><i class="fas fa-folder" style="margin-right:8px;color:var(--accent)"></i> Categorías</h2>
+        <div style="display:flex;align-items:center;gap:12px">
+            <button class="menu-btn" id="menuBtn">&#9776;</button>
+            <h2 style="margin:0"><i class="fas fa-folder" style="margin-right:8px;color:var(--accent)"></i> Categorías</h2>
+        </div>
         <div class="user-menu">
             <?php if (!empty($mis_negocios)): ?>
             <select class="role-selector" onchange="window.location.href='?id_emprendimiento='+this.value">
@@ -177,6 +165,19 @@ document.addEventListener('DOMContentLoaded', function() {
             var next = current === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', next);
             localStorage.setItem('jacha_theme', next);
+        });
+    }
+    var menuBtn = document.getElementById('menuBtn');
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('overlay');
+    if (menuBtn && sidebar && overlay) {
+        menuBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        });
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
         });
     }
 });

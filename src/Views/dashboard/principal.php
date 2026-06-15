@@ -21,59 +21,12 @@
         [data-theme="light"] .cliente-greeting .glow-char { text-shadow:0 0 8px rgba(79,172,254,0.15),0 0 24px rgba(79,172,254,0.1),0 0 48px rgba(79,172,254,0.05); }
         [data-theme="dark"] .greeting-text .glow-char { text-shadow:0 0 8px rgba(255,255,255,0.15),0 0 24px rgba(255,255,255,0.2),0 0 48px rgba(255,255,255,0.1); }
         [data-theme="light"] .greeting-text .glow-char { text-shadow:0 0 6px rgba(255,255,255,0.4),0 0 16px rgba(255,255,255,0.2); }
-        [data-theme="light"] .sidebar-header img { filter:brightness(0); }
     </style>
 </head>
 <body class="dashboard-body">
 
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-brand">
-            <a href="<?= BASE_URL ?>/">
-                <img src="<?= BASE_URL ?>/assets/images/logo_empresa.png" alt="JachaMarket">
-            </a>
-        </div>
-        <!-- Navigation -->
-        <nav class="sidebar-nav">
-            <div class="s-label">Navegación</div>
-            <a href="<?= BASE_URL ?>/dashboard" class="active"><i class="fas fa-th-large"></i> Dashboard</a>
-
-            <?php if ($rol_activo === 'Administrador'): ?>
-            <div class="s-label">Administración</div>
-            <a href="#admin-usuarios"><i class="fas fa-users"></i> Usuarios</a>
-            <a href="#admin-negocios"><i class="fas fa-store"></i> Negocios</a>
-            <a href="<?= BASE_URL ?>/admin/ventas"><i class="fas fa-chart-bar"></i> Ventas</a>
-
-            <?php elseif ($rol_activo === 'Emprendedor'): ?>
-            <div class="s-label">Gestión</div>
-            <a href="<?= BASE_URL ?>/gestionar-negocios"><i class="fas fa-store-alt"></i> Mis negocios</a>
-            <a href="<?= BASE_URL ?>/productos"><i class="fas fa-cube"></i> Productos</a>
-            <a href="<?= BASE_URL ?>/categorias"><i class="fas fa-folder"></i> Categorías</a>
-            <a href="<?= BASE_URL ?>/inventario"><i class="fas fa-boxes"></i> Inventario</a>
-            <a href="<?= BASE_URL ?>/kardex"><i class="fas fa-history"></i> Kardex</a>
-            <a href="<?= BASE_URL ?>/sucursales"><i class="fas fa-code-branch"></i> Sucursales</a>
-            <div class="s-label">Operaciones</div>
-            <a href="<?= BASE_URL ?>/repartidores-admin"><i class="fas fa-truck"></i> Repartidores</a>
-            <a href="<?= BASE_URL ?>/plantillas-disponibles"><i class="fas fa-plus-circle"></i> Nuevo negocio</a>
-            <a href="<?= BASE_URL ?>/herramientas"><i class="fas fa-tools"></i> Herramientas</a>
-
-            <?php elseif ($rol_activo === 'Cliente'): ?>
-            <div class="s-label">Mi cuenta</div>
-            <a href="<?= BASE_URL ?>/mis-estadisticas"><i class="fas fa-chart-pie"></i> Mis estadísticas</a>
-            <a href="<?= BASE_URL ?>/mis-pedidos"><i class="fas fa-shopping-bag"></i> Mis pedidos</a>
-
-            <?php elseif ($rol_activo === 'Repartidor'): ?>
-            <div class="s-label">Entregas</div>
-            <a href="<?= BASE_URL ?>/dashboard-repartidor"><i class="fas fa-truck"></i> Entregas</a>
-            <?php endif; ?>
-        </nav>
-
-        <!-- Footer -->
-        <div class="sidebar-footer">
-            <a href="<?= BASE_URL ?>/logout" class="s-logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
-        </div>
-    </div>
-    
-    <div class="overlay" id="overlay"></div>
+    <?php $current_page = 'dashboard'; ?>
+    <?php include __DIR__ . '/../partials/sidebar.php'; ?>
     
     <div class="main-content">
         <!-- Top Bar Premium -->

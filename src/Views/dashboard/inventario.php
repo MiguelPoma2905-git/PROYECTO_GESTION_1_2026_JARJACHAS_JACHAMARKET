@@ -7,7 +7,7 @@
     <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/assets/images/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=6">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=9">
     <style>
         .inv-wrap { max-width:1400px; margin:0 auto; padding:32px 24px; }
         .inv-header { margin-bottom:32px; }
@@ -82,28 +82,8 @@
 </head>
 <body class="dashboard-body">
 
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <a href="<?= BASE_URL ?>/" class="logo-link" style="display:flex;align-items:center;gap:10px;">
-            <img src="<?= BASE_URL ?>/assets/images/logo_empresa.png" alt="Jacha" style="height:30px;width:auto;opacity:0.85;">
-        </a>
-    </div>
-    <nav class="sidebar-nav">
-        <a href="<?= BASE_URL ?>/dashboard"><i class="fas fa-th-large"></i> Dashboard</a>
-        <a href="<?= BASE_URL ?>/productos"><i class="fas fa-cube"></i> Productos</a>
-        <a href="<?= BASE_URL ?>/categorias"><i class="fas fa-folder"></i> Categorías</a>
-        <a href="<?= BASE_URL ?>/gestionar-negocios"><i class="fas fa-store-alt"></i> Gestionar negocios</a>
-        <a href="<?= BASE_URL ?>/repartidores-admin"><i class="fas fa-truck"></i> Repartidores</a>
-        <a href="<?= BASE_URL ?>/plantillas-disponibles"><i class="fas fa-plus-circle"></i> Nuevo negocio</a>
-        <a href="<?= BASE_URL ?>/herramientas" style="margin-top:24px;border-top:1px solid var(--border);padding-top:16px;"><i class="fas fa-tools"></i> Herramientas</a>
-        <a href="<?= BASE_URL ?>/sucursales"><i class="fas fa-code-branch"></i> Sucursales</a>
-        <a href="<?= BASE_URL ?>/inventario" class="active"><i class="fas fa-boxes"></i> Inventario</a>
-        <a href="<?= BASE_URL ?>/kardex"><i class="fas fa-history"></i> Kardex</a>
-        <a href="<?= BASE_URL ?>/logout" style="margin-top:8px;"><i class="fas fa-sign-out-alt"></i> Cerrar sesion</a>
-    </nav>
-</div>
-
-<div class="overlay" id="overlay"></div>
+<?php $current_page = 'inventario'; ?>
+<?php include __DIR__ . '/../partials/sidebar.php'; ?>
 
 <div class="main-content">
     <div class="top-bar">

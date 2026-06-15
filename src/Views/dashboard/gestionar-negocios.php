@@ -7,10 +7,9 @@
     <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/assets/images/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=4">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=9">
     <style>
         .wrap { max-width:1200px; margin:0 auto; padding:32px 24px; }
-        [data-theme="light"] .sidebar-header img { filter:brightness(0); }
         .page-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; }
         .page-hdr h1 { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:500; color:var(--text); }
         .page-hdr .sub { font-size:13px; color:var(--text-muted); margin-top:2px; }
@@ -58,24 +57,8 @@
 </head>
 <body class="dashboard-body">
 
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <a href="<?= BASE_URL ?>/" class="logo-link" style="display:flex;align-items:center;gap:10px;">
-            <img src="<?= BASE_URL ?>/assets/images/logo_empresa.png" alt="Jacha" style="height:30px;width:auto;opacity:0.85;">
-        </a>
-    </div>
-    <nav class="sidebar-nav">
-        <a href="<?= BASE_URL ?>/dashboard"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9632;</span> Dashboard</a>
-        <a href="<?= BASE_URL ?>/productos"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9733;</span> Productos</a>
-        <a href="<?= BASE_URL ?>/gestionar-negocios" class="active"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9733;</span> Gestionar negocios</a>
-        <a href="<?= BASE_URL ?>/repartidores-admin"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9733;</span> Repartidores</a>
-        <a href="<?= BASE_URL ?>/plantillas-disponibles"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9733;</span> Nuevo negocio</a>
-        <a href="<?= BASE_URL ?>/perfil"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9881;</span> Mi Perfil</a>
-        <a href="<?= BASE_URL ?>/logout" style="margin-top:40px;"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#8592;</span> Cerrar sesi&oacute;n</a>
-    </nav>
-</div>
-
-<div class="overlay" id="overlay"></div>
+<?php $current_page = 'gestionar-negocios'; ?>
+<?php include __DIR__ . '/../partials/sidebar.php'; ?>
 
 <div class="main-content">
     <div class="top-bar">
