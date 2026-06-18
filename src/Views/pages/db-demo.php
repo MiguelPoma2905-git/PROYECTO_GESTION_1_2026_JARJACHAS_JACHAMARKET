@@ -6,7 +6,7 @@
     <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/assets/images/favicon.ico">
     <title>Demostración BD - Jacha Marketplace</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=6">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=10">
     <style>
         .header { border-bottom: 1px solid rgba(255,255,255,0.08); padding: 20px 32px; background: rgba(10,10,10,0.8); backdrop-filter: blur(16px); position: sticky; top: 0; z-index: 100; }
         .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }

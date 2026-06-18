@@ -7,7 +7,7 @@
     <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/assets/images/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=6">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=10">
     <style>
         .perfil-header { margin-bottom:40px; }
         .perfil-title { font-family:Georgia,var(--font-serif);font-size:28px;font-weight:400;color:var(--text);margin:0; }

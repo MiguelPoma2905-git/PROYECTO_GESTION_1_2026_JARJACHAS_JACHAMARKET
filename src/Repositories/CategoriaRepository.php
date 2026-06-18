@@ -175,17 +175,21 @@ class CategoriaRepository
 
     public function renderTreeHtml(array $tree, int $level = 0): string
     {
-        $html = '<ul' . ($level === 0 ? ' class="category-tree"' : '') . '>';
+        $html = '<ul' . ($level === 0 ? ' class="category-tree"' : ' class="cat-children"') . '>';
         foreach ($tree as $node) {
             $hasChildren = !empty($node['children']);
             $prodCount = $node['product_count'] ?? 0;
-            $badge = $prodCount > 0 ? ' <span class="prod-badge">' . $prodCount . ' productos</span>' : '';
-            $toggle = $hasChildren ? '<span class="tree-toggle" onclick="this.nextElementSibling.classList.toggle(\'hidden\')">▶</span>' : '<span class="tree-toggle tree-toggle-empty">▶</span>';
+            $badge = $prodCount > 0 ? ' <span class="prod-badge">' . $prodCount . '</span>' : '';
+            $toggle = $hasChildren ? '<span class="tree-toggle" onclick="this.classList.toggle(\'open\');var c=this.closest(\'li\').querySelector(\'>.cat-children\');if(c)c.classList.toggle(\'hidden\')">&#9654;</span>' : '<span class="tree-toggle tree-toggle-empty">&#9654;</span>';
             $html .= '<li>';
+            $html .= '<div class="cat-node">';
             $html .= $toggle;
             $html .= '<span class="cat-name">' . htmlspecialchars($node['nombre']) . $badge . '</span>';
-            $html .= ' <a href="?edit=' . $node['id_categoria'] . '" class="btn-sm">✏️</a>';
-            $html .= ' <a href="?delete=' . $node['id_categoria'] . '" class="btn-sm btn-danger" onclick="return confirm(\'¿Eliminar categoría?\')">🗑️</a>';
+            $html .= '<span class="cat-actions">';
+            $html .= '<a href="?edit=' . $node['id_categoria'] . '" class="cat-action edit" title="Editar"><i class="fas fa-pen"></i></a>';
+            $html .= '<a href="?delete=' . $node['id_categoria'] . '" class="cat-action delete" title="Eliminar" onclick="return confirm(\'¿Eliminar categoría?\')"><i class="fas fa-trash"></i></a>';
+            $html .= '</span>';
+            $html .= '</div>';
             if ($hasChildren) {
                 $html .= $this->renderTreeHtml($node['children'], $level + 1);
             }

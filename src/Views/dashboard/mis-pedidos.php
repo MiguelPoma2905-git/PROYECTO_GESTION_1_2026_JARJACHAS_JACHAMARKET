@@ -7,7 +7,7 @@
     <title>Mis Pedidos - Jacha Marketplace</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=4">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=10">
     <style>
         .mp-header { margin-bottom:28px; }
         .mp-title { font-family:Georgia,var(--font-serif);font-size:24px;font-weight:400;color:var(--text);margin:0; }
@@ -79,7 +79,7 @@
                 <button class="theme-toggle" id="themeToggle" title="Cambiar tema">&#9790;</button>
                 <div class="user-dropdown" id="userDropdown">
                     <div class="user-trigger" id="userTrigger">
-                        <span class="user-name"><?= htmlspecialchars($usuario['nombre']) ?></span>
+                        <span class="user-name"><?= htmlspecialchars($usuario['nombre'] ?? 'Usuario') ?></span>
                         <div class="user-avatar">
                             <?php if ($avatar_usuario): ?>
                                 <img src="<?= BASE_URL ?>/<?= $avatar_usuario ?>" alt="Avatar">

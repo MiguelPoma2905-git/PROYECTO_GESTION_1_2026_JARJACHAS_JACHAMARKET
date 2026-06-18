@@ -61,7 +61,7 @@ class DashboardController extends Controller
         $stmt = $db->query("SELECT COUNT(*) as total FROM productos WHERE estado = 'Publicado'");
         $stats['total_productos'] = (int)$stmt->fetch()['total'];
 
-        $inicial = strtoupper(substr($usuario['nombre'], 0, 1));
+        $inicial = strtoupper(substr($usuario['nombre'] ?? '', 0, 1));
 
         $rolesUsuario = $this->usuarioRepo->getRoles($usuario['id']);
         $success = isset($_GET['success']) ? 1 : 0;
@@ -147,7 +147,7 @@ class DashboardController extends Controller
         $_SESSION['rol_activo'] = 'Cliente';
         $rolActivo = 'Cliente';
 
-        $inicial = strtoupper(substr($usuario['nombre'], 0, 1));
+        $inicial = strtoupper(substr($usuario['nombre'] ?? '', 0, 1));
         $esAdmin = in_array('Administrador', $rolesNombres);
 
         $this->view('dashboard/cliente-estadisticas', [
@@ -185,7 +185,7 @@ class DashboardController extends Controller
 
         $avatarUsuario = $usuarioRepo->getAvatar($usuario['id']);
         $rolesUsuario = $usuarioRepo->getRoles($usuario['id']);
-        $inicial = strtoupper(substr($usuario['nombre'], 0, 1));
+        $inicial = strtoupper(substr($usuario['nombre'] ?? '', 0, 1));
         $esAdmin = in_array('Administrador', $rolesNombres);
         $_SESSION['rol_activo'] = 'Cliente';
         $rolActivo = 'Cliente';
@@ -208,12 +208,26 @@ class DashboardController extends Controller
         $this->requireAuth();
 
         $usuario = $_SESSION['usuario'];
+        $usuarioRepo = new UsuarioRepository();
+        $usuarioDb = $usuarioRepo->findById($usuario['id'] ?? $usuario['id_usuario'] ?? 0);
+        if (!$usuarioDb) {
+            session_destroy();
+            $this->redirect(BASE_URL . '/login');
+        }
+        $usuarioDb['id'] = $usuarioDb['id_usuario'];
+        $usuarioDb['nombre'] = trim(($usuarioDb['nombres'] ?? '') . ' ' . ($usuarioDb['apellidos'] ?? ''));
+        $_SESSION['usuario'] = $usuarioDb;
 
-        $rolesNombres = $this->usuarioRepo->getRolesNombres($usuario['id']);
+        $rolesNombres = $this->usuarioRepo->getRolesNombres($usuarioDb['id']);
         if (!in_array('Emprendedor', $rolesNombres)) {
             $_SESSION['perfil_error'] = 'Solo los emprendedores pueden crear negocios.';
             $this->redirect(BASE_URL . '/perfil');
         }
+
+        if (!isset($_SESSION['rol_activo']) || !in_array($_SESSION['rol_activo'], $rolesNombres)) {
+            $_SESSION['rol_activo'] = $rolesNombres[0] ?? 'Emprendedor';
+        }
+        $rolActivo = $_SESSION['rol_activo'];
 
         $plantillaId = $_GET['plantilla'] ?? 0;
         if (!$plantillaId) {
@@ -278,7 +292,8 @@ class DashboardController extends Controller
 
         $this->view('dashboard/crear-negocio', [
             'plantilla' => $plantilla,
-            'error' => $error
+            'error' => $error,
+            'rol_activo' => $rolActivo
         ]);
     }
 
@@ -424,7 +439,7 @@ class DashboardController extends Controller
         }
 
         $avatarUsuario = $this->usuarioRepo->getAvatar($usuario['id']);
-        $inicial = strtoupper(substr($usuario['nombre'], 0, 1));
+        $inicial = strtoupper(substr($usuario['nombre'] ?? '', 0, 1));
 
         $this->view('dashboard/repartidores-admin', [
             'usuario' => $usuario,
@@ -511,7 +526,7 @@ class DashboardController extends Controller
         $misNegocios = $this->emprendimientoRepo->findByPropietario($usuario['id']);
         $avatarUsuario = $this->usuarioRepo->getAvatar($usuario['id']);
         $rolesUsuario = $this->usuarioRepo->getRoles($usuario['id']);
-        $inicial = strtoupper(substr($usuario['nombre'], 0, 1));
+        $inicial = strtoupper(substr($usuario['nombre'] ?? '', 0, 1));
         $esAdmin = in_array('Administrador', $rolesNombres);
         $rolActivo = $_SESSION['rol_activo'] ?? $rolesNombres[0] ?? 'Cliente';
 

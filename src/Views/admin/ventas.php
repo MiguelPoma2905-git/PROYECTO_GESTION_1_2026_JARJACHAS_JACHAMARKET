@@ -7,54 +7,11 @@
     <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/assets/images/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=9">
-    <style>
-        .ventas-wrap { max-width:1400px; margin:0 auto; padding:32px 24px; }
-        .ventas-header { margin-bottom:32px; }
-        .ventas-header h1 { font-family:Georgia,var(--font-serif); font-size:28px; font-weight:400; color:var(--text); }
-        .ventas-header .sub { font-size:13px; color:var(--text-dim); margin-top:6px; }
-        .ventas-header .back { color:var(--text-muted); text-decoration:none; font-size:13px; transition:color .2s; }
-        .ventas-header .back:hover { color:var(--text); }
-
-        .resumen-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:32px; }
-        .res-card { background:var(--card-bg); border:1px solid var(--border); border-radius:4px; padding:24px; }
-        .res-card .num { font-size:30px; font-weight:700; color:var(--text); }
-        .res-card .lab { font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin-top:4px; }
-
-        .filtros { background:var(--card-bg); border:1px solid var(--border); border-radius:4px; padding:20px 24px; margin-bottom:24px; display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
-        .filtros label { font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.5px; font-weight:600; }
-        .filtros select { background:var(--card-bg); border:1px solid var(--border); border-radius:3px; padding:8px 12px; color:var(--text); font-size:13px; cursor:pointer; outline:none; }
-        .filtros select:focus { border-color:var(--border-hi); }
-        .filtros select option { background:var(--card-bg); color:var(--text); }
-        .btn-filtrar { background:var(--text); color:var(--bg); border:none; padding:8px 20px; border-radius:3px; font-size:12px; font-weight:600; cursor:pointer; }
-        .btn-limpiar { background:transparent; color:var(--text-muted); border:1px solid var(--border); padding:8px 20px; border-radius:3px; font-size:12px; cursor:pointer; text-decoration:none; }
-        .btn-limpiar:hover { color:var(--text); border-color:var(--border-hi); }
-
-        .table-wrap { background:var(--card-bg); border:1px solid var(--border); border-radius:4px; overflow:hidden; }
-        table { width:100%; border-collapse:collapse; }
-        thead th { text-align:left; padding:14px 20px; font-size:10px; font-weight:600; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.02); vertical-align:middle; }
-        [data-theme="light"] thead th { background:rgba(0,0,0,0.03); }
-        tbody tr { border-bottom:1px solid var(--border); }
-        tbody tr:last-child { border-bottom:none; }
-        tbody tr:hover { background:rgba(255,255,255,0.015); }
-        [data-theme="light"] tbody tr:hover { background:rgba(0,0,0,0.03); }
-        td { padding:14px 20px; font-size:13px; color:var(--text); vertical-align:middle; }
-        .badge-pl { display:inline-block; padding:3px 10px; border-radius:3px; font-size:10px; font-weight:600; margin:2px; }
-        .badge-pl.pagado, .badge-pl.completado { background:rgba(107,143,113,0.1); color:#6b8f71; }
-        .badge-pl.pendiente { background:rgba(154,138,74,0.1); color:#9a8a4a; }
-        .badge-pl.fallido { background:rgba(154,90,90,0.1); color:#9a5a5a; }
-        .badge-pl.En_Ruta, .badge-pl.enruta { background:rgba(107,127,143,0.1); color:#6b7f8f; }
-        .badge-pl.Entregado, .badge-pl.entregado { background:rgba(107,143,113,0.1); color:#6b8f71; }
-        .badge-pl.Preparando, .badge-pl.preparando { background:rgba(154,138,74,0.1); color:#9a8a4a; }
-        .empty { text-align:center; padding:60px 20px; color:var(--text-dim); }
-        .empty i { font-size:36px; margin-bottom:12px; opacity:0.3; color:var(--text-muted); }
-
-        @media(max-width:768px){ .resumen-grid{grid-template-columns:1fr} .filtros{flex-direction:column;align-items:stretch} .table-wrap{overflow-x:auto} table{font-size:12px} thead th,td{padding:10px 12px;white-space:nowrap} }
-    </style>
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=10">
 </head>
 <body class="dashboard-body">
 
-<?php $current_page = 'admin-ventas'; ?>
+<?php $current_page = 'admin-ventas'; $rol_activo = 'Administrador'; ?>
 <?php include __DIR__ . '/../partials/sidebar.php'; ?>
 
 <div class="main-content">
@@ -88,136 +45,187 @@
         </div>
     </div>
 
-    <div class="dash-container">
+    <div class="ventas-wrap">
 
-    <div class="ventas-header">
-        <h1><i class="fas fa-chart-line" style="margin-right:12px;color:var(--text-muted)"></i>Ventas</h1>
-    </div>
+        <div class="ventas-header">
+            <div class="ventas-header-top">
+                <h1>
+                    <span class="header-icon"><i class="fas fa-chart-line"></i></span>
+                    Ventas
+                </h1>
+                <a href="<?= BASE_URL ?>/dashboard" style="display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:8px;font-size:12px;color:var(--text-muted);text-decoration:none;border:1px solid var(--border);transition:all 0.2s">
+                    <i class="fas fa-arrow-left"></i> Volver al Dashboard
+                </a>
+            </div>
+            <div class="sub">Panel de monitoreo de ventas y transacciones de la plataforma</div>
+        </div>
 
-    <div class="resumen-grid">
-        <div class="res-card">
-            <div class="num"><?= $resumen['total_pedidos'] ?></div>
-            <div class="lab">Total pedidos</div>
+        <div class="ventas-resumen">
+            <div class="venta-res-card">
+                <div class="venta-res-top">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Total pedidos</span>
+                </div>
+                <div class="venta-res-num"><?= $resumen['total_pedidos'] ?></div>
+                <div class="venta-res-sub">pedidos registrados en la plataforma</div>
+            </div>
+            <div class="venta-res-card">
+                <div class="venta-res-top">
+                    <i class="fas fa-coins"></i>
+                    <span>Total ventas</span>
+                </div>
+                <div class="venta-res-num">Bs. <?= number_format($resumen['total_ventas'], 2) ?></div>
+                <div class="venta-res-sub">ingreso bruto acumulado</div>
+            </div>
+            <div class="venta-res-card">
+                <div class="venta-res-top">
+                    <i class="fas fa-eye"></i>
+                    <span>Mostrando</span>
+                </div>
+                <div class="venta-res-num" style="color:<?= count($pedidos) > 0 ? 'var(--text)' : 'var(--text-dim)' ?>"><?= count($pedidos) ?></div>
+                <div class="venta-res-sub">pedidos en la vista actual</div>
+            </div>
         </div>
-        <div class="res-card">
-            <div class="num">Bs. <?= number_format($resumen['total_ventas'], 2) ?></div>
-            <div class="lab">Total ventas</div>
-        </div>
-        <div class="res-card">
-            <div class="num" style="color:<?= count($pedidos) > 0 ? 'var(--text)' : 'var(--text-dim)' ?>"><?= count($pedidos) ?></div>
-            <div class="lab">Pedidos mostrados</div>
-        </div>
-    </div>
 
-    <form class="filtros" method="GET" action="<?= BASE_URL ?>/admin/ventas">
-        <div>
-            <label>Negocio</label>
-            <select name="id_emprendimiento">
-                <option value="">Todos los negocios</option>
-                <?php foreach ($negocios as $n): ?>
-                    <option value="<?= $n['id_emprendimiento'] ?>" <?= $negocio_filter == $n['id_emprendimiento'] ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($n['nombre_comercial']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <div>
-            <label>Plantilla</label>
-            <select name="id_plantilla">
-                <option value="">Todas las plantillas</option>
-                <?php
-                $vistas = [];
-                foreach ($negocios as $n) {
-                    $key = $n['id_plantilla'];
-                    if (!isset($vistas[$key])) {
-                        $vistas[$key] = $n['plantilla_nombre'];
+        <form class="ventas-filtros" method="GET" action="<?= BASE_URL ?>/admin/ventas">
+            <div class="filtro-group">
+                <label><i class="fas fa-store" style="margin-right:4px"></i> Negocio</label>
+                <select name="id_emprendimiento">
+                    <option value="">Todos los negocios</option>
+                    <?php foreach ($negocios as $n): ?>
+                        <option value="<?= $n['id_emprendimiento'] ?>" <?= $negocio_filter == $n['id_emprendimiento'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($n['nombre_comercial']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="filtro-group">
+                <label><i class="fas fa-palette" style="margin-right:4px"></i> Plantilla</label>
+                <select name="id_plantilla">
+                    <option value="">Todas las plantillas</option>
+                    <?php
+                    $vistas = [];
+                    foreach ($negocios as $n) {
+                        $key = $n['id_plantilla'];
+                        if (!isset($vistas[$key])) {
+                            $vistas[$key] = $n['plantilla_nombre'];
+                        }
                     }
-                }
-                foreach ($vistas as $id => $nom):
-                ?>
-                    <option value="<?= $id ?>" <?= $plantilla_filter == $id ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($nom) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <button type="submit" class="btn-filtrar"><i class="fas fa-filter"></i> Filtrar</button>
-        <a href="<?= BASE_URL ?>/admin/ventas" class="btn-limpiar"><i class="fas fa-times"></i> Limpiar</a>
-    </form>
+                    foreach ($vistas as $id => $nom):
+                    ?>
+                        <option value="<?= $id ?>" <?= $plantilla_filter == $id ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($nom) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <button type="submit" class="btn-filtrar"><i class="fas fa-filter"></i> Filtrar</button>
+            <a href="<?= BASE_URL ?>/admin/ventas" class="btn-limpiar"><i class="fas fa-times"></i> Limpiar</a>
+        </form>
 
-    <?php if (count($pedidos) > 0): ?>
-    <div class="table-wrap">
-        <table>
-            <thead><tr><th>Codigo</th><th>Cliente</th><th>Negocio</th><th>Plantilla</th><th>Items</th><th>Total</th><th>Pago</th><th>Estado</th><th>Fecha</th></tr></thead>
-            <tbody>
-            <?php foreach ($pedidos as $p): ?>
-                <?php
+        <?php if (count($pedidos) > 0): ?>
+        <div class="ventas-table-wrap">
+            <table class="ventas-table">
+                <thead>
+                    <tr>
+                        <th>Codigo</th>
+                        <th>Cliente</th>
+                        <th>Negocio</th>
+                        <th>Plantilla</th>
+                        <th style="text-align:center">Items</th>
+                        <th>Total</th>
+                        <th>Pago</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($pedidos as $p):
                     $pc = $p['estado_pago'] == 'Completado' ? 'completado' : (strtolower($p['estado_pago'] ?? 'pendiente'));
                     $lc = $p['estado_logistico'] ?? '';
                 ?>
-                <tr>
-                    <td style="font-weight:600;font-size:12px;color:var(--text-muted)"><?= htmlspecialchars($p['codigo_seguimiento']) ?></td>
-                    <td>
-                        <strong><?= htmlspecialchars($p['cliente_nombre'] . ' ' . $p['cliente_apellidos']) ?></strong>
-                        <br><span style="font-size:11px;color:var(--text-dim)"><?= htmlspecialchars($p['cliente_email']) ?></span>
-                    </td>
-                    <td><strong><?= htmlspecialchars($p['nombre_comercial']) ?></strong></td>
-                    <td><span class="badge-pl" style="background:var(--surface2);color:var(--text-muted)"><?= htmlspecialchars($p['plantilla_nombre']) ?></span></td>
-                    <td><?= $p['total_items'] ?> item(s)</td>
-                    <td><strong>Bs. <?= number_format($p['total'], 2) ?></strong></td>
-                    <td>
-                        <span class="badge-pl <?= $pc ?>"><?= $p['metodo_pago'] ?></span>
-                        <br><span style="font-size:10px;color:var(--text-dim)"><?= $p['estado_pago'] ?></span>
-                    </td>
-                    <td><span class="badge-pl <?= str_replace(' ', '_', $lc) ?>"><?= $lc ?></span></td>
-                    <td style="font-size:12px;color:var(--text-dim)"><?= $p['fecha_creacion'] ?></td>
-                </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
-    <?php else: ?>
-        <div class="table-wrap"><div class="empty">
-            <i class="fas fa-shopping-cart"></i>
-            <p>No hay ventas registradas</p>
-            <p style="font-size:12px;color:var(--text-dim);margin-top:8px">Crea un negocio, agrega productos y realiza una compra para ver ventas aqui.</p>
-        </div></div>
-    <?php endif; ?>
-
-    <!-- Márgenes por negocio -->
-    <div style="margin-top:48px">
-        <h2 style="font-family:Georgia,var(--font-serif);font-size:22px;font-weight:500;color:var(--text);margin-bottom:20px;display:flex;align-items:center;gap:10px">
-            <i class="fas fa-chart-pie" style="color:var(--text-muted)"></i> Márgenes por negocio
-        </h2>
-        <div class="table-wrap">
-            <table>
-                <thead><tr><th>Negocio</th><th>Productos</th><th>Con costo</th><th>Margen promedio</th><th>Ganancia total</th><th>Ingreso total</th></tr></thead>
-                <tbody>
-                <?php foreach ($margenes_negocio as $m): ?>
                     <tr>
-                        <td><strong><?= htmlspecialchars($m['nombre_comercial']) ?></strong></td>
-                        <td><?= (int)$m['total_productos'] ?></td>
-                        <td><?= (int)$m['con_costo'] ?></td>
-                        <td>
-                            <span style="color:<?= $m['margen_promedio'] >= 30 ? '#6b8f71' : ($m['margen_promedio'] >= 10 ? '#9a8a4a' : '#9a5a5a') ?>;font-weight:600">
-                                <?= number_format($m['margen_promedio'], 1) ?>%
-                            </span>
+                        <td class="td-code"><?= htmlspecialchars($p['codigo_seguimiento']) ?></td>
+                        <td class="td-cliente">
+                            <strong><?= htmlspecialchars($p['cliente_nombre'] . ' ' . $p['cliente_apellidos']) ?></strong>
+                            <div class="email"><?= htmlspecialchars($p['cliente_email']) ?></div>
                         </td>
-                        <td>Bs. <?= number_format($m['ganancia_total'], 2) ?></td>
+                        <td class="td-negocio"><strong><?= htmlspecialchars($p['nombre_comercial']) ?></strong></td>
+                        <td><span class="badge-plantilla"><i class="fas fa-palette"></i> <?= htmlspecialchars($p['plantilla_nombre']) ?></span></td>
+                        <td style="text-align:center;font-weight:500"><?= $p['total_items'] ?></td>
+                        <td class="td-total"><strong>Bs. <?= number_format($p['total'], 2) ?></strong></td>
+                        <td>
+                            <span class="badge-venta <?= $pc ?>"><i class="fas fa-<?= $pc === 'completado' ? 'check-circle' : ($pc === 'pendiente' ? 'clock' : 'times-circle') ?>"></i> <?= $p['metodo_pago'] ?></span>
+                            <div style="font-size:10px;color:var(--text-dim);margin-top:3px"><?= $p['estado_pago'] ?></div>
+                        </td>
+                        <td><span class="badge-venta <?= str_replace(' ', '_', $lc) ?>"><?= $lc ?></span></td>
+                        <td class="td-fecha"><i class="far fa-calendar-alt" style="margin-right:4px;opacity:0.5"></i><?= $p['fecha_creacion'] ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php else: ?>
+        <div class="ventas-table-wrap">
+            <div class="ventas-empty">
+                <div class="ventas-empty-icon"><i class="fas fa-shopping-cart"></i></div>
+                <h3>No hay ventas registradas</h3>
+                <p>Crea un negocio, agrega productos y realiza una compra para ver las ventas aquí.</p>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <!-- Margenes por negocio -->
+        <div class="margenes-header">
+            <h2><i class="fas fa-chart-pie"></i> Margenes por negocio</h2>
+            <span style="font-size:11px;color:var(--text-dim);background:var(--card-bg);padding:4px 14px;border-radius:20px;border:1px solid var(--border)"><?= count($margenes_negocio) ?> negocios</span>
+        </div>
+
+        <?php if (count($margenes_negocio) > 0): ?>
+        <div class="ventas-table-wrap">
+            <table class="ventas-table">
+                <thead>
+                    <tr>
+                        <th>Negocio</th>
+                        <th style="text-align:center">Productos</th>
+                        <th style="text-align:center">Con costo</th>
+                        <th>Margen promedio</th>
+                        <th>Ganancia total</th>
+                        <th>Ingreso total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($margenes_negocio as $m):
+                    $margen = (float)$m['margen_promedio'];
+                    $barColor = $margen >= 30 ? '#6b8f71' : ($margen >= 10 ? '#9a8a4a' : '#9a5a5a');
+                    $barWidth = min($margen, 100);
+                ?>
+                    <tr>
+                        <td class="td-negocio"><strong><?= htmlspecialchars($m['nombre_comercial']) ?></strong></td>
+                        <td style="text-align:center"><?= (int)$m['total_productos'] ?></td>
+                        <td style="text-align:center"><?= (int)$m['con_costo'] ?></td>
+                        <td>
+                            <span style="color:<?= $barColor ?>;font-weight:600;font-size:14px"><?= number_format($margen, 1) ?>%</span>
+                            <div class="margen-bar">
+                                <div class="margen-bar-fill" style="width:<?= $barWidth ?>%;background:<?= $barColor ?>"></div>
+                            </div>
+                        </td>
+                        <td><strong>Bs. <?= number_format($m['ganancia_total'], 2) ?></strong></td>
                         <td>Bs. <?= number_format($m['ingreso_total'], 2) ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
-        <?php if (count($margenes_negocio) == 0): ?>
-        <div class="table-wrap"><div class="empty">
-            <i class="fas fa-chart-pie"></i>
-            <p>No hay datos de margenes</p>
-            <p style="font-size:12px;color:var(--text-dim);margin-top:8px">Registra precios de costo en los productos para ver margenes aqui.</p>
-        </div></div>
+        <?php else: ?>
+        <div class="ventas-table-wrap">
+            <div class="ventas-empty">
+                <div class="ventas-empty-icon"><i class="fas fa-chart-pie"></i></div>
+                <h3>No hay datos de margenes</h3>
+                <p>Registra precios de costo en los productos para ver los margenes aquí.</p>
+            </div>
+        </div>
         <?php endif; ?>
-    </div>
 
     </div>
 </div>
@@ -251,6 +259,19 @@
             localStorage.setItem('jacha_theme', newTheme);
             themeToggle.innerHTML = newTheme === 'dark' ? '\u2600' : '\u263E';
         });
+    }
+
+    // Animate margen bars on scroll
+    var bars = document.querySelectorAll('.margen-bar-fill');
+    if (bars.length) {
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.style.width = entry.target.style.width;
+                }
+            });
+        }, { threshold: 0.3 });
+        bars.forEach(function(b) { observer.observe(b); });
     }
 })();
 </script>

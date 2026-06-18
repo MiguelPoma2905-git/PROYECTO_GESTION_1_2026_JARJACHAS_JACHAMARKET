@@ -6,7 +6,7 @@
     <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/assets/images/favicon.ico">
     <title>Personalizar Mi Tienda - Jacha</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=6">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=10">
     <style>
         * { box-sizing: border-box; }
         :root { --editor-bg: #0f0f13; --editor-card: #1a1a24; --editor-border: #2a2a3a; --editor-text: #e0e0e8; --editor-muted: #8888a0; }

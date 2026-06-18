@@ -39,5 +39,22 @@ abstract class Controller
         if (!isset($_SESSION['usuario'])) {
             $this->redirect(BASE_URL . '/login');
         }
+        $usuario = $_SESSION['usuario'];
+        $usuarioId = $usuario['id'] ?? $usuario['id_usuario'] ?? null;
+        if (!$usuarioId) {
+            session_destroy();
+            $this->redirect(BASE_URL . '/login');
+        }
+        $db = $this->getDB();
+        $stmt = $db->prepare("SELECT * FROM usuarios WHERE id_usuario = ? AND estado = 'Activo'");
+        $stmt->execute([$usuarioId]);
+        $usuarioDb = $stmt->fetch();
+        if (!$usuarioDb) {
+            session_destroy();
+            $this->redirect(BASE_URL . '/login');
+        }
+        $usuarioDb['id'] = $usuarioDb['id_usuario'];
+        $usuarioDb['nombre'] = trim(($usuarioDb['nombres'] ?? '') . ' ' . ($usuarioDb['apellidos'] ?? ''));
+        $_SESSION['usuario'] = $usuarioDb;
     }
 }

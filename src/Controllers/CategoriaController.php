@@ -104,7 +104,7 @@ class CategoriaController extends Controller
 
         $avatarUsuario = $this->usuarioRepo->getAvatar($usuario['id']);
         $rolesUsuario = $this->usuarioRepo->getRoles($usuario['id']);
-        $inicial = strtoupper(substr($usuario['nombre'], 0, 1));
+        $inicial = strtoupper(substr($usuario['nombre'] ?? '', 0, 1));
         $rolActivo = $_SESSION['rol_activo'] ?? $rolesNombres[0] ?? 'Cliente';
 
         $treeHtml = $this->categoriaRepo->renderTreeHtml($tree);

@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=9">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=10">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:'DM Sans',system-ui,sans-serif; background:var(--bg,#0d0d0d); color:var(--text,#f0f0f0); min-height:100vh; }

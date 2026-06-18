@@ -7,7 +7,7 @@
     <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/assets/images/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=9">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=10">
     <style>
         /* Pedido cards - repartidor style matching the new design */
         .rep-section-title {
@@ -173,7 +173,7 @@
                 <button class="theme-toggle" id="themeToggle" title="Cambiar tema">&#9790;</button>
                 <div class="user-dropdown" id="userDropdown">
                     <div class="user-trigger" id="userTrigger">
-                        <span class="user-name"><?= htmlspecialchars($usuario['nombre']) ?></span>
+                        <span class="user-name"><?= htmlspecialchars($usuario['nombre'] ?? 'Usuario') ?></span>
                         <div class="user-avatar">
                             <?php if ($avatar_usuario): ?>
                                 <img src="<?= BASE_URL ?>/<?= $avatar_usuario ?>" alt="Avatar">

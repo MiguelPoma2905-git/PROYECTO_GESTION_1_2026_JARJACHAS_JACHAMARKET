@@ -25,6 +25,25 @@ class PlantillaController extends Controller
 
         $usuario = $_SESSION['usuario'] ?? null;
         $isLoggedIn = $usuario !== null;
+
+        if ($isLoggedIn) {
+            $usuarioRepo = new UsuarioRepository();
+            $usuarioId = $usuario['id'] ?? $usuario['id_usuario'] ?? 0;
+            if ($usuarioId) {
+                $usuarioDb = $usuarioRepo->findById($usuarioId);
+                if (!$usuarioDb) {
+                    session_destroy();
+                    $isLoggedIn = false;
+                    $usuario = null;
+                } else {
+                    $usuarioDb['id'] = $usuarioDb['id_usuario'];
+                    $usuarioDb['nombre'] = trim(($usuarioDb['nombres'] ?? '') . ' ' . ($usuarioDb['apellidos'] ?? ''));
+                    $_SESSION['usuario'] = $usuarioDb;
+                    $usuario = $usuarioDb;
+                }
+            }
+        }
+
         $isVendedor = $isLoggedIn && ($_SESSION['rol_activo'] ?? '') === 'Emprendedor';
 
         $this->view('pages/plantilla-detalle', [
@@ -38,7 +57,26 @@ class PlantillaController extends Controller
     {
         $usuario = $_SESSION['usuario'] ?? null;
         $isLoggedIn = $usuario !== null;
-        $isVendedor = $isLoggedIn && ($_SESSION['rol_activo'] ?? '') === 'Emprendedor';
+
+        if ($isLoggedIn) {
+            $usuarioRepo = new UsuarioRepository();
+            $usuarioId = $usuario['id'] ?? $usuario['id_usuario'] ?? 0;
+            if ($usuarioId) {
+                $usuarioDb = $usuarioRepo->findById($usuarioId);
+                if (!$usuarioDb) {
+                    session_destroy();
+                    $isLoggedIn = false;
+                    $usuario = null;
+                } else {
+                    $usuarioDb['id'] = $usuarioDb['id_usuario'];
+                    $usuarioDb['nombre'] = trim(($usuarioDb['nombres'] ?? '') . ' ' . ($usuarioDb['apellidos'] ?? ''));
+                    $_SESSION['usuario'] = $usuarioDb;
+                }
+            }
+        }
+
+        $rolActivo = $isLoggedIn ? ($_SESSION['rol_activo'] ?? '') : '';
+        $isVendedor = $isLoggedIn && $rolActivo === 'Emprendedor';
 
         $mensajeError = '';
         $mostrarSelector = true;
@@ -58,7 +96,8 @@ class PlantillaController extends Controller
             'mensaje_error' => $mensajeError,
             'plantillas' => $plantillas,
             'is_logged_in' => $isLoggedIn,
-            'is_vendedor' => $isVendedor
+            'is_vendedor' => $isVendedor,
+            'rol_activo' => $rolActivo
         ]);
     }
 }

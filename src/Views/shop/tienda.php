@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=<?= urlencode(preg_replace('/[^a-zA-Z0-9\s\-]/', '', $emprendimiento['tipografia'] ?? 'Inter')) ?>:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=6">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=10">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <?php
 $tid = (int)($emprendimiento['id_plantilla'] ?? 0);
@@ -111,7 +111,10 @@ $themeFile = match($tid) {
         </div>
 
         <?php if (!$es_propietario): ?>
-        <button class="modal-btn" id="modalBtnConfirmar" onclick="confirmarCompra()">Confirmar compra</button>
+        <div style="display:flex;gap:10px">
+            <button class="modal-btn" style="flex:1;background:transparent;border:1px solid var(--ebo,rgba(255,255,255,0.06));color:var(--et,#fff)" onclick="agregarAlCarritoModal()"><i class="fas fa-shopping-bag"></i> Agregar al carrito</button>
+            <button class="modal-btn" style="flex:1" id="modalBtnConfirmar" onclick="confirmarCompra()">Comprar ahora</button>
+        </div>
         <?php endif; ?>
     </div>
 </div>
@@ -178,6 +181,35 @@ function mostrarCompra(btn) {
 
 function cerrarModal() {
     document.getElementById('modalCompra').style.display = 'none';
+}
+
+function agregarAlCarritoModal() {
+    if (ES_PROPIETARIO) { mostrarNotificacion('Eres el dueño de esta tienda', 'error'); return; }
+    const id = parseInt(document.getElementById('modalProdId').value);
+    const nombre = document.getElementById('modalProdNombre').textContent;
+    const precioText = document.getElementById('modalProdPrecio').textContent;
+    const precio = parseFloat(precioText.replace('Bs. ', ''));
+    const cantidad = parseInt(document.getElementById('modalCantidad').value) || 1;
+    const maxStock = parseInt(document.getElementById('modalCantidad').max) || 0;
+
+    if (cantidad < 1 || (maxStock > 0 && cantidad > maxStock)) {
+        mostrarNotificacion('Cantidad no disponible (máx: ' + maxStock + ')', 'error');
+        return;
+    }
+
+    let carrito = JSON.parse(localStorage.getItem('jacha_cart_' + TIENDA_ID) || '[]');
+    const existe = carrito.findIndex(i => i.id === id);
+    if (existe >= 0) {
+        const nc = carrito[existe].cantidad + cantidad;
+        if (maxStock > 0 && nc > maxStock) { mostrarNotificacion('Stock máximo: ' + maxStock, 'error'); return; }
+        carrito[existe].cantidad = nc;
+    } else {
+        if (maxStock < 1) { mostrarNotificacion('Producto agotado', 'error'); return; }
+        carrito.push({ id, nombre, precio, cantidad, stock: maxStock, img: '' });
+    }
+    localStorage.setItem('jacha_cart_' + TIENDA_ID, JSON.stringify(carrito));
+    mostrarNotificacion('✓ ' + nombre + ' agregado al carrito', 'success');
+    if (typeof actualizarCarritoUI === 'function') actualizarCarritoUI();
 }
 
 document.getElementById('modalCompra').addEventListener('click', function(e) {

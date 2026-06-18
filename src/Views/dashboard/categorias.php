@@ -7,76 +7,70 @@
     <title>Categorías - Jacha Marketplace</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=9">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=10">
     <style>
-        :root { --radius: 4px; }
-        .cat-layout { display:grid;grid-template-columns:1fr 400px;gap:24px;align-items:start;margin-top:16px }
-        @media(max-width:900px){.cat-layout{grid-template-columns:1fr}}
-        .cat-card { background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:20px }
-        .cat-card h3 { font-family:'Cormorant Garamond',serif;margin:0 0 12px;font-size:18px;color:var(--text) }
-        .category-tree { list-style:none;padding:0;margin:0 }
-        .category-tree li { padding:6px 0 6px 20px;border-left:1px dashed var(--border);margin:2px 0;position:relative }
-        .category-tree li:before { content:'';position:absolute;left:0;top:50%;width:16px;height:0;border-top:1px dashed var(--border) }
-        .category-tree li:last-child { border-left-color:transparent }
-        .tree-toggle { cursor:pointer;display:inline-block;width:16px;text-align:center;font-size:10px;color:var(--text-muted);user-select:none;margin-right:4px }
-        .tree-toggle-empty { visibility:hidden }
-        .tree-toggle+.hidden { display:none }
-        .cat-name { font-weight:500;font-size:14px }
-        .cat-name .prod-badge { font-weight:400;font-size:11px;color:var(--text-muted);background:var(--hover-bg);padding:1px 6px;border-radius:10px;margin-left:6px }
-        .btn-sm { display:inline-block;padding:2px 6px;font-size:12px;text-decoration:none;color:var(--text-muted);border-radius:var(--radius);opacity:.6 }
-        .btn-sm:hover { opacity:1;background:var(--hover-bg) }
-        .btn-sm.btn-danger:hover { color:#9a5a5a;background:rgba(154,90,90,.1) }
-        .form-group { margin-bottom:12px }
-        .form-group label { display:block;font-size:13px;font-weight:500;color:var(--text-muted);margin-bottom:4px }
-        .form-group input,.form-group select { width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);font-family:Inter,sans-serif;font-size:14px;box-sizing:border-box }
-        .form-group input:focus,.form-group select:focus { outline:none;border-color:var(--accent) }
-        .form-actions { display:flex;gap:8px;margin-top:16px }
-        .form-actions .btn { padding:8px 20px;border:none;border-radius:var(--radius);cursor:pointer;font-family:Inter,sans-serif;font-size:14px;transition:opacity .2s }
-        .form-actions .btn-primary { background:var(--text);color:var(--bg) }
-        .form-actions .btn-primary:hover { opacity:.85 }
-        .form-actions .btn-secondary { background:var(--hover-bg);color:var(--text) }
-        .form-actions .btn-secondary:hover { opacity:.8 }
-        .alert { padding:10px 14px;border-radius:var(--radius);font-size:13px;margin-bottom:12px }
-        .alert-success { background:rgba(46,204,113,.12);color:#27ae60;border:1px solid rgba(46,204,113,.2) }
-        .alert-error { background:rgba(231,76,60,.1);color:#c0392b;border:1px solid rgba(231,76,60,.15) }
-        .empty-state { text-align:center;padding:40px 20px;color:var(--text-muted) }
-        .empty-state i { font-size:36px;display:block;margin-bottom:8px;color:var(--text-muted) }
-        .helper-text { font-size:12px;color:var(--text-muted);margin-top:3px }
-        .sidebar { position:fixed;left:0;top:0;bottom:0;width:220px;background:var(--card-bg);border-right:1px solid var(--border);padding:20px 0;overflow-y:auto;z-index:100;display:flex;flex-direction:column }
-        .sidebar .logo { padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:12px;text-align:center }
-        .sidebar .logo a { font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--text);text-decoration:none;font-weight:500 }
-        .sidebar a { display:flex;align-items:center;gap:8px;padding:8px 20px;color:var(--text);text-decoration:none;font-size:14px;transition:background .2s;cursor:pointer }
-        .sidebar a:hover,.sidebar a.active { background:var(--hover-bg) }
-        .sidebar a.active { border-right:2px solid var(--accent);color:var(--accent) }
-        .sidebar a i { width:20px;text-align:center;flex-shrink:0;font-size:14px;color:var(--text-muted) }
-        .sidebar a.active i { color:var(--accent) }
-        .main-content { margin-left:220px;min-height:100vh;padding:24px 32px;max-width:1100px }
-        .top-bar { display:flex;align-items:center;justify-content:space-between;margin-bottom:24px }
-        .top-bar h2 { font-family:'Cormorant Garamond',serif;font-size:26px;margin:0;font-weight:500;color:var(--text) }
-        .user-menu { display:flex;align-items:center;gap:12px }
-        .avatar { width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;overflow:hidden;flex-shrink:0 }
-        .avatar img { width:100%;height:100%;object-fit:cover }
-        .role-selector { font-size:12px;padding:4px 8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);font-family:Inter,sans-serif;cursor:pointer }
-        .negocio-tabs { display:flex;gap:0;margin-bottom:16px;border-bottom:1px solid var(--border);flex-wrap:wrap }
-        .negocio-tabs a { padding:8px 16px;font-size:13px;text-decoration:none;color:var(--text-muted);border-bottom:2px solid transparent;transition:all .2s }
-        .negocio-tabs a:hover { color:var(--text) }
-        .negocio-tabs a.active { color:var(--accent);border-bottom-color:var(--accent);font-weight:500 }
+        .cat-page { padding: 28px 32px; max-width: 1200px; margin: 0 auto; animation: fadeIn 0.5s ease }
+        .cat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px }
+        .cat-header h1 { font-family: Georgia, var(--font-serif); font-size: 26px; font-weight: 400; color: var(--text); display: flex; align-items: center; gap: 12px }
+        .cat-header h1 i { color: var(--text-muted); font-size: 22px }
+        .cat-layout { display: grid; grid-template-columns: 1fr 420px; gap: 24px; align-items: start }
+        @media (max-width: 960px) { .cat-layout { grid-template-columns: 1fr } .cat-page { padding: 20px 16px } }
+        .cat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 24px; transition: background 0.3s ease; animation: fadeInUp 0.5s ease both }
+        .cat-card:nth-child(1) { animation-delay: 0.05s }
+        .cat-card:nth-child(2) { animation-delay: 0.10s }
+        .cat-card h2 { font-family: Georgia, var(--font-serif); font-size: 18px; font-weight: 500; color: var(--text); margin: 0 0 16px; display: flex; align-items: center; gap: 10px }
+        .cat-card h2 i { color: var(--text-muted); font-size: 16px }
+        .category-tree { list-style: none; padding: 0; margin: 0 }
+        .category-tree li { padding: 8px 0 8px 24px; border-left: 1px dashed var(--border); margin: 1px 0; position: relative; transition: background 0.2s }
+        .category-tree li:before { content: ''; position: absolute; left: 0; top: 50%; width: 20px; height: 0; border-top: 1px dashed var(--border) }
+        .category-tree > li:first-child { margin-top: 0 }
+        .cat-node { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 8px; transition: background 0.2s }
+        .cat-node:hover { background: var(--hover-surface) }
+        .tree-toggle { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 4px; font-size: 10px; color: var(--text-muted); user-select: none; transition: all 0.2s; flex-shrink: 0 }
+        .tree-toggle:hover { background: var(--surface3); color: var(--text) }
+        .tree-toggle.open { transform: rotate(90deg) }
+        .tree-toggle-empty { visibility: hidden; pointer-events: none }
+        .cat-children.hidden { display: none }
+        .cat-name { font-size: 14px; font-weight: 500; color: var(--text); flex: 1 }
+        .prod-badge { font-size: 11px; font-weight: 500; color: var(--text-muted); background: var(--badge-bg); padding: 2px 10px; border-radius: 20px; margin-left: 8px; white-space: nowrap }
+        .cat-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; margin-left: auto }
+        .cat-node:hover .cat-actions { opacity: 1 }
+        .cat-action { width: 28px; height: 28px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; color: var(--text-muted); text-decoration: none; transition: all 0.2s }
+        .cat-action:hover { background: var(--surface3) }
+        .cat-action.edit:hover { color: var(--text) }
+        .cat-action.delete:hover { color: #e74c3c; background: rgba(231,76,60,0.1) }
+        .empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted) }
+        .empty-state i { font-size: 40px; display: block; margin-bottom: 12px; opacity: 0.25; color: var(--text-muted) }
+        .empty-state p { font-size: 14px; line-height: 1.6 }
+        .cat-form .form-group { margin-bottom: 20px }
+        .cat-form label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px }
+        .cat-form input, .cat-form select { width: 100%; padding: 10px 14px; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text); font-size: 14px; font-family: inherit; transition: border-color 0.2s; box-sizing: border-box }
+        .cat-form input:focus, .cat-form select:focus { outline: none; border-color: var(--border-hi); box-shadow: 0 0 0 2px var(--accent-glow) }
+        .cat-form input::placeholder { color: var(--text-dim) }
+        .cat-form select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23888' d='M1.41.59L6 5.17 10.59.59 12 2l-6 6-6-6z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px }
+        .helper-text { font-size: 12px; color: var(--text-dim); margin-top: 6px; line-height: 1.4 }
+        .form-actions { display: flex; gap: 10px; margin-top: 24px }
+        .form-actions .btn { flex: 1; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; text-align: center; transition: all 0.2s; cursor: pointer; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none }
+        .msg-glass { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 12px; margin-bottom: 24px; font-size: 13px; animation: slideUp 0.4s ease; border: 1px solid transparent }
+        .msg-glass i { font-size: 16px; flex-shrink: 0 }
+        .msg-success { background: rgba(46,204,113,0.08); border-color: rgba(46,204,113,0.15); color: #2ecc71 }
+        .msg-error { background: rgba(231,76,60,0.08); border-color: rgba(231,76,60,0.15); color: #e74c3c }
+        @media (max-width: 768px) { .cat-actions { opacity: 1 } .cat-header { flex-direction: column; align-items: flex-start } }
     </style>
 </head>
-<body>
+<body class="dashboard-body">
 <?php $current_page = 'categorias'; ?>
 <?php include __DIR__ . '/../partials/sidebar.php'; ?>
 
 <div class="main-content">
     <div class="top-bar">
-        <div style="display:flex;align-items:center;gap:12px">
+        <div class="top-bar-left">
             <button class="menu-btn" id="menuBtn">&#9776;</button>
-            <h2 style="margin:0"><i class="fas fa-folder" style="margin-right:8px;color:var(--accent)"></i> Categorías</h2>
         </div>
-        <div class="user-menu">
+        <div class="top-bar-right">
             <?php if (!empty($mis_negocios)): ?>
-            <select class="role-selector" onchange="window.location.href='?id_emprendimiento='+this.value">
-                <option value="">Todas las categorías</option>
+            <select style="padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--text);font-size:12px;font-family:inherit;cursor:pointer;margin-right:4px" onchange="window.location.href='?id_emprendimiento='+this.value">
+                <option value="">Todas</option>
                 <?php foreach ($mis_negocios as $n): ?>
                 <option value="<?= $n['id_emprendimiento'] ?>" <?= $id_emprendimiento === $n['id_emprendimiento'] ? 'selected' : '' ?>>
                     <?= htmlspecialchars($n['nombre_comercial']) ?>
@@ -84,101 +78,186 @@
                 <?php endforeach; ?>
             </select>
             <?php endif; ?>
-            <a href="#" style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;color:var(--text-muted);text-decoration:none;transition:color .2s" title="Notificaciones" onclick="alert('Próximamente: centro de notificaciones');return false">
-                <i class="fas fa-bell" style="font-size:15px"></i>
-                <span style="position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:#9a5a5a;display:none"></span>
-            </a>
-            <button class="theme-toggle" id="themeToggle" title="Cambiar tema" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;padding:4px;border-radius:var(--radius);transition:all .2s">&#9790;</button>
-            <div class="avatar"><?php if ($avatar_usuario): ?><img src="data:image/jpeg;base64,<?= base64_encode($avatar_usuario) ?>"><?php else: ?><?= $inicial ?><?php endif; ?></div>
+            <button class="notif-btn" id="notifBtn" title="Notificaciones">
+                <i class="fas fa-bell"></i>
+                <span class="notif-badge" id="notifBadge">0</span>
+            </button>
+            <button class="theme-toggle" id="themeToggle" title="Cambiar tema">&#9790;</button>
+            <div class="user-dropdown" id="userDropdown">
+                <div class="user-trigger" id="userTrigger">
+                    <span class="user-name"><?= htmlspecialchars($usuario['nombre'] ?? 'Usuario') ?></span>
+                    <div class="user-avatar">
+                        <?php if ($avatar_usuario): ?>
+                            <img src="<?= BASE_URL ?>/<?= $avatar_usuario ?>" alt="Avatar">
+                        <?php else: ?>
+                            <?= $inicial ?>
+                        <?php endif; ?>
+                    </div>
+                    <span class="dropdown-arrow">&#9660;</span>
+                </div>
+                <div class="dropdown-menu">
+                    <?php if (count($roles_usuario) > 1): ?>
+                    <div class="dropdown-header">Cambiar rol</div>
+                        <?php foreach ($roles_usuario as $rol):
+                            $color_rol = match($rol['nombre_rol']) {
+                                'Cliente' => '#4facfe',
+                                'Emprendedor' => '#2ecc71',
+                                'Repartidor' => '#f39c12',
+                                'Administrador' => '#e74c3c',
+                                default => '#888'
+                            };
+                            $display_name = $rol['nombre_rol'] === 'Emprendedor' ? 'Vendedor' : $rol['nombre_rol'];
+                        ?>
+                        <a href="<?= BASE_URL ?>/dashboard?cambiar_rol=<?= $rol['nombre_rol'] ?>" class="dropdown-item<?= $rol_activo === $rol['nombre_rol'] ? ' active-role' : '' ?>">
+                            <span class="role-dot" style="background:<?= $color_rol ?>"></span>
+                            <?= $display_name ?>
+                            <?php if ($rol_activo === $rol['nombre_rol']): ?><span class="check-mark">&#10003;</span><?php endif; ?>
+                        </a>
+                        <?php endforeach; ?>
+                    <div class="dropdown-divider"></div>
+                    <?php endif; ?>
+                    <a href="<?= BASE_URL ?>/perfil" class="dropdown-item"><i class="fas fa-user"></i> Mi Perfil</a>
+                    <a href="<?= BASE_URL ?>/logout" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesi&oacute;n</a>
+                </div>
+            </div>
         </div>
     </div>
 
-    <?php if ($success): ?>
-    <div class="alert alert-success"><i class="fas fa-check-circle"></i> <?= htmlspecialchars($success) ?></div>
-    <?php endif; ?>
-    <?php if ($error): ?>
-    <div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($error) ?></div>
-    <?php endif; ?>
-
-    <div class="cat-layout">
-        <div class="cat-card">
-            <h3><i class="fas fa-sitemap" style="margin-right:6px;color:var(--accent)"></i> Árbol de categorías</h3>
-            <?php if (empty($tree)): ?>
-            <div class="empty-state">
-                <i class="fas fa-folder-open"></i>
-                <p>No hay categorías todavía.<br>Crea la primera desde el formulario.</p>
-            </div>
-            <?php else: ?>
-            <?= $tree_html ?>
-            <?php endif; ?>
+    <div class="cat-page">
+        <div class="cat-header">
+            <h1><i class="fas fa-folder"></i> Categor&iacute;as</h1>
         </div>
 
-        <div class="cat-card">
-            <h3><i class="fas fa-<?= $edit_categoria ? 'pen' : 'plus' ?>" style="margin-right:6px;color:var(--accent)"></i> <?= $edit_categoria ? 'Editar categoría' : 'Nueva categoría' ?></h3>
-            <form method="POST">
-                <?php if ($edit_categoria): ?>
-                <input type="hidden" name="id_categoria" value="<?= $edit_categoria['id_categoria'] ?>">
+        <?php if ($success): ?>
+        <div class="msg-glass msg-success">
+            <i class="fas fa-check-circle"></i> <?= htmlspecialchars($success) ?>
+            <button class="msg-close" onclick="this.parentElement.remove()" style="margin-left:auto;background:none;border:none;color:inherit;opacity:0.5;cursor:pointer;font-size:14px;padding:4px">&times;</button>
+        </div>
+        <?php endif; ?>
+        <?php if ($error): ?>
+        <div class="msg-glass msg-error">
+            <i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($error) ?>
+            <button class="msg-close" onclick="this.parentElement.remove()" style="margin-left:auto;background:none;border:none;color:inherit;opacity:0.5;cursor:pointer;font-size:14px;padding:4px">&times;</button>
+        </div>
+        <?php endif; ?>
+
+        <div class="cat-layout">
+            <div class="cat-card">
+                <h2><i class="fas fa-sitemap"></i> Árbol de categor&iacute;as</h2>
+                <?php if (empty($tree)): ?>
+                <div class="empty-state">
+                    <i class="fas fa-folder-open"></i>
+                    <p>No hay categor&iacute;as todav&iacute;a.<br>Crea la primera desde el formulario.</p>
+                </div>
+                <?php else: ?>
+                <?= $tree_html ?>
                 <?php endif; ?>
+            </div>
 
-                <div class="form-group">
-                    <label for="nombre">Nombre</label>
-                    <input type="text" id="nombre" name="nombre" required value="<?= htmlspecialchars($edit_categoria['nombre'] ?? '') ?>" placeholder="Ej: Ropa, Electrónica...">
-                </div>
-
-                <div class="form-group">
-                    <label for="slug">Slug (URL)</label>
-                    <input type="text" id="slug" name="slug" value="<?= htmlspecialchars($edit_categoria['slug'] ?? '') ?>" placeholder="Se genera automáticamente si se deja vacío">
-                    <div class="helper-text">Ej: ropa-deportiva, electronica. Sin espacios ni caracteres especiales.</div>
-                </div>
-
-                <div class="form-group">
-                    <label for="id_padre">Categoría padre (opcional)</label>
-                    <select id="id_padre" name="id_padre">
-                        <option value="">— Sin padre (categoría raíz) —</option>
-                        <?= $options_html ?>
-                    </select>
-                    <div class="helper-text">Si seleccionas un padre, esta será una subcategoría.</div>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary"><?= $edit_categoria ? '<i class="fas fa-save"></i> Actualizar' : '<i class="fas fa-plus"></i> Crear' ?></button>
+            <div class="cat-card">
+                <h2><i class="fas fa-<?= $edit_categoria ? 'pen' : 'plus' ?>"></i> <?= $edit_categoria ? 'Editar categor&iacute;a' : 'Nueva categor&iacute;a' ?></h2>
+                <form method="POST" class="cat-form">
                     <?php if ($edit_categoria): ?>
-                    <a href="<?= BASE_URL ?>/categorias<?= $id_emprendimiento ? '?id_emprendimiento=' . $id_emprendimiento : '' ?>" class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</a>
+                    <input type="hidden" name="id_categoria" value="<?= $edit_categoria['id_categoria'] ?>">
                     <?php endif; ?>
-                </div>
-            </form>
+
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" required value="<?= htmlspecialchars($edit_categoria['nombre'] ?? '') ?>" placeholder="Ej: Ropa, Electr&oacute;nica...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="slug">Slug (URL)</label>
+                        <input type="text" id="slug" name="slug" value="<?= htmlspecialchars($edit_categoria['slug'] ?? '') ?>" placeholder="Se genera autom&aacute;ticamente">
+                        <div class="helper-text">Ej: ropa-deportiva, electronica. Sin espacios ni caracteres especiales.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_padre">Categor&iacute;a padre (opcional)</label>
+                        <select id="id_padre" name="id_padre">
+                            <option value="">— Sin padre (categor&iacute;a ra&iacute;z) —</option>
+                            <?= $options_html ?>
+                        </select>
+                        <div class="helper-text">Si seleccionas un padre, esta ser&aacute; una subcategor&iacute;a.</div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary"><?= $edit_categoria ? '<i class="fas fa-save"></i> Actualizar' : '<i class="fas fa-plus"></i> Crear' ?></button>
+                        <?php if ($edit_categoria): ?>
+                        <a href="<?= BASE_URL ?>/categorias<?= $id_emprendimiento ? '?id_emprendimiento=' . $id_emprendimiento : '' ?>" class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</a>
+                        <?php endif; ?>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
+<!-- Notification Panel -->
+<div class="notif-panel-overlay" id="notifOverlay"></div>
+<div class="notif-panel" id="notifPanel">
+    <div class="notif-panel-header">
+        <h3><i class="fas fa-bell" style="font-size:16px;margin-right:8px;opacity:0.6"></i>Notificaciones</h3>
+        <button class="notif-panel-close" id="notifClose">&times;</button>
+    </div>
+    <div class="notif-panel-body">
+        <div class="notif-empty">
+            <i class="fas fa-bell"></i>
+            <p>No hay notificaciones nuevas</p>
+        </div>
+    </div>
+</div>
+
+<span class="watermark"><img src="<?= BASE_URL ?>/assets/images/logo1.jpg" alt=""></span>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    var saved = localStorage.getItem('jacha_theme') || localStorage.getItem('theme');
-    if (saved) {
-        document.documentElement.setAttribute('data-theme', saved);
-    }
-    var toggle = document.getElementById('themeToggle');
-    if (toggle) {
-        toggle.addEventListener('click', function() {
-            var html = document.documentElement;
-            var current = html.getAttribute('data-theme') || 'dark';
-            var next = current === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', next);
-            localStorage.setItem('jacha_theme', next);
+    var currentTheme = localStorage.getItem('jacha_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+
+    var themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.innerHTML = currentTheme === 'dark' ? '\u2600' : '\u263E';
+        themeToggle.addEventListener('click', function() {
+            var theme = document.documentElement.getAttribute('data-theme');
+            var newTheme = theme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('jacha_theme', newTheme);
+            themeToggle.innerHTML = newTheme === 'dark' ? '\u2600' : '\u263E';
         });
     }
+
     var menuBtn = document.getElementById('menuBtn');
     var sidebar = document.getElementById('sidebar');
     var overlay = document.getElementById('overlay');
-    if (menuBtn && sidebar && overlay) {
-        menuBtn.addEventListener('click', function() {
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('active');
+    function toggleSidebar() { sidebar.classList.toggle('open'); overlay.classList.toggle('active'); }
+    if (menuBtn) { menuBtn.addEventListener('click', toggleSidebar); }
+    if (overlay) { overlay.addEventListener('click', toggleSidebar); }
+
+    var userDropdown = document.getElementById('userDropdown');
+    var userTrigger = document.getElementById('userTrigger');
+    if (userTrigger) {
+        userTrigger.addEventListener('click', function(e) { e.stopPropagation(); userDropdown.classList.toggle('active'); });
+        document.addEventListener('click', function() { userDropdown.classList.remove('active'); });
+    }
+
+    var notifBtn = document.getElementById('notifBtn');
+    var notifPanel = document.getElementById('notifPanel');
+    var notifOverlay = document.getElementById('notifOverlay');
+    var notifClose = document.getElementById('notifClose');
+    var notifBadge = document.getElementById('notifBadge');
+    if (notifBtn && notifPanel) {
+        notifBtn.addEventListener('click', function() {
+            notifPanel.classList.add('open');
+            notifOverlay.classList.add('active');
+            if (notifBadge) { notifBadge.classList.remove('show', 'pulse'); }
         });
-        overlay.addEventListener('click', function() {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
-        });
+        function closeNotif() {
+            notifPanel.classList.remove('open');
+            notifOverlay.classList.remove('active');
+        }
+        if (notifClose) notifClose.addEventListener('click', closeNotif);
+        if (notifOverlay) notifOverlay.addEventListener('click', closeNotif);
     }
 });
 </script>

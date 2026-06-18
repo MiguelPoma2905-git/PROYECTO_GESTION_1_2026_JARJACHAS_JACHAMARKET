@@ -7,7 +7,7 @@
     <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/assets/images/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=6">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=10">
     <style>
         .edit-wrap { max-width:800px; margin:0 auto; padding:32px 24px; }
         .edit-header { margin-bottom:32px; display:flex; align-items:center; justify-content:space-between; }
@@ -47,20 +47,8 @@
 </head>
 <body class="dashboard-body">
 
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <a href="<?= BASE_URL ?>/" class="logo-link" style="display:flex;align-items:center;gap:10px;">
-            <img src="<?= BASE_URL ?>/assets/images/logo_empresa.png" alt="Jacha" style="height:30px;width:auto;opacity:0.85;">
-        </a>
-    </div>
-    <nav class="sidebar-nav">
-        <a href="<?= BASE_URL ?>/dashboard"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9632;</span> Dashboard</a>
-        <a href="<?= BASE_URL ?>/admin/ventas"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#9776;</span> Ventas</a>
-        <a href="<?= BASE_URL ?>/logout" style="margin-top:40px;"><span style="font-size:15px;width:20px;text-align:center;flex-shrink:0;">&#8592;</span> Cerrar sesion</a>
-    </nav>
-</div>
-
-<div class="overlay" id="overlay"></div>
+<?php $current_page = 'admin-editar'; $rol_activo = 'Administrador'; ?>
+<?php include __DIR__ . '/../partials/sidebar.php'; ?>
 
 <div class="main-content">
     <div class="top-bar">

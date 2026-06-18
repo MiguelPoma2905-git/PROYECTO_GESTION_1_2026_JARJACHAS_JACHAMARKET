@@ -175,7 +175,7 @@
                         <?php if ($es_propietario): ?>
                         <a href="<?= BASE_URL ?>/productos?id_emprendimiento=<?= $emprendimiento['id_emprendimiento'] ?>&edit=<?= $producto['id_producto'] ?>" class="t10-btn" style="text-decoration:none"><i class="fas fa-pen"></i> Editar</a>
                         <?php else: ?>
-                        <button class="t10-btn" onclick="agregarAlCarrito(this)">Añadir</button>
+                        <button class="t10-btn" onclick="mostrarCompra(this)">Añadir</button>
                         <?php endif; ?>
                     </div>
                 </div>

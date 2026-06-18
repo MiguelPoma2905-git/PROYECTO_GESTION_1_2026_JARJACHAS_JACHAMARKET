@@ -25,6 +25,7 @@ use App\Controllers\PerfilController;
 use App\Controllers\SucursalesController;
 use App\Controllers\InventarioController;
 use App\Controllers\CategoriaController;
+use App\Controllers\NotificacionController;
 
 $router = new Router();
 
@@ -108,6 +109,11 @@ $router->match(['GET', 'POST'], '/categorias', [CategoriaController::class, 'ind
 
 // DB Demo
 $router->get('/db-demo', [HomeController::class, 'dbDemo']);
+
+// Notificaciones (AJAX)
+$router->get('/notificaciones/obtener', [NotificacionController::class, 'obtener']);
+$router->post('/notificaciones/marcar-leida', [NotificacionController::class, 'marcarLeida']);
+$router->get('/notificaciones/contar', [NotificacionController::class, 'contar']);
 
 // ===================== BACKWARDS COMPATIBILITY (old .php URLs) =====================
 $router->get('/login.php', [AuthController::class, 'showLoginForm']);

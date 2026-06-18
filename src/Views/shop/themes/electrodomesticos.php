@@ -413,7 +413,7 @@
                         <?php if ($es_propietario): ?>
                         <a href="<?= BASE_URL ?>/productos?id_emprendimiento=<?= $emprendimiento['id_emprendimiento'] ?>&edit=<?= $producto['id_producto'] ?>" class="e6-btn" style="text-decoration:none"><i class="fas fa-pen"></i> Editar</a>
                         <?php elseif ($producto['stock'] > 0): ?>
-                        <button class="e6-btn" onclick="agregarAlCarrito(this)"><i class="fas fa-plus"></i> Añadir</button>
+                        <button class="e6-btn" onclick="mostrarCompra(this)"><i class="fas fa-plus"></i> Añadir</button>
                         <?php else: ?>
                         <button class="e6-btn e6-btn-out" disabled><i class="fas fa-times"></i> Agotado</button>
                         <?php endif; ?>

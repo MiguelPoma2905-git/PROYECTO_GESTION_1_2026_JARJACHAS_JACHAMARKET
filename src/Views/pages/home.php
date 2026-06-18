@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=6">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=10">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         [data-theme="light"] .btn-hero-primary { background:#1a1a2e;color:#fff !important;box-shadow:0 4px 24px rgba(26,26,46,0.2); }
@@ -16,31 +16,8 @@
         .hero-featured { padding:100px 48px;max-width:1440px;margin:0 auto; }
         .hero-featured .section-title { font-size:48px;margin-bottom:12px; }
         .hero-featured .section-desc { font-size:15px;margin-bottom:48px; }
-        .feat-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:28px; }
-        .feat-card { background:var(--card-bg);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .5s cubic-bezier(.4,0,.2,1);position:relative;animation:featUp .6s ease both; }
-        .feat-card:nth-child(1){animation-delay:0.05s}
-        .feat-card:nth-child(2){animation-delay:0.10s}
-        .feat-card:nth-child(3){animation-delay:0.15s}
-        .feat-card:nth-child(4){animation-delay:0.20s}
-        .feat-card:nth-child(5){animation-delay:0.25s}
-        .feat-card:nth-child(6){animation-delay:0.30s}
-        .feat-card:hover { transform:translateY(-6px);box-shadow:0 24px 48px rgba(0,0,0,0.25);border-color:rgba(255,255,255,0.1); }
-        [data-theme="light"] .feat-card:hover { box-shadow:0 24px 48px rgba(0,0,0,0.08);border-color:rgba(0,0,0,0.1); }
-        .feat-card-img { width:100%;height:200px;object-fit:cover;display:block;transition:transform .6s;background:var(--surface2); }
-        .feat-card:hover .feat-card-img { transform:scale(1.05); }
-        .feat-card-body { padding:20px 24px 24px; }
-        .feat-card-tag { display:inline-block;padding:4px 14px;border-radius:4px;font-size:11px;font-weight:500;letter-spacing:0.5px;margin-bottom:10px;font-family:'Cormorant Garamond',Georgia,serif; }
         .feat-card-body h3 { font-size:20px;font-weight:600;color:var(--text);margin-bottom:6px;font-family:'Cormorant Garamond',Georgia,serif; }
         .feat-card-body p { font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:16px; }
-        [data-theme="dark"] .feat-card-img { filter:brightness(0.85) contrast(1.1); }
-        [data-theme="dark"] .feat-card:hover .feat-card-img { filter:brightness(1) contrast(1.1); }
-        .feat-card-btn { display:inline-flex;align-items:center;gap:8px;padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;transition:all .3s; }
-        .feat-card-btn:hover { transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.2); }
-        .feat-empty { text-align:center;padding:80px;color:var(--text-dim);grid-column:1/-1; }
-        @keyframes featUp { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
-        @media(max-width:1024px){ .feat-grid{grid-template-columns:repeat(2,1fr)} .hero-featured{padding:60px 32px} }
-        @media(max-width:768px){ .feat-grid{grid-template-columns:1fr} .hero-featured{padding:40px 20px} .feat-card-img{height:220px} }
-
         .feat-list { display:grid;grid-template-columns:1fr 1fr;gap:32px;margin:0 -48px;padding:0; }
         .feat-card-h { background:var(--card-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:all .5s cubic-bezier(.4,0,.2,1);position:relative;animation:featUp .6s ease both; }
         .feat-card-h:nth-child(1){animation-delay:0.05s}
@@ -102,7 +79,6 @@
             <button class="menu-toggle" id="menuToggle">&#9776;</button>
             <button class="theme-toggle" id="themeToggle" title="Cambiar tema" style="margin-left:12px;flex-shrink:0">&#9790;</button>
             <nav class="nav-menu" id="navMenu">
-                <a href="<?= BASE_URL ?>/plantillas-disponibles">Plantillas</a>
                 <?php if ($is_logged_in): ?>
                     <a href="<?= BASE_URL ?>/dashboard">Mi panel</a>
                     <a href="<?= BASE_URL ?>/logout">Cerrar sesión</a>
@@ -115,8 +91,17 @@
     </header>
 
     <main>
-        <section class="hero">
-            <div class="hero-text">
+        <section class="hero hero-full" id="heroWrap">
+            <div class="hero-slider" id="heroSlider">
+                <?php $totalSlides = count($gallery); ?>
+                <?php foreach ($gallery as $index => $item): ?>
+                <div class="hero-slide <?= $index === 0 ? 'active' : '' ?>" data-index="<?= $index ?>">
+                    <img src="<?= BASE_URL ?>/assets/images/<?= $item['file'] ?>" alt="<?= htmlspecialchars($item['nombre']) ?>" class="hero-slide-img" loading="<?= $index === 0 ? 'eager' : 'lazy' ?>" onerror="this.parentElement.innerHTML='<div class=\'carousel-placeholder\'><div class=\'color-preview\'><div class=\'color-circle\' style=\'background:<?= $item['color_primario'] ?>;\'></div><div class=\'color-circle\' style=\'background:<?= $item['color_secundario'] ?>;\'></div></div><p style=\'font-size:12px;\'><?= htmlspecialchars($item['descripcion']) ?></p></div>'">
+                </div>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="hero-overlay">
                 <span class="hero-badge">Bolivia · 2026</span>
                 <h1 class="hero-greeting" id="heroGreeting"></h1>
                 <p class="hero-desc">
@@ -133,21 +118,19 @@
                 </div>
             </div>
 
-            <div class="hero-carousel">
-                <div class="carousel-container" id="carouselContainer">
-                    <?php foreach ($ambientes as $index => $ambiente): ?>
-                    <div class="carousel-slide <?= $index === 0 ? 'active' : '' ?>" data-index="<?= $index ?>">
-                        <img src="<?= BASE_URL ?>/assets/images/ambiente_<?= strtolower($ambiente['nombre']) ?>.jpg" alt="<?= htmlspecialchars($ambiente['nombre']) ?>" class="carousel-image" onerror="this.parentElement.innerHTML='<div class=\'carousel-placeholder\'><div class=\'color-preview\'><div class=\'color-circle\' style=\'background:<?= $ambiente['color_primario'] ?>;\'></div><div class=\'color-circle\' style=\'background:<?= $ambiente['color_secundario'] ?>;\'></div></div><p style=\'font-size:12px;\'><?= htmlspecialchars($ambiente['descripcion']) ?></p></div>'">
-                        <div class="carousel-caption">
-                            <h3><?= htmlspecialchars($ambiente['nombre']) ?></h3>
-                            <p><?= htmlspecialchars($ambiente['descripcion']) ?></p>
-                        </div>
+            <div class="hero-track"><div class="hero-track-fill animating" id="heroTrackFill"></div></div>
+            <div class="hero-counter" id="heroCounter">01 / <?= str_pad($totalSlides, 2, '0', STR_PAD_LEFT) ?></div>
+            <div class="hero-gallery-nav">
+                <div class="hero-gallery-strip" id="heroStrip">
+                    <?php foreach ($gallery as $index => $item): ?>
+                    <div class="hero-thumb <?= $index === 0 ? 'active' : '' ?>" data-index="<?= $index ?>">
+                        <img src="<?= BASE_URL ?>/assets/images/<?= $item['file'] ?>" alt="" loading="lazy" onerror="this.style.display='none'">
                     </div>
                     <?php endforeach; ?>
                 </div>
-                <div class="carousel-indicators" id="carouselIndicators">
-                    <?php foreach ($ambientes as $index => $ambiente): ?>
-                    <div class="indicator <?= $index === 0 ? 'active' : '' ?>" data-index="<?= $index ?>"></div>
+                <div class="hero-dots" id="heroDots">
+                    <?php foreach ($gallery as $index => $item): ?>
+                    <div class="hero-dot <?= $index === 0 ? 'active' : '' ?>" data-index="<?= $index ?>"></div>
                     <?php endforeach; ?>
                 </div>
             </div>
@@ -176,7 +159,7 @@
                         <p>Selecciona entre m&uacute;ltiples dise&ntilde;os profesionales y personaliza colores para reflejar tu marca.</p>
                     </div>
                     <div class="feat-card-h-img">
-                        <img src="<?= BASE_URL ?>/assets/images/features/producto_destacado_01.jpg" alt="Plantillas">
+                        <img src="<?= BASE_URL ?>/assets/images/features/ventaja_1.png" alt="Plantillas" onerror="this.style.display='none'">
                     </div>
                 </div>
                 <div class="feat-card-h">
@@ -186,7 +169,7 @@
                         <p>Llega a clientes de todo Bolivia sin complicaciones.</p>
                     </div>
                     <div class="feat-card-h-img">
-                        <img src="<?= BASE_URL ?>/assets/images/features/producto_destacado_02.jpg" alt="Vende">
+                        <img src="<?= BASE_URL ?>/assets/images/features/ventaja_2.png" alt="Vende" onerror="this.style.display='none'">
                     </div>
                 </div>
                 <div class="feat-card-h">
@@ -196,7 +179,7 @@
                         <p>Administra ventas y asigna repartidores para cada entrega.</p>
                     </div>
                     <div class="feat-card-h-img">
-                        <img src="<?= BASE_URL ?>/assets/images/features/producto_destacado_03.jpg" alt="Gestiona">
+                        <img src="<?= BASE_URL ?>/assets/images/features/ventaja_3.png" alt="Gestiona" onerror="this.style.display='none'">
                     </div>
                 </div>
                 <div class="feat-card-h">
@@ -206,7 +189,7 @@
                         <p>Analiza ventas y haz crecer tu presencia digital.</p>
                     </div>
                     <div class="feat-card-h-img">
-                        <img src="<?= BASE_URL ?>/assets/images/features/producto_destacado_04.jpg" alt="Crece">
+                        <img src="<?= BASE_URL ?>/assets/images/features/ventaja_4.png" alt="Crece" onerror="this.style.display='none'">
                     </div>
                 </div>
             </div>
@@ -219,24 +202,40 @@
                 <p class="section-desc">Explora emprendimientos bolivianos únicos y apoya el talento local</p>
             </div>
             <?php if (count($escaparates) > 0): ?>
-            <div class="feat-grid">
-                <?php foreach ($escaparates as $neg): ?>
-                <div class="feat-card" onclick="window.location.href='<?= BASE_URL ?>/tienda/<?= $neg['id_emprendimiento'] ?>'">
-                    <img src="<?= BASE_URL ?>/assets/images/features/producto_destacado_0<?= rand(1,4) ?>.jpg" alt="" class="feat-card-img" onerror="this.style.display='none'">
-                    <div class="feat-card-body">
-                        <span class="feat-card-tag" style="background:<?= $neg['color_primario'] ?>20;color:<?= $neg['color_primario'] ?>"><?= htmlspecialchars($neg['plantilla_nombre']) ?></span>
-                        <h3><?= htmlspecialchars($neg['nombre_comercial']) ?></h3>
-                        <p><?= htmlspecialchars(substr($neg['descripcion'] ?? '', 0, 100)) ?>...</p>
-                        <a href="<?= BASE_URL ?>/tienda/<?= $neg['id_emprendimiento'] ?>" class="feat-card-btn" style="background:<?= $neg['color_primario'] ?>;color:#fff">Ver tienda →</a>
+            <div class="biz-grid" style="max-width:1300px;margin:0 auto">
+                <?php $cardIdx = 1; ?>
+                <?php foreach ($escaparates as $neg):
+                    $np = $neg['color_primario'] ?? '#fff';
+                    $ns = $neg['color_secundario'] ?? '#555';
+                    $portada = $neg['portada'] ?? null;
+                ?>
+                <div class="biz-card" style="--card-color:<?= $np ?>;animation-delay:<?= $cardIdx * 0.06 ?>s" onclick="window.location.href='<?= BASE_URL ?>/tienda/<?= $neg['id_emprendimiento'] ?>'">
+                    <?php if ($portada): ?>
+                    <img src="<?= BASE_URL ?>/<?= $portada ?>" alt="" class="biz-card-img" loading="lazy" onerror="this.style.display='none'">
+                    <?php else: ?>
+                    <div class="biz-card-preview" style="background:linear-gradient(135deg,<?= $np ?>,<?= $ns ?>33)">
+                        <div class="biz-card-colors">
+                            <div class="biz-card-color" style="background:<?= $np ?>"></div>
+                            <div class="biz-card-color" style="background:<?= $ns ?>"></div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    <div class="biz-card-body">
+                        <div class="biz-card-name"><?= htmlspecialchars($neg['nombre_comercial']) ?></div>
+                        <div class="biz-card-desc"><?= htmlspecialchars(substr($neg['descripcion'] ?? '', 0, 100)) ?>...</div>
+                        <div class="biz-card-tags">
+                            <span class="biz-card-tag" style="background:<?= $np ?>20;color:<?= $np ?>"><?= ($neg['total_productos'] ?? 0) ?> productos</span>
+                            <span class="biz-card-tag"><?= htmlspecialchars($neg['plantilla_nombre']) ?></span>
+                        </div>
                     </div>
                 </div>
-                <?php endforeach; ?>
+                <?php $cardIdx++; endforeach; ?>
             </div>
             <?php endif; ?>
         </section>
         <?php if (count($escaparates) === 0): ?>
         <section class="hero-featured" style="padding-top:0">
-            <div class="feat-empty"><p>Próximamente nuevos negocios destacados</p></div>
+            <div style="text-align:center;padding:60px 20px;color:var(--text-dim)"><p>Próximamente nuevos negocios destacados</p></div>
         </section>
         <?php endif; ?>
 
@@ -257,7 +256,7 @@
                 <h4>Contacto</h4>
                 <p><i class="fas fa-envelope"></i> contacto@jachamarketplace.com</p>
                 <p><i class="fas fa-map-marker-alt"></i> La Paz &middot; Bolivia</p>
-                <p><i class="fas fa-phone"></i> +591 7XXX-XXXX</p>
+                <p><i class="fas fa-phone"></i> +591 7777-1234</p>
             </div>
             <div class="footer-col footer-proyecto-col">
                 <h4>Proyecto Universitario</h4>
@@ -359,13 +358,82 @@
                 setTimeout(typeWord, 500);
             }
 
-            var slides = document.querySelectorAll('.carousel-slide');
-            var indicators = document.querySelectorAll('.indicator');
-            var currentIndex = 0, interval;
-            function showSlide(index) { slides.forEach(function(s,i){s.classList.toggle('active',i===index)}); indicators.forEach(function(ind,i){ind.classList.toggle('active',i===index)}); currentIndex=index; }
+            var slides = document.querySelectorAll('.hero-slide');
+            var dots = document.querySelectorAll('.hero-dot');
+            var thumbs = document.querySelectorAll('.hero-thumb');
+            var strip = document.getElementById('heroStrip');
+            var trackFill = document.getElementById('heroTrackFill');
+            var counter = document.getElementById('heroCounter');
+            var wrap = document.getElementById('heroWrap');
+            var currentIndex = 0, interval, isPaused = false;
+
+            function padNum(n) { return n < 10 ? '0' + n : '' + n; }
+
+            function showSlide(index) {
+                slides.forEach(function(s,i){s.classList.toggle('active',i===index)});
+                dots.forEach(function(d,i){d.classList.toggle('active',i===index)});
+                if (thumbs.length) thumbs.forEach(function(t,i){t.classList.toggle('active',i===index)});
+                currentIndex = index;
+                if (strip && thumbs[index]) {
+                    var target = thumbs[index].offsetLeft - strip.offsetWidth/2 + thumbs[index].offsetWidth/2;
+                    strip.scrollTo({ left: target, behavior: 'smooth' });
+                }
+                if (counter) {
+                    counter.textContent = padNum(index + 1) + ' / ' + padNum(slides.length);
+                }
+                if (trackFill) {
+                    trackFill.classList.remove('animating');
+                    trackFill.style.animation = 'none';
+                    trackFill.offsetHeight;
+                    trackFill.style.animation = '';
+                    setTimeout(function(){ trackFill.classList.add('animating'); }, 20);
+                }
+            }
+
             function nextSlide() { showSlide((currentIndex+1)%slides.length); }
-            function startCarousel() { if(interval) clearInterval(interval); interval = setInterval(nextSlide,5000); }
-            if (indicators.length) indicators.forEach(function(i){i.addEventListener('click',function(){ showSlide(parseInt(i.getAttribute('data-index'))); startCarousel(); })});
+            function prevSlide() { showSlide((currentIndex-1+slides.length)%slides.length); }
+
+            function startCarousel() {
+                if(interval) clearInterval(interval);
+                if (!isPaused) {
+                    interval = setInterval(nextSlide, 5000);
+                }
+            }
+
+            dots.forEach(function(d){
+                d.addEventListener('click', function(){
+                    showSlide(parseInt(d.getAttribute('data-index')));
+                    startCarousel();
+                });
+            });
+            if (thumbs.length) {
+                thumbs.forEach(function(t){
+                    t.addEventListener('click', function(){
+                        showSlide(parseInt(t.getAttribute('data-index')));
+                        startCarousel();
+                    });
+                });
+            }
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft') { prevSlide(); startCarousel(); }
+                if (e.key === 'ArrowRight') { nextSlide(); startCarousel(); }
+            });
+
+            if (wrap) {
+                wrap.addEventListener('mouseenter', function(){ isPaused = true; clearInterval(interval); if(trackFill)trackFill.style.animationPlayState='paused'; });
+                wrap.addEventListener('mouseleave', function(){ isPaused = false; startCarousel(); if(trackFill)trackFill.style.animationPlayState='running'; });
+                var touchStartX = 0;
+                wrap.addEventListener('touchstart', function(e){ touchStartX = e.changedTouches[0].screenX; }, {passive:true});
+                wrap.addEventListener('touchend', function(e){
+                    var diff = touchStartX - e.changedTouches[0].screenX;
+                    if (Math.abs(diff) > 50) {
+                        if (diff > 0) { nextSlide(); } else { prevSlide(); }
+                        startCarousel();
+                    }
+                }, {passive:true});
+            }
+
             if(slides.length>0) startCarousel();
 
             var menuToggle = document.getElementById('menuToggle');

@@ -55,9 +55,10 @@ class EmprendimientoRepository
     public function findFeatured(): array
     {
         $stmt = $this->conn->prepare("
-            SELECT e.id_emprendimiento, e.nombre_comercial, e.descripcion, 
+            SELECT e.id_emprendimiento, e.nombre_comercial, e.descripcion, e.telefono,
                    p.nombre as plantilla_nombre, p.color_primario, p.color_secundario,
-                   pe.logo_blob, pe.banner_blob, pe.portada_blob
+                   pe.logo_blob, pe.banner_blob, pe.portada_blob,
+                   (SELECT COUNT(*) FROM productos WHERE id_emprendimiento = e.id_emprendimiento AND estado = 'Publicado') as total_productos
             FROM emprendimientos e
             JOIN personalizacion_emprendimiento pe ON e.id_emprendimiento = pe.id_emprendimiento
             JOIN plantillas p ON pe.id_plantilla = p.id_plantilla

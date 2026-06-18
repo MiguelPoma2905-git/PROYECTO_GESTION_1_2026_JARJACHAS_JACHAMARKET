@@ -21,13 +21,43 @@ class HomeController extends Controller
     {
         $usuario = $_SESSION['usuario'] ?? null;
         $isLoggedIn = $usuario !== null;
+
+        if ($isLoggedIn) {
+            $db = $this->getDB();
+            $stmt = $db->prepare("SELECT * FROM usuarios WHERE id_usuario = ? AND estado = 'Activo'");
+            $stmt->execute([$usuario['id'] ?? $usuario['id_usuario'] ?? 0]);
+            $usuarioDb = $stmt->fetch();
+            if (!$usuarioDb) {
+                session_destroy();
+                $isLoggedIn = false;
+                $usuario = null;
+            } else {
+                $usuarioDb['id'] = $usuarioDb['id_usuario'];
+                $usuarioDb['nombre'] = trim(($usuarioDb['nombres'] ?? '') . ' ' . ($usuarioDb['apellidos'] ?? ''));
+                $_SESSION['usuario'] = $usuarioDb;
+                $usuario = $usuarioDb;
+            }
+        }
         $rolActivo = $_SESSION['rol_activo'] ?? ($usuario['rol'] ?? 'Cliente');
         $isVendedor = $isLoggedIn && $rolActivo === 'Emprendedor';
         $isCliente = $isLoggedIn && $rolActivo === 'Cliente';
         $isRepartidor = $isLoggedIn && $rolActivo === 'Repartidor';
 
         $escaparates = $this->emprendimientoRepo->findFeatured();
-        $ambientes = $this->plantillaRepo->findAllActive();
+
+        $galleryItems = [
+            ['nombre' => 'Artesano', 'descripcion' => 'Productos hechos a mano con dedicación', 'color_primario' => '#D4A574', 'color_secundario' => '#8B6914'],
+            ['nombre' => 'Elegante', 'descripcion' => 'Estilo y sofisticación', 'color_primario' => '#C0C0C0', 'color_secundario' => '#4A4A4A'],
+            ['nombre' => 'Natural', 'descripcion' => 'Inspiración orgánica', 'color_primario' => '#7CB342', 'color_secundario' => '#33691E'],
+            ['nombre' => 'Urbano', 'descripcion' => 'Vibra contemporánea', 'color_primario' => '#5C6BC0', 'color_secundario' => '#283593'],
+            ['nombre' => 'Clásico', 'descripcion' => 'Diseño atemporal', 'color_primario' => '#8D6E63', 'color_secundario' => '#4E342E'],
+        ];
+        $gallery = [];
+        foreach ($galleryItems as $i => $item) {
+            $num = $i + 1;
+            $file = $this->findGalleryFile($num);
+            $gallery[] = array_merge($item, ['numero' => $num, 'file' => $file]);
+        }
 
         $db = $this->getDB();
         $totalNegocios = (int)$db->query("SELECT COUNT(*) FROM emprendimientos WHERE estado = 'Aprobado'")->fetchColumn();
@@ -43,7 +73,7 @@ class HomeController extends Controller
             'is_repartidor' => $isRepartidor,
             'rol_activo' => $rolActivo,
             'escaparates' => $escaparates,
-            'ambientes' => $ambientes,
+            'gallery' => $gallery,
             'total_negocios' => $totalNegocios,
             'total_productos' => $totalProductos,
             'total_usuarios' => $totalUsuarios,
@@ -51,10 +81,37 @@ class HomeController extends Controller
         ]);
     }
 
+    private function findGalleryFile(int $num): string
+    {
+        foreach (['jpg', 'jpeg', 'png'] as $ext) {
+            if (file_exists(BASE_PATH . 'public/assets/images/galeria_' . $num . '.' . $ext)) {
+                return 'galeria_' . $num . '.' . $ext;
+            }
+        }
+        return 'galeria_' . $num . '.jpg';
+    }
+
     public function explorar(): void
     {
         $usuario = $_SESSION['usuario'] ?? null;
         $isLoggedIn = $usuario !== null;
+
+        if ($isLoggedIn) {
+            $db = $this->getDB();
+            $stmt = $db->prepare("SELECT * FROM usuarios WHERE id_usuario = ? AND estado = 'Activo'");
+            $stmt->execute([$usuario['id'] ?? $usuario['id_usuario'] ?? 0]);
+            $usuarioDb = $stmt->fetch();
+            if (!$usuarioDb) {
+                session_destroy();
+                $isLoggedIn = false;
+                $usuario = null;
+            } else {
+                $usuarioDb['id'] = $usuarioDb['id_usuario'];
+                $usuarioDb['nombre'] = trim(($usuarioDb['nombres'] ?? '') . ' ' . ($usuarioDb['apellidos'] ?? ''));
+                $_SESSION['usuario'] = $usuarioDb;
+                $usuario = $usuarioDb;
+            }
+        }
 
         $negocios = $this->emprendimientoRepo->findAprobadosExcept(0);
         $plantillas = $this->plantillaRepo->findAllActive();
@@ -71,6 +128,21 @@ class HomeController extends Controller
     {
         $usuario = $_SESSION['usuario'] ?? null;
         $db = $this->getDB();
+
+        if ($usuario) {
+            $stmt = $db->prepare("SELECT * FROM usuarios WHERE id_usuario = ? AND estado = 'Activo'");
+            $stmt->execute([$usuario['id'] ?? $usuario['id_usuario'] ?? 0]);
+            $usuarioDb = $stmt->fetch();
+            if (!$usuarioDb) {
+                session_destroy();
+                $usuario = null;
+            } else {
+                $usuarioDb['id'] = $usuarioDb['id_usuario'];
+                $usuarioDb['nombre'] = trim(($usuarioDb['nombres'] ?? '') . ' ' . ($usuarioDb['apellidos'] ?? ''));
+                $_SESSION['usuario'] = $usuarioDb;
+                $usuario = $usuarioDb;
+            }
+        }
 
         // 1. Análisis de tablas transaccionales
         $stmt = $db->query("

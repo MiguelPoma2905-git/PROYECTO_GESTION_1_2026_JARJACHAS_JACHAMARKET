@@ -7,7 +7,7 @@
     <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/assets/images/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=9">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=10">
     <style>
         .wrap { max-width:1200px; margin:0 auto; padding:32px 24px; }
         .page-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; }
@@ -44,8 +44,7 @@
 
         .es { padding:60px 20px; text-align:center; color:var(--text-dim); }
         .es p { font-size:13px; color:var(--text-muted); }
-        .es .btn-p { display:inline-flex; align-items:center; gap:7px; padding:12px 22px; background:var(--text); color:var(--bg); border:none; border-radius:4px; font-size:13px; font-weight:600; cursor:pointer; transition:opacity .2s; font-family:inherit; text-decoration:none; margin-top:16px; }
-        .es .btn-p:hover { opacity:0.85; }
+
 
         @media(max-width:768px){
             .wrap { padding:16px; }
@@ -53,6 +52,16 @@
             .acts { flex-direction:column; gap:4px; }
             .page-hdr { flex-direction:column; align-items:flex-start; gap:8px; }
         }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .t-card, .msg { animation: fadeInUp 0.6s ease both; }
+        .t-card:nth-child(1) { animation-delay: 0.1s; }
+        .t-card:active { transform: scale(0.99); }
+        .t-card { transition: transform 0.2s ease, box-shadow 0.3s ease; }
+        @media (min-width: 769px) { .t-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.06); } }
+        .page-hdr h1 { display: flex; align-items: center; gap: 12px; }
+        .page-hdr h1::before { content: '\f0ae'; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 20px; opacity: 0.4; width: 40px; height: 40px; border-radius: 10px; background: rgba(107, 143, 113, 0.1); display: flex; align-items: center; justify-content: center; color: #6b8f71; }
+        .es { border-radius: 12px; background: var(--card-bg); border: 1px solid var(--border); }
     </style>
 </head>
 <body class="dashboard-body">
@@ -70,7 +79,7 @@
             <button class="theme-toggle" id="themeToggle" title="Cambiar tema"><i class="fas fa-moon"></i></button>
             <div class="user-dropdown" id="userDropdown">
                 <div class="user-trigger" id="userTrigger">
-                    <span class="user-name"><?= htmlspecialchars($usuario['nombre']) ?></span>
+                    <span class="user-name"><?= htmlspecialchars($usuario['nombre'] ?? 'Usuario') ?></span>
                     <div class="user-avatar">
                         <?php if ($avatar_usuario): ?>
                             <img src="<?= BASE_URL ?>/<?= $avatar_usuario ?>" alt="Avatar">
@@ -111,6 +120,7 @@
                 <h1>Gestionar negocios</h1>
                 <div class="sub">Administra el estado de tus emprendimientos</div>
             </div>
+            <a href="<?= BASE_URL ?>/plantillas-disponibles" style="display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:var(--text);color:var(--bg);border-radius:10px;text-decoration:none;font-size:13px;font-weight:600;transition:all 0.2s"><i class="fas fa-plus"></i> Nuevo negocio</a>
         </div>
 
         <?php if ($mensaje): ?>
@@ -121,7 +131,7 @@
         <?php endif; ?>
 
         <?php if (count($mis_negocios) > 0): ?>
-        <div class="t-card">
+        <div class="t-card" style="animation-delay:0.1s">
             <div class="twrap">
                 <table class="dt">
                     <thead>
@@ -185,9 +195,11 @@
         </div>
         <?php else: ?>
         <div class="t-card">
-            <div class="es">
-                <p>No tienes negocios creados</p>
-                <a href="<?= BASE_URL ?>/plantillas-disponibles" class="btn-p"><i class="fas fa-plus"></i> Crear mi primer negocio</a>
+            <div style="text-align:center;padding:80px 20px;color:var(--text-dim)">
+                <i class="fas fa-store-alt" style="font-size:48px;margin-bottom:16px;opacity:0.15;color:var(--text-muted)"></i>
+                <p style="font-size:15px;margin-bottom:6px">No tienes negocios creados</p>
+                <p style="font-size:12px;color:var(--text-muted);margin-bottom:20px">Elige una plantilla y crea tu primer emprendimiento</p>
+                <a href="<?= BASE_URL ?>/plantillas-disponibles" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--text);color:var(--bg);border-radius:10px;text-decoration:none;font-size:13px;font-weight:600;transition:all 0.2s"><i class="fas fa-plus"></i> Crear mi primer negocio</a>
             </div>
         </div>
         <?php endif; ?>

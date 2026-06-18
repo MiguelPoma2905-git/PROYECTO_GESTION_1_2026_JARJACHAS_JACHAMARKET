@@ -172,7 +172,7 @@
                         <?php if ($es_propietario): ?>
                         <a href="<?= BASE_URL ?>/productos?id_emprendimiento=<?= $emprendimiento['id_emprendimiento'] ?>&edit=<?= $producto['id_producto'] ?>" class="t7-btn" style="text-decoration:none"><i class="fas fa-pen"></i> Editar</a>
                         <?php else: ?>
-                        <button class="t7-btn" onclick="agregarAlCarrito(this)"><i class="fas fa-shopping-bag"></i> Agregar</button>
+                        <button class="t7-btn" onclick="mostrarCompra(this)"><i class="fas fa-shopping-bag"></i> Agregar</button>
                         <?php endif; ?>
                     </div>
                 </div>

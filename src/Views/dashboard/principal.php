@@ -7,7 +7,7 @@
     <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/assets/images/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=9">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=10">
     <style>
         .greeting-wrap { overflow:hidden; transition:all 0.6s ease; }
         .greeting-text { font-family:Georgia,var(--font-serif);font-size:22px;font-weight:400;color:var(--text);margin-bottom:12px;min-height:1.2em; }
@@ -42,7 +42,7 @@
                 <button class="theme-toggle" id="themeToggle" title="Cambiar tema">&#9790;</button>
                 <div class="user-dropdown" id="userDropdown">
                     <div class="user-trigger" id="userTrigger">
-                        <span class="user-name"><?= htmlspecialchars($usuario['nombre']) ?></span>
+                        <span class="user-name"><?= htmlspecialchars($usuario['nombre'] ?? 'Usuario') ?></span>
                         <div class="user-avatar">
                             <?php if ($avatar_usuario): ?>
                                 <img src="<?= BASE_URL ?>/<?= $avatar_usuario ?>" alt="Avatar">
@@ -156,7 +156,8 @@
                     <a href="<?= BASE_URL ?>/plantillas-disponibles" class="btn-create"><i class="fas fa-plus"></i> Nuevo negocio</a>
                 </div>
                 <?php if (count($mis_negocios) > 0): ?>
-                <div class="emprendedor-cards">
+                <div class="biz-grid">
+                    <?php $cardIdx = 1; ?>
                     <?php foreach ($mis_negocios as $negocio):
                         $np = $negocio['color_primario'] ?? '#C0392B';
                         $ns = $negocio['color_secundario'] ?? '#2C3E50';
@@ -164,23 +165,23 @@
                         $plantillaId = $negocio['id_plantilla'] ?? 0;
                         $imgSrc = $portadaUrl ? (BASE_URL . '/' . $portadaUrl) : (BASE_URL . '/assets/images/plantillas/plantilla_' . $plantillaId . '.jpg');
                     ?>
-                    <div class="emp-card">
-                        <img class="emp-card-img" src="<?= $imgSrc ?>" alt="<?= htmlspecialchars($negocio['nombre_comercial']) ?>" loading="lazy">
-                        <div class="emp-card-body">
-                            <div class="emp-card-name"><?= htmlspecialchars($negocio['nombre_comercial']) ?></div>
-                            <div class="emp-card-desc"><?= htmlspecialchars(substr($negocio['descripcion'] ?? '', 0, 80)) ?><?= strlen($negocio['descripcion'] ?? '') > 80 ? '...' : '' ?></div>
-                            <div class="emp-card-meta">
-                                <span class="emp-tag" style="background:<?= $np ?>12;color:<?= $np ?>"><i class="fas fa-box"></i> <?= $negocio['total_productos'] ?> productos</span>
-                                <span class="emp-tag" style="background:<?= $ns ?>12;color:<?= $ns ?>"><i class="fas fa-palette"></i> <?= $negocio['plantilla_nombre'] ?? 'Moderno' ?></span>
+                    <div class="biz-card" style="animation-delay:<?= $cardIdx * 0.05 ?>s">
+                        <img class="biz-card-img" src="<?= $imgSrc ?>" alt="<?= htmlspecialchars($negocio['nombre_comercial']) ?>" loading="lazy" onerror="this.style.display='none'">
+                        <div class="biz-card-body">
+                            <div class="biz-card-name"><?= htmlspecialchars($negocio['nombre_comercial']) ?></div>
+                            <div class="biz-card-desc"><?= htmlspecialchars(substr($negocio['descripcion'] ?? '', 0, 100)) ?></div>
+                            <div class="biz-card-tags">
+                                <span class="biz-card-tag" style="background:<?= $np ?>15;color:<?= $np ?>"><i class="fas fa-box"></i> <?= $negocio['total_productos'] ?> productos</span>
+                                <span class="biz-card-tag" style="background:<?= $ns ?>15;color:<?= $ns ?>"><i class="fas fa-palette"></i> <?= $negocio['plantilla_nombre'] ?? 'Moderno' ?></span>
                             </div>
-                            <div class="emp-card-actions">
-                                <a href="<?= BASE_URL ?>/tienda/<?= $negocio['id_emprendimiento'] ?>" class="emp-btn emp-btn-primary"><i class="fas fa-eye"></i> Ver</a>
-                                <a href="<?= BASE_URL ?>/plantillas?id_emprendimiento=<?= $negocio['id_emprendimiento'] ?>" class="emp-btn emp-btn-outline"><i class="fas fa-palette"></i> Estilo</a>
-                                <a href="<?= BASE_URL ?>/productos?id_emprendimiento=<?= $negocio['id_emprendimiento'] ?>" class="emp-btn emp-btn-outline"><i class="fas fa-box"></i> Prod.</a>
+                            <div class="biz-card-actions">
+                                <a href="<?= BASE_URL ?>/tienda/<?= $negocio['id_emprendimiento'] ?>" class="biz-btn biz-btn-primary"><i class="fas fa-eye"></i> Ver</a>
+                                <a href="<?= BASE_URL ?>/plantillas?id_emprendimiento=<?= $negocio['id_emprendimiento'] ?>" class="biz-btn biz-btn-outline"><i class="fas fa-palette"></i> Estilo</a>
+                                <a href="<?= BASE_URL ?>/productos?id_emprendimiento=<?= $negocio['id_emprendimiento'] ?>" class="biz-btn biz-btn-outline"><i class="fas fa-box"></i> Prod.</a>
                             </div>
                         </div>
                     </div>
-                    <?php endforeach; ?>
+                    <?php $cardIdx++; endforeach; ?>
                 </div>
                 <?php else: ?>
                     <div class="empty-state" style="text-align:center;padding:60px 20px;color:var(--text-dim);grid-column:1/-1;background:var(--card-bg);border:1px solid var(--border);border-radius:4px">
@@ -200,9 +201,10 @@
                         <div class="cliente-greeting" id="clienteGreeting"></div>
                         <p class="cliente-subtitle">Explora tiendas, descubre productos únicos y apoya el talento local</p>
                         <div class="cliente-search-wrap">
+                            <div class="cliente-search-glow"></div>
                             <div class="cliente-search">
                                 <i class="fas fa-search"></i>
-                                <input type="text" id="searchInput" placeholder="Busca tu pr\u00f3xima tienda favorita..." oninput="filtrarNegocios()">
+                                <input type="text" id="searchInput" placeholder="Busca tu próxima tienda favorita..." oninput="filtrarNegocios()">
                             </div>
                         </div>
                         <div class="cliente-toolbar">
@@ -221,49 +223,35 @@
                     </div>
                 </div>
                 <div class="negocios-container" id="negociosContainer">
-                    <div class="negocios-grid blocks-view" id="negociosGrid">
+                    <div class="biz-grid" id="negociosGrid">
                         <?php if (count($otros_negocios) > 0): ?>
+                            <?php $cardIdx = 1; ?>
                             <?php foreach ($otros_negocios as $negocio):
                                 $np = $negocio['color_primario'] ?? '#C0392B';
                                 $ns = $negocio['color_secundario'] ?? '#2C3E50';
-                                $nt = $negocio['color_texto'] ?? '#1A1A2E';
                                 $portada = $negocio['portada'] ?? null;
-                                $tipografia = $negocio['tipografia'] ?? 'Inter';
-                                $telefono = $negocio['telefono'] ?? '';
                             ?>
-                            <div class="negocio-card negocio-item" style="--card-color:<?= $np ?>" data-nombre="<?= htmlspecialchars(strtolower($negocio['nombre_comercial'])) ?>" data-id="<?= $negocio['id_emprendimiento'] ?>" data-count="<?= $negocio['total_productos'] ?>">
-                                <div class="negocio-accent" style="background:<?= $np ?>"></div>
-                                <a href="<?= BASE_URL ?>/tienda/<?= $negocio['id_emprendimiento'] ?>" class="negocio-link">
-                                    <?php if ($portada): ?>
-                                    <div class="negocio-portada" style="background-image:url('<?= BASE_URL ?>/<?= $portada ?>')"></div>
-                                    <?php else: ?>
-                                    <div class="negocio-preview" style="background:linear-gradient(135deg,<?= $np ?>,<?= $ns ?>)">
-                                        <div class="negocio-mockup">
-                                            <div class="mockup-bar" style="background:rgba(0,0,0,0.2)"></div>
-                                            <div class="mockup-hero">
-                                                <div class="mockup-title"><?= htmlspecialchars(substr($negocio['nombre_comercial'], 0, 12)) ?></div>
-                                                <div class="mockup-line" style="width:60%"></div>
-                                                <div class="mockup-line" style="width:40%"></div>
-                                            </div>
-                                            <div class="mockup-grid">
-                                                <div class="mockup-item"></div>
-                                                <div class="mockup-item"></div>
-                                                <div class="mockup-item"></div>
-                                            </div>
-                                        </div>
+                            <div class="biz-card" style="--card-color:<?= $np ?>;animation-delay:<?= $cardIdx * 0.05 ?>s" data-nombre="<?= htmlspecialchars(strtolower($negocio['nombre_comercial'])) ?>" data-id="<?= $negocio['id_emprendimiento'] ?>" onclick="window.location.href='<?= BASE_URL ?>/tienda/<?= $negocio['id_emprendimiento'] ?>'">
+                                <?php if ($portada): ?>
+                                <img src="<?= BASE_URL ?>/<?= $portada ?>" alt="" class="biz-card-img" loading="lazy" onerror="this.style.display='none'">
+                                <?php else: ?>
+                                <div class="biz-card-preview" style="background:linear-gradient(135deg,<?= $np ?>,<?= $ns ?>33)">
+                                    <div class="biz-card-colors">
+                                        <div class="biz-card-color" style="background:<?= $np ?>;--c:<?= $np ?>"></div>
+                                        <div class="biz-card-color" style="background:<?= $ns ?>;--c:<?= $ns ?>"></div>
                                     </div>
-                                    <?php endif; ?>
-                                    <div class="negocio-info">
-                                        <h3 style="font-family:'<?= $tipografia ?>',sans-serif"><?= htmlspecialchars($negocio['nombre_comercial']) ?></h3>
-                                        <p><?= htmlspecialchars(substr($negocio['descripcion'] ?? '', 0, 80)) ?><?= strlen($negocio['descripcion'] ?? '') > 80 ? '...' : '' ?></p>
-                                        <div class="negocio-badges">
-                                            <span class="negocio-tag" style="background:<?= $np ?>15;color:<?= $np ?>"><?= $negocio['total_productos'] ?> productos</span>
-                                            <span class="negocio-tag" style="background:<?= $ns ?>15;color:<?= $ns ?>"><?= $negocio['plantilla_nombre'] ?? 'Moderno' ?></span>
-                                        </div>
+                                </div>
+                                <?php endif; ?>
+                                <div class="biz-card-body">
+                                    <div class="biz-card-name"><?= htmlspecialchars($negocio['nombre_comercial']) ?></div>
+                                    <div class="biz-card-desc"><?= htmlspecialchars(substr($negocio['descripcion'] ?? '', 0, 100)) ?></div>
+                                    <div class="biz-card-tags">
+                                        <span class="biz-card-tag" style="background:<?= $np ?>15;color:<?= $np ?>"><?= $negocio['total_productos'] ?> productos</span>
+                                        <span class="biz-card-tag" style="background:<?= $ns ?>15;color:<?= $ns ?>"><?= $negocio['plantilla_nombre'] ?? 'Moderno' ?></span>
                                     </div>
-                                </a>
+                                </div>
                             </div>
-                            <?php endforeach; ?>
+                            <?php $cardIdx++; endforeach; ?>
                         <?php else: ?>
                             <div class="cliente-empty">
                                 <div class="cliente-empty-glow"></div>
@@ -438,8 +426,8 @@
                         <h2>Usuarios</h2>
                         <span style="font-size:10px;color:var(--text-dim);background:var(--card-bg);padding:3px 12px;border-radius:6px;border:1px solid var(--border)"><?= count($admin_usuarios) ?> registrados</span>
                     </div>
-                    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;overflow-x:auto">
-                        <table class="admin-table">
+                    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:14px;overflow-x:auto;transition:border-color 0.3s">
+                        <table class="ventas-table">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -498,8 +486,8 @@
                         <h2>Negocios</h2>
                         <span style="font-size:11px;color:var(--text-dim);background:var(--card-bg);padding:4px 14px;border-radius:20px;border:1px solid var(--border)"><?= count($admin_negocios) ?> registrados</span>
                     </div>
-                    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:14px;overflow-x:auto">
-                        <table class="admin-table">
+                    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:14px;overflow-x:auto;transition:border-color 0.3s">
+                        <table class="ventas-table">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -538,11 +526,12 @@
                 </div>
 
                 <!-- Reset -->
-                <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:32px;animation:fadeInUp 0.6s var(--ease) both;animation-delay:0.2s">
+                <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:32px;animation:fadeInUp 0.6s var(--ease) both;animation-delay:0.2s;position:relative;overflow:hidden">
+                    <div style="position:absolute;top:-60px;right:-60px;width:180px;height:180px;border-radius:50%;background:rgba(231,76,60,0.03);pointer-events:none"></div>
                     <div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap">
                         <div style="flex:1;min-width:200px">
                             <h3 style="font-family:Georgia,var(--font-serif);font-size:20px;font-weight:500;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:10px">
-                                <span style="width:32px;height:32px;border-radius:8px;background:rgba(231,76,60,0.1);color:#e74c3c;display:flex;align-items:center;justify-content:center;font-size:16px"><i class="fas fa-exclamation-triangle"></i></span>
+                                <span style="width:36px;height:36px;border-radius:10px;background:rgba(231,76,60,0.1);color:#e74c3c;display:flex;align-items:center;justify-content:center;font-size:16px"><i class="fas fa-exclamation-triangle"></i></span>
                                 Reiniciar base de datos
                             </h3>
                             <p style="font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:0">
@@ -552,7 +541,7 @@
                     </div>
                     <form method="POST" action="<?= BASE_URL ?>/admin/reiniciar-bd" onsubmit="return confirm('ESTAS ABSOLUTAMENTE SEGURO? Se borrarán todos los datos. Escribe RESET para confirmar.');" style="margin-top:20px">
                         <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-                            <input type="text" name="confirmar" placeholder="Escribe RESET para confirmar" required style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;padding:12px 16px;color:var(--text);font-size:13px;width:100%;max-width:240px;outline:none;transition:border 0.2s">
+                            <input type="text" name="confirmar" placeholder="Escribe RESET para confirmar" required style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;padding:12px 16px;color:var(--text);font-size:13px;width:100%;max-width:240px;outline:none;transition:all 0.2s;font-family:monospace;letter-spacing:1px">
                             <button type="submit" style="display:inline-flex;align-items:center;gap:8px;background:rgba(231,76,60,0.1);color:#e74c3c;border:1px solid rgba(231,76,60,0.2);padding:12px 24px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s">
                                 <i class="fas fa-radiation"></i> Reiniciar base de datos
                             </button>
@@ -792,7 +781,7 @@
                     viewBtns.forEach(function(b) { b.classList.remove('active'); });
                     this.classList.add('active');
                     if (grid) {
-                        grid.className = 'negocios-grid ' + this.getAttribute('data-view') + '-view';
+                        grid.className = 'biz-grid ' + this.getAttribute('data-view') + '-view';
                     }
                 });
             });
@@ -804,13 +793,10 @@
                     aplicarFiltro();
                 });
             });
-            document.querySelectorAll('.negocio-link').forEach(function(link) {
-                link.addEventListener('click', function() {
-                    var item = this.closest('.negocio-item');
-                    if (item) {
-                        var id = item.getAttribute('data-id');
-                        if (id) localStorage.setItem('jacha_visit_' + id, Date.now());
-                    }
+            document.querySelectorAll('.biz-card').forEach(function(card) {
+                card.addEventListener('click', function() {
+                    var id = this.getAttribute('data-id');
+                    if (id) localStorage.setItem('jacha_visit_' + id, Date.now());
                 });
             });
         });

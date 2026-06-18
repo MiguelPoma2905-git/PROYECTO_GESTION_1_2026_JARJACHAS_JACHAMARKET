@@ -6,9 +6,8 @@
         --tb: <?= $p('color_fondo', '#FDFBF7') ?>;
         --tt: <?= $p('color_texto', '#1A1A2E') ?>;
         --ef: '<?= $tipografia ?>', system-ui, sans-serif;
-        --tgl: rgba(255,255,255,0.7);
+        --tgl: rgba(30,30,40,0.85);
     }
-    [data-theme="dark"] { --tgl: rgba(30,30,40,0.85); }
     body {
         font-family:var(--ef);
         background:var(--tb); color:var(--tt); min-height:100vh; margin:0;
@@ -44,10 +43,9 @@
         box-shadow:0 4px 20px rgba(0,0,0,0.06);
         transition:all .4s cubic-bezier(.4,0,.2,1);
         display:flex; flex-direction:column;
-        border:1px solid transparent;
+        border:1px solid rgba(255,255,255,0.04);
         animation:gFU .5s ease both;
     }
-    [data-theme="dark"] .g-card { background:var(--tgl); border-color:rgba(255,255,255,0.04); }
     .g-card:hover { transform:translateY(-8px); box-shadow:0 16px 48px rgba(0,0,0,0.1); border-color:color-mix(in srgb,var(--tp) 20%,transparent); }
         .g-card-img {
             position:relative; overflow:hidden; height:230px;

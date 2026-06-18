@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=6">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css?v=10">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:'DM Sans',system-ui,sans-serif; background:var(--bg,#121212); color:var(--text,#e8e8e8); min-height:100vh; }
@@ -83,46 +83,40 @@
         .results-info .clear-btn.show { display:inline; }
 
         .explore-grid {
-            display:grid; grid-template-columns:repeat(3,1fr); gap:24px;
+            display:grid; grid-template-columns:repeat(3,1fr); gap:28px;
             max-width:1300px; margin:0 auto; padding:0 48px 80px;
         }
         .explore-card {
             background:var(--card-bg,#141414); border:1px solid var(--border);
-            border-radius:8px; overflow:hidden; cursor:pointer;
-            transition:all .4s cubic-bezier(.4,0,.2,1); position:relative;
+            border-radius:18px; overflow:hidden; cursor:pointer;
+            transition:all .5s cubic-bezier(.34,1.56,.64,1); position:relative;
             animation:cardUp .5s ease both;
         }
-        .explore-card:nth-child(1) { animation-delay:0.03s; }
-        .explore-card:nth-child(2) { animation-delay:0.06s; }
-        .explore-card:nth-child(3) { animation-delay:0.09s; }
-        .explore-card:nth-child(4) { animation-delay:0.12s; }
-        .explore-card:nth-child(5) { animation-delay:0.15s; }
-        .explore-card:nth-child(6) { animation-delay:0.18s; }
-        .explore-card:nth-child(7) { animation-delay:0.21s; }
-        .explore-card:nth-child(8) { animation-delay:0.24s; }
-        .explore-card:nth-child(9) { animation-delay:0.27s; }
-        .explore-card:nth-child(10){ animation-delay:0.30s; }
-        .explore-card:nth-child(11){ animation-delay:0.33s; }
-        .explore-card:nth-child(12){ animation-delay:0.36s; }
-        .explore-card:hover { transform:translateY(-6px); border-color:var(--border-hi); box-shadow:0 20px 60px rgba(0,0,0,0.3); }
-        [data-theme="light"] .explore-card:hover { box-shadow:0 20px 60px rgba(0,0,0,0.06); }
-        .explore-card.hidden { display:none; }
-
+        .explore-card::before {
+            content:''; position:absolute; inset:-1px; border-radius:19px;
+            background:linear-gradient(135deg,var(--border-hi),transparent 50%,var(--border-hi));
+            opacity:0; transition:opacity .5s; pointer-events:none; z-index:-1;
+        }
+        .explore-card:hover { transform:translateY(-8px); border-color:var(--border-hi); box-shadow:0 24px 64px rgba(0,0,0,0.12); }
+        .explore-card:hover::before { opacity:.25; }
+        .explore-card:active { transform:scale(.97) translateY(-4px); transition:transform .1s; }
         .explore-card-preview {
-            height:140px; display:flex; align-items:center; justify-content:center;
+            height:180px; display:flex; align-items:center; justify-content:center;
             position:relative; overflow:hidden;
         }
-        .explore-card-colors { display:flex; gap:12px; position:relative; z-index:1; }
-        .explore-card-color { width:44px; height:44px; border-radius:8px; box-shadow:0 4px 16px rgba(0,0,0,0.25); }
-        .explore-card-body { padding:20px 24px 24px; }
-        .explore-card-body h3 { font-family:'Cormorant Garamond',Georgia,serif; font-size:20px; font-weight:500; color:var(--text); margin-bottom:6px; }
-        .explore-card-body .desc { font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:16px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+        .explore-card-colors { display:flex; gap:14px; position:relative; z-index:1; }
+        .explore-card-color { width:52px; height:52px; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.3); transition:transform .3s; }
+        .explore-card:hover .explore-card-color { transform:scale(1.08); }
+        .explore-card-body { padding:22px 24px 24px; }
+        .explore-card-body h3 { font-family:'Cormorant Garamond',Georgia,serif; font-size:22px; font-weight:600; color:var(--text); margin-bottom:4px; }
+        .explore-card-body .desc { font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:14px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
         .explore-card-tags { display:flex; gap:6px; flex-wrap:wrap; }
         .explore-card-tag {
-            font-size:10px; letter-spacing:0.5px; text-transform:uppercase;
-            color:var(--text-dim); background:var(--surface2); padding:3px 10px;
-            border-radius:4px; border:1px solid var(--border);
+            font-size:10px; letter-spacing:.5px; text-transform:uppercase;
+            color:var(--text-dim); background:var(--surface2); padding:4px 12px;
+            border-radius:20px; border:1px solid var(--border);
         }
+        .explore-card.hidden { display:none; }
 
         .explore-empty {
             text-align:center; grid-column:1/-1; padding:100px 40px; color:var(--text-dim);
@@ -170,7 +164,6 @@
         <a href="<?= BASE_URL ?>/"><img src="<?= BASE_URL ?>/assets/images/logo_empresa.png" alt="Jacha" class="logo-img"></a>
         <nav>
             <a href="<?= BASE_URL ?>/">Inicio</a>
-            <a href="<?= BASE_URL ?>/plantillas-disponibles">Plantillas</a>
             <?php if ($is_logged_in): ?>
                 <a href="<?= BASE_URL ?>/dashboard">Mi panel</a>
             <?php else: ?>
@@ -222,14 +215,15 @@
 
     <div class="explore-grid" id="exploreGrid">
         <?php if (count($negocios) > 0): ?>
+            <?php $cardIdx = 1; ?>
             <?php foreach ($negocios as $negocio):
                 $plantilla = $negocio['plantilla_nombre'] ?? 'Moderno';
             ?>
-            <div class="explore-card" data-id="<?= $negocio['id_emprendimiento'] ?>" data-plantilla="<?= htmlspecialchars($plantilla) ?>" data-nombre="<?= htmlspecialchars($negocio['nombre_comercial']) ?>">
-                <div class="explore-card-preview" style="background:linear-gradient(135deg,<?= $negocio['color_primario'] ?? '#1a1a1a' ?>22,<?= $negocio['color_secundario'] ?? '#555' ?>11)">
+            <div class="explore-card" style="animation-delay:<?= $cardIdx * 0.04 ?>s" data-id="<?= $negocio['id_emprendimiento'] ?>" data-plantilla="<?= htmlspecialchars($plantilla) ?>" data-nombre="<?= htmlspecialchars($negocio['nombre_comercial']) ?>">
+                <div class="explore-card-preview" style="background:linear-gradient(135deg,<?= $negocio['color_primario'] ?? '#1a1a1a' ?>,<?= $negocio['color_secundario'] ?? '#555' ?>33)">
                     <div class="explore-card-colors">
-                        <div class="explore-card-color" style="background:<?= $negocio['color_primario'] ?? '#1a1a1a' ?>"></div>
-                        <div class="explore-card-color" style="background:<?= $negocio['color_secundario'] ?? '#555' ?>"></div>
+                        <div class="explore-card-color" style="background:<?= $negocio['color_primario'] ?? '#1a1a1a' ?>;--c:<?= $negocio['color_primario'] ?? '#1a1a1a' ?>"></div>
+                        <div class="explore-card-color" style="background:<?= $negocio['color_secundario'] ?? '#555' ?>;--c:<?= $negocio['color_secundario'] ?? '#555' ?>"></div>
                     </div>
                 </div>
                 <div class="explore-card-body">
@@ -241,7 +235,7 @@
                     </div>
                 </div>
             </div>
-            <?php endforeach; ?>
+            <?php $cardIdx++; endforeach; ?>
         <?php else: ?>
             <div class="explore-empty">
                 <h3>A&uacute;n no hay negocios disponibles</h3>
